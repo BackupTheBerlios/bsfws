@@ -1,0 +1,40 @@
+The different advantages of client side web applications can be separated to two categories: 
+The advantages resulting from the use of web browsers as presentation layer of an application and the advantages resulting from the client side execution of the applications.
+
+
+\section{Advantages of Web Based Applications}
+
+Compared with standard, operating system based applications, applications running on browser platforms have several advantages:
+
+\begin{description}
+
+	\item[Easy GUI Creation] Using HTML and CSS as GUI markup languages, modern web browser provide a standardized and easy way for creating GUIs available independent of browser and operating system platform. This allows a cost-effective development of GUIs for heterogenous networks and avoids the risk of GUI based platform lock-ins.
+	
+	\item[Integrated Printing Functionality] Web browsers generally provide printing functionality which consequently has not to be developed separatly for each application.
+	
+	\item[Easy Porting of Existing Scripts] Using HTML/CSS, existing script applications can be equiped with a modern, easy-to-use GUI with significantly less expense than it would be with a conventional GUI.
+	
+	\item[Central Maintenance] As web based applications are usually retrieved from or run on a server, updating an application can be done in one central place without the need to treat each client individually.
+	
+	\item[High Availability] The basic requirements for web based applications, a web browser interpreting HTML/CSS documents, are fulfilled by all modern office PCs as well as many other devices possibly used as clients, e.g. PDAs, smartphones and set-top boxes.\footnote{To be usable as a platform for BWS based applications, the client must also support several other requirements such as support for Java and LiveConnect (cf. section \ref{sec:BaseTechnologies}), which are currently not available on most \emph{low-end} clients such as set-top boxes and smartphones.}
+	
+	\item[No Lock-In Effects] As web based applications can be based on open standards supported by all major operating systems and browsers, lock-in effects requiering the use of a specific operating system or web browser are avoided. Switching the underlying hardware or software platform of a web based application can be done without the need to specifically adjusting a web based application to this platform.
+	
+	\item[High Usability] Web browsers provide an environment almost all users already know. No special training for end-users is usually necessary because they already how to do standard tasks like printing because this functionality is provided by the browser and not by individual applications.
+\end{description}
+
+\section{Advantages of Client Side Applications}
+Web applications running on the client have multiple advantages over those running as server side applications: 
+
+\begin{description}
+  \item[Offline Usage] Client side applications can be downloaded to the local client and then run without depending on network connections.\footnote{If the application itself does not depend on network access, for example for accessing a database. The developer of the application however has to consider if this is necessary and to create the application accordingly, for example by ensuring that the application does not depend on loading locally available scripts from the network.}
+
+\item[Lower Network Load] Client side applications do not have to exchange data as often with the web server as server side applications. While server side applications depend on the server for any small computation or integrity check, these can be done on client side. Only the final results of client script applications have to be transferred over the network.
+
+\item[Lower Server Load] Client side applications depend only to a very small extent on server ressources. This allows the easy and cost-effective use of additional clients as server load increases minimally with each new client.
+
+\item[More Efficient] Client side applications use primarily client side computing ressources, which often are not as scarce as server ressources. Additionally, because of lower requirements for stability, uptime, etc., client side ressources are usually much cheaper than server side ressources and especially for small web applications, these server requirements are only necessary for data storage, not for the application platform itself.
+
+\end{description}
+
+

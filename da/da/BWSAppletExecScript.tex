@@ -1,0 +1,18 @@
+The \texttt{executeScript()} method, available in \emph{two overloaded ways}, is the core of the BWS runtime environment. It is called from the BWS/HT\-ML document by the JavaScript/DOM event handlers and upon calling, runs the scripts specified with the method call.
+
+It can be called either with one or with two parameters. If it is called with one parameter, this parameter must be a \texttt{String} specifying a script call string\footnote{Cf. section \ref{sec:scriptString}.}; the two parameter variant expects an DOM node, represented as a \texttt{JSObject}, as additional second parameter. This second parameter may be accessed within the script string's parameters section using \texttt{this} as a shortcut.\footnote{Cf. section \ref{sec:docRewritting}.}
+
+%unterschied zw. ein u. zwei parameter variante
+
+The first step in the execution of BWS script is the interpretation of the script call string passed with the script call. This is done using the \texttt{ScriptString} class. After the script \texttt{id} has been determined by \texttt{ScriptString}, it is used to load the appropriate scripting engine and look up the script code using the \texttt{private loadScriptingEngine()} and \texttt{getScript()} methods.
+
+After the engine has been loaded and the script is available, the script parameters are evaluated. This is done first reading the parameters keys from the \texttt{ScriptString} with \texttt{getParameters()} and the passing the resulting array to another \texttt{private BWSApplet} method: \texttt{evaluateParameters()} which maps parameter keys to the according objects and returns a \texttt{Vector} containing the parameter objects.\footnote{Cf. section \ref{sec:mapParamObject}.}
+
+Next, an argument name \texttt{Vector} is created that contains the names of the arguments, as the original names of these objects are not known, they are named \texttt{argumentX} where \texttt{X} is an index starting at zero.
+
+The final steps before the script is eventually executed are the lookup of the return key using \texttt{ScriptString}'s \texttt{getRegKey()} method and the creation of an \texttt{Object} reference that will hold the return value of the script execution.
+
+Script execution is done using the \texttt{apply()} method provided by the \texttt{BSFEngine}. This method expects six parameters, \emph{description123} the first three of which are left empty respective zero in BWS, the fourth is a \texttt{String} containing the complete script code, the fifth and sixth are the \texttt{Vector}'s containing the names of the parameters passed and the parameters for the script. The methods return value is stored in the \texttt{Object} created before script creation.
+
+After script execution, the returned object as well as the return key is checked if it contains a value or \texttt{null}. If both contain values, the object is stored in the BSF registry under the specified key and returned; if one or both are \texttt{null} the object is only returned to the script caller.
+

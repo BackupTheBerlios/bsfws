@@ -1,0 +1,13 @@
+Loading the script code is done using the \texttt{private} method \texttt{getScript()}: This method expects a \texttt{JSNode} of the script and returns the script code as a \texttt{String}.
+
+The script code can be either embedded between the \texttt{script} tages or referenced specifying the scripts URL as the \texttt{src} attribute of the \texttt{script} tag. The URL may either be specified absolute or relative to the location of the current document.
+
+The first action of the \texttt{getScript()} method is to determine if the script is embedded or referenced: This is done by checking if the \texttt{script} element has got a \texttt{src} attribute that is not \texttt{null} or empty. If it has not got one, the text within the script tag is read using the \texttt{JSNode getInnerHTML()} method and returned. If a \texttt{src} attribute is available, the content of the \texttt{script} tag is ignored and the script tries to read the script code from the specified URL.
+
+If the script is referenced, it has to be determined if the specified path is relative to the BWS/HTML document's path or if it is an absolute path: This is done by checking if the value of the \texttt{src} attribute contains a colon followed by a double forward slash (\texttt{://}). Values of \texttt{src} containing this sequence are treated as absolute pathes while method not containing it are treated as relative pathes.
+
+\textsc{Sequenz muss noch im Applet geändert werden! Im Moment nur Doppelpunkt. URL durch Pfad ersetzen! Evtl. überprüfen ob / am Anfang, dann direkt nach Webserver anfangen!}
+
+If the path specified is detected as a relative path, the applets URL is read using the \texttt{Applet getCodeBase()} method. The result of this method is converted to a \texttt{String}. The URL of the document is then obtained concatenating the applet's URL with the relative specified as the \texttt{src} attribute.
+
+Reading the script then works just like any other stream reading, i.e. a stream is created on the URL, read to a byte array and a \texttt{String} is created from this array. This \texttt{String} then contains the script code and is returned.

@@ -11,27 +11,32 @@
  \section{Client Side Web Applications}
  \section{General remarks}
  \section{Structure of this Paper}
+ 
+  \input{structureOfThisPaper.tex}
+  
 \chapter{Term Definitions}
 
-\chapter{Analysis of Current Solutions For Developing Client Side Web Applications}
- \section{Economical and Technical Advantages of Client Side Web Applications}
- \section{Current solutions for Developing Client Side Web Applications}
+\chapter{Economical and Technical Advantages of Client Side Web Applications}
+ \label{sec:advantages}
+ \input{bwsEcon.tex}
+ 
+\chapter{Current solutions for Developing Client Side Web Applications}
+ \label{sec:currentSolutionsCSWA}
+ \input{currentSolutions.tex}
 
-  \input{currentSolutions.tex}
-
-  \subsection{Platform Independent Solutions}
+ \section{Platform Independent Solutions}
   
-   \input{platformIndependent.tex}
+  \input{platformIndependent.tex}
    
-   \subsubsection{JavaScript}
+  \subsection{JavaScript}
    
-    \input{javaScript.tex}
+   \input{javaScript.tex}
     
-   \subsubsection{Pure Java}
-   
-    \input{java.tex}
+  \subsection{Pure Java}
+  
+   \input{java.tex}
     
-  \subsection{A Proprietary Solution: Microsoft ActiveScripting}
+  \section{A Proprietary Solution: Microsoft ActiveScripting}
   \label{sec:activescripting}
     
    \input{activescripting.tex}
@@ -62,7 +67,7 @@
     \input{domInJava.tex}
     
    \subsubsection{Selecting DOM Elements: XPath}
-   \label{sec:SelectingDOMElementsXPath}
+    \label{sec:SelectingDOMElementsXPath}
     \input{xpath.tex}
    
    \subsubsection{Modifiying the DOM in Java with dom4j}
@@ -90,11 +95,12 @@
   \input{bwsInAction.tex}
   
   \subsection{Details of Document Rewriting}
-
+  
    \input{detailsDocRewriting.tex}
 
    \subsubsection{BWSDocument class}
-    
+   \label{sec:docRewritting}
+     
     \input{bwsDocumentClass.tex}
      
    \subsubsection{Using BWSDocument}
@@ -108,14 +114,25 @@
 
      \input{BWSApplet.tex}
      
-     \paragraph{Loading a scripting engine}
+     \paragraph{Loading a Scripting Engine}
      
       \input{BWSAppletLoadEngine.tex}
      
-     \paragraph{Executing scripts}
+     \paragraph{Loading Script Code}
+    
+      \input{BWSAppletLoadCode.tex}
+    
+     \paragraph{Mapping Objects to Parameters}
+      \label{sec:mapParamObject}
+     
+      \input{BWSAppletParameterMapping.tex}
+     
+     \paragraph{Executing Scripts}
+
+		  \input{BWSAppletExecScript.tex}
 
     \subsubsection{ScriptString Class}
-    
+    \label{sec:scriptString}
      \input{scriptString.tex}
      
     \subsubsection{JSNode Class}
@@ -131,8 +148,12 @@
       \input{JSNodeAdvantages.tex}
      
 \chapter{Discussion}
+ \label{sec:discussion}
+ \input{discussion.tex}
 
 \chapter{Using BWS}
+ \label{sec:usingBWS}
+ 
 
  \section{An Example of BWS in Action}
  \section{Installing BWS}

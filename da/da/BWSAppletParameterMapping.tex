@@ -1,0 +1,14 @@
+As described \emph{reference}, script calls may contain parameters passed to scripts upon execution. As with DOM event handlers and BWS only a script call string is passed, objects that shall be passed to the script can only be refernced by a key within this call string.\footnote{The reason for this limitation is that both possiblities that are theoretically available for this are not feasible: The first possibilty would be to overload the \texttt{executeScript()} method with any possible combination of objects that could be passed to the script. This option would lead to a nearly unlimited number of \texttt{executeScript()} methods and thus is not a real possibilty. The second theoretical option would be to wrap all objects that shall be passed into on container (as e.g. the \texttt{BSFEngine}'s \texttt{apply()} method does with \texttt{Vector}s). This however would have to be done by the person writting BWS documents and scripts and would make the creation of these scripts and documents overly complex and thus also is not a real alternative to the parameter mapping used currently.} The look-up of the objects referenced by the key is always done at runtime of the script, therefore all objects are always available in their current state.
+
+The \texttt{BWSApplet} provides a \texttt{private} method for doing this parameter object mapping named \texttt{evaluateParameters()}. The method expects a \texttt{String} array containing the parameter keys and returns a \texttt{Vector} holding references to the objects found under the specified keys.\footnote{The order of the elements on the \texttt{Vector} is always exactly the same as the order of \texttt{String}s in the array.}
+
+When the method is called, a new \texttt{Vector} with the size the same as the \texttt{String} array is created. Then for each \texttt{String} that was passed in the array, the method looks up\footnote{In the given order.} if the \texttt{String}
+\begin{enumerate}
+	\item is in quotation marks,
+	\item matches an object in the BSF registry or
+	\item is the \texttt{id} of an DOM element.
+	
+\end{enumerate}
+
+If the \texttt{String} is enclosed in quotation marks or if it does not fulfil any of the options specified, it is put on the \texttt{Vector}\footnote{If it is enclosed in quotation marks, these are stripped.}; if it matches a 
+BSF registry object or a DOM element\footnote{In this case the element is represented as \texttt{JSNode}}, these are pushed on the \texttt{Vector}.
