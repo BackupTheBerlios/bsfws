@@ -92,7 +92,7 @@ public class BWSApplet extends Applet {
 	
    /** the standard constructor, nothing special */
    public BWSApplet() {
-      if (debug>0) {
+      if (debugLevel>0) {
 	 System.out.println("[BWSApplet constructor] applet object created ...");
       }
    }
@@ -103,7 +103,7 @@ public class BWSApplet extends Applet {
    public void init() {
       // first the manager is created
       mgr=new BSFManager();
-      if (debug>0) {
+      if (debugLevel>0) {
 	 System.out.println("[BWSApplet-init] BSFManager instantiated: "+mgr);
       }
       
@@ -113,7 +113,7 @@ public class BWSApplet extends Applet {
       
       // get the window and register it
       jsWindow=JSObject.getWindow(this);
-      if (debug>0) {
+      if (debugLevel>0) {
 	 System.out.println("[BWSApplet-init] got a window: " + jsWindow);
       }
       mgr.registerBean("DocumentWindow",jsWindow);		

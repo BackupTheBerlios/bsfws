@@ -78,7 +78,7 @@ public class BWSDevelopmentApplet extends Applet {
    private int debugLevel=1;
   
    /** applet constructor */
-   public bwsDevelopmentApplet() {
+   public BWSDevelopmentApplet() {
       if (debugLevel>0) {
 	  System.out.println("[bwsDevelopmentApplet constructor] applet object created...");
       }

@@ -19,6 +19,7 @@
  * 
  * - rewriting code must be changed to enable argument passing, cf. bws wiki
  *   http://openfacts.berlios.de/index-en.phtml?title=BSFWebScripting
+ * - allow printing only the final xml document (for redirection)
  * 
 *******************************************************************************
 **
