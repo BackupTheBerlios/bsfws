@@ -11,6 +11,9 @@
 ** ---------
 **
 ** V0.1   @ 2003-01-21
+** V0.2   @ 2003-04-30
+**        - scripting engine is determined by mime-type of the script which is
+**          passed from javascript
 **
 *******************************************************************************
 **
@@ -146,6 +149,10 @@ public class bsfWSInterfaceApplet extends Applet {
     //      nrx,netrexx   = netrexx (not yet available)
     //      rb,ruby       = jRuby engine (not yet available)
     // --> more to come
+    // mime-types from browser are the better alternative as
+    // they can be passed directly
+    // --> other types will be removed
+    //      x-bsf/x-rexx   = bsf4rexx (-809114057)
     public void executeScript(String script, String lang) {
 	
 	// if scripting engine is not loaded yet, load it
@@ -161,8 +168,10 @@ public class bsfWSInterfaceApplet extends Applet {
 	    // ie switch case
 	    switch (lang.hashCode()) {
 	    case 3654:
-	    case 3497075:{
+	    case 3497075:
+	    case -809114057:	{
 		// load rexx engine if not available
+		System.out.println("--[executeScript]--> language: " + lang + " - hashCode: " + lang.hashCode());
 		BSFEngine rxEng=mgr.loadScriptingEngine("rexx");
 		//		System.out.println(rxEng.eval("",0,0,"parse version a;b=bsfversion();c=bsf('Version');return a b c"));
 		
