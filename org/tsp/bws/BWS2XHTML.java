@@ -60,7 +60,7 @@
 
 package org.tsp.bws;
 
-public class BWSRewriter {
+public class BWS2XHTML {
     /** reads a document from an URL and rewrites it as an bws document */
 
     /** main method
@@ -85,7 +85,6 @@ public class BWSRewriter {
 	// if a second parameter is given, write the output to a file
 	// with the given name
 	if (args[1]!=null) {
-	    writeToFile=true;
 	    String fileName=args[1];
 	    // open file and write (not implementet)
 	} else {
