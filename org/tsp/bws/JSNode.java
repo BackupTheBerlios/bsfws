@@ -605,14 +605,19 @@ public class JSNode {// extends JSObject {
  *	name for setting it: e.g. getNodeValue and
  *	setNodeValue for modifying nodeValue
  *********************************************************/
-    
+
     /** returns the value of an node/input field */
     public String getNodeValue() {
       return (String) node.getMember("nodeValue");
     }
-    
+
+	/** returns an array of the nodes children as <tt>JSNode</tt>s */
+//	public JSNode[] getChildNodes() {
+//	  node.getMember("childNodes");
+//	}
+
     /** returns the first child node of the current
-     * JSNode 
+     * JSNode
      */
     public JSNode getFirstChild() {
       JSObject jsObjNode=(JSObject)node.getMember("firstChild");
@@ -637,6 +642,8 @@ public class JSNode {// extends JSObject {
         System.out.println("[JSNode.getData] string: " + nodeData);
         return nodeData;
     }
+
+
 
 /*********************************************************
  ***               event handler methods               ***
