@@ -1,0 +1,17 @@
+In order to work with these objects, it is necessary that they are available in the programming language used; in this case this is Java.
+
+One of the solutions available for mapping DOM objects to Java objects is the open-source solution dom4j. This framework enables the parsing of XML documents to Java objects, the navigation and modification of parts of the represented XML document as well as the creation of a XML document from the Java objects.
+
+dom4j provides two ways of accessing the Java objects corresponding to a specific DOM element: The first one is to walk the DOM tree hierarchically that is, iterate over all elements of the lowest layer, check if one of the elements of this layer match the desired criteria, then select all of the elements of the next lower layer and do the same for all layers until the desired element is reached. 
+
+For example if in figure \ref{fig:simpleDomTree} the heading's content is wanted, the procedurce would have to look like this:
+
+\begin{enumerate}
+\item Select all child elements of the \texttt{html} node.
+\item Check if the elements type is \texttt{body}.
+\item If it is \texttt{body}, select all child elements of this element.
+\item Iterate over these elements and check if they are \texttt{h1} elements.
+\item If a element is a \texttt{h1}, select its content.
+\end{enumerate}
+
+As this method is very laborious and time consuming, especially for complex and large XML documents, dom4j provides another way of selecting the desired elements: the XML Path Language (XPath).
