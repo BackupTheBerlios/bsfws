@@ -13,17 +13,17 @@ Both steps are done almost exactly like they would be done using JavaScript scri
 %paragraph or only highlighting?
 \paragraph{Embedding and referencing scripts}
 
-For every script you want to use, create a \ttfamily{<script>} tag. This script tag must have at least two attributes:
+For every script you want to use, create a \texttt{<script>} tag. This script tag must have at least two attributes:
 
 \begin{enumerate}
 
-\item The \ttfamily{type} attribute that specifies that this script is a script that shall be interpreted using BWS and the programming language the script is written in; this attribute is given as \texttt{bws/scriptengine}, for example it is \ttfamily{bws/netrexx} for the NetRexx interpreter or \ttfamily{bws/javascript} for the Rhino JavaScript interpreter.
+\item The \texttt{type} attribute that specifies that this script is a script that shall be interpreted using BWS and the programming language the script is written in; this attribute is given as \texttt{bws/scriptengine}, for example it is \texttt{bws/netrexx} for the NetRexx interpreter or \texttt{bws/javascript} for the Rhino JavaScript interpreter.
 
-\item The \ttfamily{id} attribute unter which this script is referenced in script calls. This id, as well as any other id used in the document, must be unique, it may consist of only alphanumeric characters (A-Z, a-z, 0-9), dashes (-), underscores (\_), dots (.) and colons (:).
+\item The \texttt{id} attribute unter which this script is referenced in script calls. This id, as well as any other id used in the document, must be unique, it may consist of only alphanumeric characters (A-Z, a-z, 0-9), dashes (-), underscores (\_), dots (.) and colons (:).
 
 \end{enumerate}
 
-If only these two attributes are specified, the script code must be embedded within the script element (see figure /ref{fig:scriptEmbedding}); if the script code shall not be contained within the document, it is also possible to reference scripts contained in extra files. To do this, the optional source attribute \tt{src} can be specified. This attribute has to be in the form of an absolute\footnote{(e.g. \tt{http://location/filename})} or a relative\footnote{Relative to the URL of the document, e.g. if the document is available from http://www.mydomain.com/aDocument.html and the script file is available from \tt{http://www.mydomain.com/scripts/aScript.bws}, it can also be referenced as \tt{scripts/aScript.bws}} URL; using this method, the script file is loaded only on execution. If the \tt{src} attribute is specified, the code under the script element is not inspected.
+If only these two attributes are specified, the script code must be embedded within the script element (see figure /ref{fig:scriptEmbedding}); if the script code shall not be contained within the document, it is also possible to reference scripts contained in extra files. To do this, the optional source attribute \texttt{src} can be specified. This attribute has to be in the form of an absolute\footnote{(e.g. \texttt{http://location/filename})} or a relative\footnote{Relative to the URL of the document, e.g. if the document is available from http://www.mydomain.com/aDocument.html and the script file is available from \texttt{http://www.mydomain.com/scripts/aScript.bws}, it can also be referenced as \texttt{scripts/aScript.bws}} URL; using this method, the script file is loaded only on execution. If the \texttt{src} attribute is specified, the code under the script element is not inspected.
 
 %caching when referencing is used
 
@@ -36,7 +36,7 @@ Other tags may be specified too, but are not used by BWS (they may be used by th
 	\begin{verbatim*}
 	<html>
 	...
-	<script type="'bws/netrexx"' id="'aRexxScript"'>
+	<script type="bws/netrexx" id="aRexxScript">
 	-- some netrexx code
 	</script>
 	...
@@ -50,7 +50,7 @@ Other tags may be specified too, but are not used by BWS (they may be used by th
 	\begin{verbatim*}
 	<html>
 	...
-	<script type="'bws/netrexx"' id="'aRexxScript"' src="'./rexxscript.bws"' />
+	<script type="bws/netrexx" id="aRexxScript" src="./rexxscript.bws" />
 	...
 	</html>
 	\end{verbatim*}
@@ -62,7 +62,8 @@ Other tags may be specified too, but are not used by BWS (they may be used by th
 
 \paragraph{Attaching script calls to events}
 
-After all necessary scripts are embedded or referenced in the document, script calls can be attached to events, i.e. scripts can be triggered by DOM events, for example by clicking a part of text. For an overview which events are available, see __ReferenceDOMEvents__.
+After all necessary scripts are embedded or referenced in the document, script calls can be attached to events, i.e. scripts can be triggered by DOM events, for example by clicking a part of text. For an overview which events are available, see \cite{ReferenceDOMEvents}.
+%notcitedyet
 
 Scripts can be attached to any event of any element using the syntax \texttt{bws:scriptId} as the eventhandler. For example if you have a script with the id \texttt{myOnClickScript} you would like to call when the body of your document is clicked, the body tag must be:
 

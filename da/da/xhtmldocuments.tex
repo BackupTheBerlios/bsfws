@@ -1,19 +1,25 @@
-The starting point of a BWS compliant document is a standard well-formed HTML document, that is, it must fullfil the following requirements\footnote{There are some additional requirements that do not apply to BWS documents, see \cite{references}, the exact requirements of well-formedness for XML documents is \cite{w3reference}:
+The starting point of a BWS compliant document is a standard well-formed HTML document, that is, it must fullfil the following requirements\footnote{There are some additional requirements that do not apply to BWS documents, see \cite{references}, the exact requirements of well-formedness for XML documents is \cite{w3reference}}:
 
 \begin{itemize}
 
-\item For every start tag, there must be a closing tag, i.e. for every \ttfamily{<li>} tag there must be a \ttfamily{</li>} tag; an exception to this rule is allowed for tags that have no content, e.g. \ttfamily{<br>}, these tags must be given in the combined notation \ttfamily{<br/>}. As some browsers do not accept the later variant, it is recommended to use explicit start and end tags and, in cases where this is not possible, seperate the closing slash by a space from the tag itself, e.g. \ttfamily{<br />}. This notation should work with any BWS supporting browser.
 
-\item Elements can have subelements, they must use strict nesting, 'overlapping' tags, for example \ttfamily{<h1>Text<center>Centered</h1>also centered</center>}, are not allowed.
+\item For every start tag, there must be a closing tag, i.e. for every \texttt{<li>} tag there must be a
+\texttt{</li>} tag; an exception to this rule is allowed for tags that have no content, e.g. \texttt{<br>}, these
+% tags must be given in the combined notation
+% \texttt{<br/>}. As some browsers do not accept the later variant, it is
+% recommended to use explicit start and end tags and, in cases where this is not possible, seperate the closing slash 
+% by a space from the tag itself, e.g. \texttt{<br />}. This notation should work with any BWS supporting browser.
 
-\item Tags and attributes are case-sensitve, for example \ttfamily{<h1>} and \ttfamily{</H1>} are not matching.
 
-\item Attributes must have exactly one value, empty attributes that are allowed in standard HTML, e.g. the \ttfamily{mayscript} attribute of objects must be given as \ttfamily{<object mayscript="true" />}, not only \ttfamily{<object mayscript>}, all attributes must be enclosed in quotes.
+%\item Elements can have subelements, they must use strict nesting, 'overlapping' tags, for example \texttt{<h1>Text<center>Centered</h1>also centered</center>}, are not allowed.
 
-\item The document must have exactly one root element, i.e. a construction \ttfamily{<html><!-- htmlcode --></html><somethingElse></somethingElse>} is not allowed. 
+%\item Tags and attributes are case-sensitve, for example \texttt{<h1>} and \texttt{</H1>} are not matching.
+
+%\item Attributes must have exactly one value, empty attributes that are allowed in standard HTML, e.g. the \texttt{mayscript} attribute of objects must be given as \texttt{<object mayscript="true" />}, not only \texttt{<object mayscript>}, all attributes must be enclosed in quotes.
+
+%\item The document must have exactly one root element, i.e. a construction \texttt{<html><!-- htmlcode --></html><somethingElse></somethingElse>} is not allowed. 
 
 %example in figure? multiline?
-
 \end{itemize}
 
 Any document conforming to these requirements can be used as a BWS document and extended with BWS scripts; generally, an XHTML compliant document will work. For an example an incorrect document as well as a corrected version of this document (changes are emphasized), see figure \ref{fig:xhtmlDocumentExample}. 
@@ -21,8 +27,7 @@ Any document conforming to these requirements can be used as a BWS document and 
 \begin{figure}
 \label{fig:xhtmlDocumentExample}
 
-%preformated
-
+\begin{verbatim*}
 <html>
 <head>
 <Title>An incorrect document</title>
@@ -37,24 +42,35 @@ The last one ended with a linebreak.
 </body>
 
 </html>
+\end{verbatim*}
+
 
 The incorrect document.
 
 
-<html>
-<head>
-<_t_itle>An incorrect document</title>
-</head>
+\verb*-<html>-
 
-<body>
-<h1>This is a heading<_H_1>
-<div style=_"_fontFamily:Verdana_"_>This is <em>the first part_</em></div>_
-<p>A new paragraph._</p>_
-<p>And another one._</p><br >_
-The last one ended with a linebreak.
-</body>
+\verb*-<head>-
 
-</html>
+\verb*-<-\emph{\texttt{t}}\verb*-itle>An incorrect document</title>-
+
+\verb*-</head>-
+
+\verb*-<body>-
+
+\verb*-<h1>This is a heading<-\emph{\texttt{H}}\verb*-1>-
+     
+\verb*-<div style=-\emph{\texttt{"}}\verb*-fontFamily:Verdana-\emph{\texttt{"}}\verb*->This is <em>the first part-\emph{\texttt{</em></div>}}
+
+\verb*-<p>A new paragraph.-\emph{\texttt{</p>}}
+
+\verb*-<p>And another one.-\emph{\texttt{</p><br />}}
+
+\verb*-The last one ended with a linebreak.-
+
+\verb*-</body>-
+
+\verb*-</html>-
 
 A corrected version.
 
