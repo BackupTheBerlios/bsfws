@@ -37,14 +37,14 @@
 **		-	some debugging
 **	    	-   	new numbering of versions
 ** V0.31 	@ 2002-01-23
-**		-	added getLanguage() function to enable parsing of 
+**		-	added getLanguage() function to enable parsing of
 **			used languages from the html-document
 **		-	created new global variable tempArray to enable passing
 **			of arrays between functions possible on IE, rewrote
 **			array passing accordingly
 ** V0.32	@ 2002-02-03
-**		-	modified initBSFWS, now script handlers for all 
-**			languages found by getLanguages are installed (all 
+**		-	modified initBSFWS, now script handlers for all
+**			languages found by getLanguages are installed (all
 **			scripts are passed to the rexx engine at the moment,
 **			this will be changed soon)
 **
@@ -93,7 +93,7 @@
 **
 ** Global variable
 ** ---------------
-** 
+**
 ** Array tempArray
 **
 **	this is a dirty workaround for the internet explorer/jscript as it
@@ -133,7 +133,7 @@ function initBSFWS() {
 	// remove duplicates from script references
 	tempArray=scriptReferencesMultiple;
 	removeDuplicates();
-	scriptReferences=tempArray;	
+	scriptReferences=tempArray;
 
 	functionnames=new Array();
 
@@ -229,14 +229,17 @@ function buildHandler(engine, funcName) {
 
 
 function initBSF() {
-	bsfInterfaceApplet=document.getElementById('bsfInterfaceApplet');
-  	bsfInterfaceApplet.registerWindow(self);
-	bsfInterfaceApplet.registerDocument(document);
-	bsfInterfaceApplet.appletToBSFReg();
+	if (navigator.userAgent.indexOf("Gecko")>0) {
+		bsfWSInterfaceApplet=document.getElementById('bsfWSInterfaceApplet');
+	}
+	
+  	bsfWSInterfaceApplet.registerWindow(self);
+	bsfWSInterfaceApplet.registerDocument(document);
+	bsfWSInterfaceApplet.appletToBSFReg();
 }
 
 function callrx(rexxcode) {
-	bsfInterfaceApplet.executeScript(rexxcode,"rx");
+	bsfWSInterfaceApplet.executeScript(rexxcode,"rx");
 }
 
 function removeDuplicates(duplicateArray) {
@@ -291,7 +294,7 @@ function getLanguages() {
 	tempArray=usedLanguagesDup;
 	removeDuplicates();
 	usedLanguagesSing=tempArray;
-	
+
 	// strip ("x-bsf/x-) and (")
 	for (counter=0;counter<usedLanguagesSing.length;counter++) {
 		position=usedLanguagesSing[counter].indexOf("x-bsf");
