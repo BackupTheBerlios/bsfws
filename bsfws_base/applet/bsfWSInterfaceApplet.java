@@ -16,7 +16,7 @@
 **
 ** Planned improvements - Release criteria:
 ** ----------------------------------------
-**  - support more BSFEngines (all standart + orx for 1.0)
+**  - support more BSFEngines (all standard + orx for 1.0)
 **
 *******************************************************************************
 **
@@ -48,7 +48,12 @@
 ** -------------------
 **
 ** For further information on this script mail me at:
-** tobias.specht@student.uni-augsburg.de
+**
+**     tobi@bsfws.berlios.de
+**
+** The most recent version of this file is available from 
+**
+**     http://bsfws.berlios.de/
 **
 ******************************************************************************/
 
@@ -57,6 +62,8 @@ import java.lang.*;
 import java.applet.*;
 import java.util.*;
 import com.ibm.bsf.*;
+// using the sun.plugin.javascript.JSObject does not work but results in a 
+// method not found error! use netscape.javascript.JSObject
 import netscape.javascript.*;
 
 public class bsfWSInterfaceApplet extends Applet {
@@ -69,46 +76,65 @@ public class bsfWSInterfaceApplet extends Applet {
 
     private JSObject jsWindow=null;
     private JSObject jsDocument=null;
-    private Hashtable jsObjects;
-    
+    //  private Hashtable jsObjects;
+
     // standard constructor, loads the appropriate engine
     public bsfWSInterfaceApplet() {
-// debug
-	System.out.println("---> bsfInterfaceApplet class successfully instantiated");
 	
-	// necessary in this applet? evaluate!
-	jsObjects=new Hashtable();
+	// necessary in this applet?
+	// at least not atm
+	//	jsObjects=new Hashtable();
 	
 	// create the BSFManager
 	mgr=new BSFManager();
-	System.out.println("---> BSFManager instantiated: "+mgr.toString());
+	System.out.println("--[bsfWSInterfaceApplet]--> BSFManager instantiated: "+mgr.toString());
 	
 	// loading the scripting engine from js throws a security exception, so this has
 	// to be done here.
 
 	// this CAN NOT be a solution as it would be necessary to load ALL scripting
-	// engines here!
+	// engines here
 	this.loadScriptingEngine("rx");
+
+	// appletToBSFReg moved to init()
     }
     
+    // init() could be necessary for IE support, don't know yet, remove if not
+    // nope, isn't necessary -> commented out
+    public void init() {
+	// register the applet to the BSFRegistry so it is available to scripting languages
+	this.appletToBSFReg();
+
+	// register the System.out object to the registry so scripting lanugages can write
+	// to the Java console          	
+	mgr.registerBean("SystemOut",System.out);
+	
+	System.out.println("--[init]--> init() called successfully!");
+    }
+
+    // start() could also be necessary
+    public void start() {
+	System.out.println("--[start]--> start() called!");
+    }
+
     // load a scripting engine identified by lang
     // will *probably* be private (and moved down ;)
     // allowed strings:
     //   rexx: rx(3654), rexx(3497075), orx(not yet looked up)
     //   javascript: js(3401), javascript(188995949)
     public void loadScriptingEngine(String lang) {
-	System.out.println("---> Loading scripting engine [" + lang + "]");
+	System.out.println("--[loadScriptingEngine]--> Loading scripting engine [" + lang + "]");
 
 	// the switch statement is based on the hashCode values of the used strings
 	// allowed strings set at method header
 	switch (lang.hashCode()) {
-	case 3654:loadRxEngine(); break;
+	case 3654:
 	case 3497075:loadRxEngine(); break;
-	case 3401:loadJSEngine(); break;
+	case 3401:
 	case 188995949:loadJSEngine(); break;
 	default:System.out.println(lang + " is not a known engine!"); break;
 	}
-	System.out.println("---> [" + lang + "] engine available");
+	System.out.println("--[loadScriptingEngine]--> [" + lang + "] engine available @" + rxEng.toString());
     }
 
 
@@ -121,25 +147,35 @@ public class bsfWSInterfaceApplet extends Applet {
     //      rb,ruby       = jRuby engine (not yet available)
     // --> more to come
     public void executeScript(String script, String lang) {
-
+	
 	// if scripting engine is not loaded yet, load it
 	// (if clause in loadLangEng method
 	loadScriptingEngine(lang);
-	System.out.println(">>> Skript <<<");
+	System.out.println("--[executeScript]--> Script start");
 	System.out.println(script);
-	System.out.println("<<< /Skript >>>");
-
+	System.out.println("--[executeScript]--> Script end");
+	
 	// switch statement for eval/exec necessary
 	try {
 	    // use scripting engine similar to loadScriptingEngine
 	    // ie switch case
 	    switch (lang.hashCode()) {
-	    case 3654:rxEng.eval("",0,0,script);
-	    case 3497075:rxEng.eval("",0,0,script);
-		/**	    case 3401:jsEng.eval(??);
-			    case 188995949:jsEng.eval(??);
+	    case 3654:
+	    case 3497075:{
+		// load rexx engine if not available
+		BSFEngine rxEng=mgr.loadScriptingEngine("rexx");
+		//		System.out.println(rxEng.eval("",0,0,"parse version a;b=bsfversion();c=bsf('Version');return a b c"));
+		
+		// explicitly loading BSFFunctions seems to be necessary on linux
+		rxEng.eval("",0,0,"if rxfuncquery(\"BSF\") then\n do \n call rxFuncAdd \"BsfLoadFuncs\", \"BSF4Rexx\", \"BsdLoadFuncs\" \n call BsfLoadFuncs \n end");
+		rxEng.eval("",0,0,script);
+	    };
+		break;
+		
+		/** insert other scripting engines here
+		    case 3401:jsEng.eval(??);
+		    case 188995949:jsEng.eval(??);
 		**/
-		// rxEng.eval("",0,0,script);
 	    }
 	} catch (Exception e) {
 	    e.printStackTrace();
@@ -199,6 +235,11 @@ public class bsfWSInterfaceApplet extends Applet {
 	if (dOMObject==null) {
 	    dOMObject=(JSObject) jsDocument.call("getElementByName",paramArray);
 	}
+
+	// debug
+	System.out.println("--[getDOMObject]-->got document");
+	// /debug
+
 	return dOMObject;
     }
 
@@ -207,7 +248,7 @@ public class bsfWSInterfaceApplet extends Applet {
     public String getValue(String objIdentifier) {
 	JSObject dOMObject=getDOMObject(objIdentifier);
 	String value=(String) dOMObject.getMember("value");
-	System.out.println("->->->" +  value);
+	System.out.println("--[getValue]-->" +  value);
 	return value;
     }
 
@@ -216,6 +257,17 @@ public class bsfWSInterfaceApplet extends Applet {
     public void setValue(String objIdentifier, String value) {
 	JSObject dOMObject=getDOMObject(objIdentifier);
 	dOMObject.setMember("value",value);
+	
+	// debug
+	System.out.println("--[setValue]--> value set");
+	// /debug
+    }
+
+    // set innerHTML
+    // testMethod for IE-TestHTML
+    public void setInnerHTML(String objIdentifier, String value) {
+	JSObject dOMObject=getDOMObject(objIdentifier);
+	dOMObject.setMember("innerHTML",value);
     }
 
     // getParam
@@ -234,7 +286,7 @@ public class bsfWSInterfaceApplet extends Applet {
 	//JSObject dOMObject=getDOMObject(objIdentifier);
 	//dOMObject.setMember(paramIdentifier, value);
     }
-
+    
     public void setParam(String objIdentifier, String paramIdentifier, String value) {
 	JSObject dOMObject=getDOMObject(objIdentifier);
 	dOMObject.setMember(paramIdentifier, value);
@@ -242,32 +294,40 @@ public class bsfWSInterfaceApplet extends Applet {
 
 // here comes the load scripting engines part -----------------------------------------------------
 // each engine's got its own private method, engines are ONLY loaded when they are not available
-// (if statment in method line 1), scripting engines are loaded with bsfmanager.loadScriptingEngine
+// (if-statement in method line 1), scripting engines are loaded with bsfmanager.loadScriptingEngine
 // and stored in their respective properties (rxEng,jsEng,rbEng)
     private void loadRxEngine() {
  	if (rxEng==null) {
 	    try {
-		System.out.println("---> Trying to load rexx engine");
+		System.out.println("--[loadRxEngine]--> Trying to load rexx engine");
 		rxEng=mgr.loadScriptingEngine("rexx");
-		System.out.println("--->" + rxEng.toString());
+
+		//		System.out.println(rxEng.eval("",0,0,"parse version a;b=bsfversion();c=bsf('Version');return 1 a b c"));
+		//		System.out.println(rxEng.eval("",0,0,"parse version a;b=bsfversion();c=bsf('Version');return 2 a b c"));
+		// System.out.println(rxEng.toString());
+		//		rxEng=mgr.loadScriptingEngine("rexx");
+		//		System.out.println(rxEng.toString());
+		//		System.out.println(rxEng.eval("",0,0,"parse version a;b=bsfversion();c=bsf('Version');return 3 a b c"));
+		System.out.println("--[loadRxEngine]-->" + rxEng.toString());
 	    } catch (Exception e) {
-		System.out.println("---> Loading scripting engine [rexx] failed! Error message:");
+		System.out.println("--[loadRxEngine]--> Loading scripting engine [rexx] failed! Error message:");
 		e.printStackTrace();
 	    }
+	} else {
+	    System.out.println("--[loadRxEngine]--> Rexx engine is available @ " + rxEng.toString());
 	}
     }
 
     private void loadJSEngine() {
 	if (jsEng==null) {
 	    try {
-		System.out.println("---> Trying to load javascript engine");
+		System.out.println("--[loadJSEngine]--> Trying to load javascript engine");
 		jsEng=mgr.loadScriptingEngine("javascript");
 	    } catch (Exception e) {
-		System.out.println("---> Error loading engine! Stack trace:");
+		System.out.println("--[loadJSEngine]--> Error loading engine! Stack trace:");
 		e.printStackTrace();
 	    }
 	}
     }
 // end of load scripting engines!------------------------------------------------------------------
-
 }
