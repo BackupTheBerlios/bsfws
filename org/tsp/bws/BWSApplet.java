@@ -20,6 +20,7 @@
  * - multi-scripting-engine support
  * - use apply instead of eval
  * - parse script invokation for arguments and return value
+ * - execute code using BSFManager (instead of BSFEngine)
  * 
  * see also bws wiki:
  *   http://openfacts.berlios.de/index-en.phtml?title=BSFWebScripting
@@ -84,12 +85,14 @@ public class BWSApplet extends Applet {
    // object for the browser window
    private JSObject jsWindow;
 	
-   // a boolean for switching debugging on/off
-   boolean debug=true;
+   // an int for setting the debug leve
+   // 0 = no debug output
+   // 1 = normal debug
+   int debugLevel=1;
 	
    /** the standard constructor, nothing special */
    public BWSApplet() {
-      if (debug) {
+      if (debug>0) {
 	 System.out.println("[BWSApplet constructor] applet object created ...");
       }
    }
@@ -100,7 +103,7 @@ public class BWSApplet extends Applet {
    public void init() {
       // first the manager is created
       mgr=new BSFManager();
-      if (debug) {
+      if (debug>0) {
 	 System.out.println("[BWSApplet-init] BSFManager instantiated: "+mgr);
       }
       
@@ -110,7 +113,7 @@ public class BWSApplet extends Applet {
       
       // get the window and register it
       jsWindow=JSObject.getWindow(this);
-      if (debug) {
+      if (debug>0) {
 	 System.out.println("[BWSApplet-init] got a window: " + jsWindow);
       }
       mgr.registerBean("DocumentWindow",jsWindow);		
@@ -121,12 +124,17 @@ public class BWSApplet extends Applet {
     * Must be modified to read the script from dom (instead of getting
     * it passed or from an url)
     * @param scriptId id of the script tags wherein the script code is stored
-    * @param script the script
+    * @param script the string specifing script id, return values and arguments
     */
-   public void executeScript(String script) {
+   // code execution could probably also be done by the BSFManager, i.e.
+   // without explicitly loading a scripting engine
+   public void executeScript(String scriptString) {
       // going to an inner class, all variables that shall be accessible
       // must be declared final
-		
+
+      // script string will have to be parsed to enable use of arguments
+      String scriptId=this.parseScriptString(scriptString);
+      
       try {
 	 BSFEngine evalEngine = (BSFEngine) AccessController.doPrivileged(new PrivilegedAction() {
 	    public Object run() {
@@ -144,9 +152,10 @@ public class BWSApplet extends Applet {
 	    }
 	 });
 	 
-	 // obtain the script
+	 // lookup script from the given id
 	 //JSNode scriptContainer=getNode(scriptId);
-	 //String script=scriptContainer.getInnerText();
+	 //String script=scriptContainer.getInnerHTML();
+	 String script=scriptId;
 	 
 	 System.out.println("[BWSApplet-executeScript] script code");
 	 System.out.println(script);
@@ -163,8 +172,18 @@ public class BWSApplet extends Applet {
       }
    }
    
+   /** returns the html/xml node with the specified id
+    * @param nodeId html/xml id attribute of the desired node
+    */ 
    public JSNode getNode(String nodeId) {
       JSNode tmpJSNode=new JSNode(jsWindow,nodeId);
       return tmpJSNode;
-   }	
+   }
+   
+   /** reades the scriptId from a passed scriptString
+    * @scriptString the string containing the scriptString sent via LiveConnect
+    */
+   public String parseScriptString(String scriptString) {
+      return scriptString;
+   }
 }
