@@ -88,13 +88,14 @@ public class BWSApplet extends Applet {
    // an int for setting the debug leve
    // 0 = no debug output
    // 1 = normal debug
-   private static int debugLevel=1;
+   // 2 = additional messages
+   private static int debugLevel=5;
 
    /** the standard constructor, nothing special */
    public BWSApplet() {
-      if (debugLevel>0) {
-	 System.out.println("[BWSApplet constructor] applet object created ...");
-      }
+     if (debugLevel>0) {
+       System.out.println("[BWSApplet.constructor] applet object created ...");
+     }
    }
 
    /** init creates a BSFManager, obtains the applet window and registers
@@ -104,7 +105,7 @@ public class BWSApplet extends Applet {
       // first the manager is created
       mgr=new BSFManager();
       if (debugLevel>0) {
-		System.out.println("[BWSApplet-init] BSFManager instantiated: "+mgr);
+		System.out.println("[BWSApplet.init] BSFManager instantiated: "+mgr);
       }
 
       // register applet and java.System
@@ -114,7 +115,7 @@ public class BWSApplet extends Applet {
       // get the window and register it
       jsWindow=JSObject.getWindow(this);
       if (debugLevel>0) {
-	  	System.out.println("[BWSApplet-init] got a window: " + jsWindow);
+	  	System.out.println("[BWSApplet.init] got a window: " + jsWindow);
       }
       mgr.registerBean("DocumentWindow",jsWindow);
    }
@@ -148,15 +149,25 @@ public class BWSApplet extends Applet {
 	   System.out.println("[BWSApplet.executeScript] script code end");
      }
 
+	// get parameters
+	String[] paramArray=currentScriptString.getParameters();
+
+	Vector argumentVector=evaluateParameters(paramArray,domObject);
+/*	// check for 'this'
+	for (int paramCounter=0;paramCounter<paramArray.length;paramCounter++) {
+		
+      		
+	}*/
+
 	 // execute script
 	 try {
 	    evalEngine.eval("",0,0,script);
 	 } catch (Exception e) {
 	    System.out.println("[BWSApplet-executeScript] exception while trying to execute");
 	 }
-     
+
    }
-   
+
    /** reads a script from the docuemnt and passes it to the bsf engine
     * specified in the scripts type attribute.
     * @param scriptString String containing scriptId, returnValue key and parameters keys
@@ -177,29 +188,6 @@ public class BWSApplet extends Applet {
 	   System.out.println("[BWSApplet.executeScript] got this engine: " + evalEngine);
 	 }
 
-/*     // store script language (=scripting engine) to a final var to
-     // be able to use it in doPrivileged
-     final String scriptingEngine=this.getScriptingEngine(scriptId);
-
-     try {
-       BSFEngine evalEngine = (BSFEngine) AccessController.doPrivileged(new PrivilegedAction() {
-	   public Object run() {
-	   BSFEngine currentEngine;
-
-	   try {
-         // use scriptingEngine var
-         // currentEngine=mgr.loadScriptingEngine("rexx");
-         currentEngine=mgr.loadScriptingEngine(scriptingEngine);
-         System.out.println("[BWSApplet-executeScript] scripting engine loaded successfully");
-         return currentEngine;
-       } catch (Exception e) {
-         System.out.println("[BWSApplet-executeScript] loading engine failed!");
-         e.printStackTrace();
-       }
-       return null;
-     }
-	 });
-*/
 	 // lookup script from the given id
 	 JSNode scriptContainer=getNode(scriptId);
 	 String script=scriptContainer.getInnerHTML();
@@ -208,15 +196,16 @@ public class BWSApplet extends Applet {
 	 System.out.println(script);
 	 System.out.println("[BWSApplet-executeScript] script code end");
 
+	 // get parameters
+     String[] paramArray=currentScriptString.getParameters();
+     Vector argumentVector=evaluateParameters(paramArray);
+
      // execute script
 	 try {
 	   evalEngine.eval("",0,0,script);
 	 } catch (Exception e) {
 	   System.out.println("[BWSApplet-executeScript] exception while trying to execute");
 	 }
- /*     } catch (Exception e) {
-	 	System.out.println("[BWSApplet-executeScript] exception at ?");
-      }*/
    }
 
    /** returns the html/xml node with the specified id
@@ -258,7 +247,7 @@ public class BWSApplet extends Applet {
 
     try {
       BSFEngine evalEngine = (BSFEngine) AccessController.doPrivileged(new PrivilegedAction() {
-      
+
         public Object run() {
           BSFEngine currentEngine;
 
@@ -266,7 +255,7 @@ public class BWSApplet extends Applet {
             currentEngine=mgr.loadScriptingEngine(scriptingEngine);
 		    if (debugLevel>0) {
               System.out.println("[BWSApplet.loadScriptingEngine] scripting engine loaded successfully");
-              System.out.println("[BWSApplet.loadScriptingEngine]   engine: " + currentEngine);
+              System.out.println("[BWSApplet.loadScriptingEngine]  +- engine: " + currentEngine);
             }
             return currentEngine;
           } catch (Exception e) {
@@ -279,7 +268,102 @@ public class BWSApplet extends Applet {
       return evalEngine;
     }  catch (Exception e) {
       System.out.println("[BWSApplet.loadScriptingEngine] exception at ?");
-    }	
+    }
     return null;
+  }
+  
+  private Vector evaluateParameters(String[] paramArray, JSObject thisObject) {
+  	if (debugLevel>1) {
+  	  System.out.println("[BWSApplet.evaluateParameters] just entered evaluateParameters");
+  	}
+
+	if (debugLevel>0) {
+	  System.out.println("[BWSApplet.evaluateParameters] got this DOM object: " + thisObject.toString());
+	}
+
+    Vector paramVector=evaluateParameters(paramArray);
+    
+    // check every element in the Vector if it equals 'this'
+    for (int paramCounter=0;paramCounter<paramVector.size();paramCounter++) {
+      try {
+        String tempString=(String) paramVector.elementAt(paramCounter);
+      
+        if (debugLevel>0) {
+          System.out.println("[BWSApplet.evaluateParameters] got this from the Vector: " + tempString);
+        }
+      
+        if (tempString.equals("this")) {
+          // replace 'this' with the JSObject handed over
+          System.out.println("[BWSApplet.evaluateParameters] found 'this', replacing with: " + thisObject);
+          paramVector.setElementAt(thisObject,paramCounter);
+        }
+      } catch (Exception e) {
+      	System.out.println("[BWSApplet.evaluateParameters] caught an exception, object probably wasn't a String, ignoring object");
+      }
+    }
+    
+    return paramVector;
+  }
+  
+  private Vector evaluateParameters(String[] paramArray) {
+  	if (debugLevel>1) {
+  	  System.out.println("[BWSApplet.evaluateParameters] just entered evaluateParameters");
+  	}
+  	
+  	if (debugLevel>0) {
+  	  System.out.println("[BWSApplet.evaluateParameters] paramArray has #" + paramArray.length + "# Elements");
+  	}
+  	
+  	// create a new vector the size of the current array
+  	Vector paramVector=new Vector(paramArray.length);
+  	
+  	// fill the vector with n nulls
+  	for (int paramCounter=0;paramCounter<paramArray.length;paramCounter++) {
+  	  paramVector.add(null);
+  	}
+  	
+  	for (int paramCounter=0;paramCounter<paramArray.length;paramCounter++) {
+ 	  String currentString=paramArray[paramCounter];
+ 	  
+ 	  if (debugLevel>1) {
+ 	    System.out.println("[BWSApplet.evaluateParameters] current string: " + currentString);
+ 	  }
+ 	  
+ 	  // if the current string is enclosed in quotation marks, strip the quotation marks and use it as String	
+  	  if ((currentString.indexOf("\"")==0) && (currentString.lastIndexOf("\"")==currentString.length())) {
+  	    String paramString=currentString.substring(1,currentString.length()-1);
+  	    System.out.println("[BWSApplet.evaluateParameters] parameter string: " + paramString);
+  	    paramVector.setElementAt(paramString,paramCounter);
+  	  } else {
+  	  	// try to lookup bean in the bsf registry
+  	  	Object tmpObject=(Object)this.mgr.lookupBean(currentString);
+
+        if (debugLevel>0) {
+          System.out.println("[BWSApplet.evaluateParameters] registry object: " + tmpObject);
+        }
+
+		// if the object is != null, put it on the array
+		if (tmpObject!=null) {
+		  if (debugLevel>1) {
+		    System.out.println("[BWSApplet.evaluateParameters] +- object was != null -> Vector");
+		  }
+          paramVector.setElementAt(tmpObject,paramCounter);
+        } else {
+	  	  JSNode tempNode=this.getNode(currentString);
+	  	  
+	  	  // if the string references an existing node, use it
+	  	  if (tempNode.getNode()!=null) {
+	  	    System.out.println("[BWSApplet.evaluateParameters] +- found a JSNode -> Vector");
+	  	    System.out.println("[BWSApplet.evaluateParameters] +- JSNode was: " + tempNode.getNode().toString());
+	  	    paramVector.setElementAt(tempNode,paramCounter);
+	  	  } else {
+	  	    // else use the string
+	  	    paramVector.setElementAt(currentString,paramCounter);
+	  	  }
+  	    }
+  	  }  
+  	}
+  	
+  	return paramVector;
   }
 }

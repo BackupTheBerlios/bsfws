@@ -30,8 +30,7 @@
  ::REQUIRES BSF.CLS
  </script>
 
-<!-- <body onClick="document.getElementById('BWSApplet').executeScript(document.getElementById('rexxscript').innerHTML)"> -->
- <body onClick="document.getElementById('BWSApplet').executeScript('hallo=rexxscript(param1,retVal,retVal2)',document.getElementsByTagName('h1'))">
+ <body onClick="document.getElementById('BWSApplet').executeScript('hallo=rexxscript(param1,SystemOut,this,ueberschrift)',this)">
   <h1 id="ueberschrift">Testing the applet...</h1>
   <applet code="org.tsp.bws.BWSApplet" name="BWSApplet" id="BWSApplet" mayscript="true" width="0" height="0"></applet>
  </body>
