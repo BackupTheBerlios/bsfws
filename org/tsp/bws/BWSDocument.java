@@ -85,7 +85,7 @@ public class BWSDocument {
 	/** list of all bws scripts */
 	private Vector scriptNames=new Vector();
 	/** debug variable, 0=no debug except rewriten code, 1=some messages, 2=more messages */
-    private char debug=1;
+    private char debug=0;
 
 	/** loads a document from an URL and parses it to a dom4j XML document
 	 *
@@ -110,7 +110,8 @@ public class BWSDocument {
 	/** prints the current document to the console via the dom4j XMLWriter */
 	public void printDocumentSource() {
 		// use pretty printing
-		OutputFormat outformat = OutputFormat.createPrettyPrint();
+		OutputFormat outformat=new OutputFormat();// = OutputFormat.createPrettyPrint();
+//		outformat.setEnconding();
 		// use standard encoding, else: outformat.setEncoding(String encodingScheme)
 		try {
 			XMLWriter writer = new XMLWriter(System.out);
@@ -122,6 +123,11 @@ public class BWSDocument {
 			System.out.println("[Error] Exception printing the document, wrong encoding scheme?");
 			e.printStackTrace();
 		}
+	}
+
+	/** returns the complete document as a string */
+	public String getDocument() {
+	  return xmlDocument.asXML();
 	}
 
 	/** prints the names and ids of all scripts found in the document */
@@ -167,40 +173,29 @@ public class BWSDocument {
 
 	/** prints (ATM) the names of all elements with an given attribute value
 	 *
-	 * @param attributeValue value that the desired attributes should be
+	 * @param attributeValue the id of the script that is searched for
 	 */
 	public void getAttributeElement(String attributeValue) {
-		XPath xpathSelector = DocumentHelper.createXPath("//*[@*='#:" + attributeValue + "'] | //*[@*='bws:" + attributeValue + "']");
-
-		// XPath-Ausdruck: //*[@*='#:scriptid'] | //*[@*='bws:scriptid']
+        XPath xpathSelector = DocumentHelper.createXPath("//@*");
 
 		List results = xpathSelector.selectNodes(xmlDocument);
 		List elementAttributes;
 
-		Element curElement;
 		Attribute curAttribute;
-		String tempString;
 
-		for (Iterator elementIterator=results.iterator();elementIterator.hasNext();) {
-			curElement = (Element)elementIterator.next();
-			elementAttributes=curElement.attributes();
-			if (debug>0) {
-			  System.out.println("Element found, name: " + curElement.getName());
-			}
-			// curElement.setName("foundElement" + curElement.getName());
-			for (Iterator attributeIterator=elementAttributes.iterator();attributeIterator.hasNext();) {
-				curAttribute=(Attribute)attributeIterator.next();
-				if (debug>0) {
-				  System.out.println(attributeValue + "-" + curAttribute.getValue() + "-" + curAttribute.getValue().equals("#:" + attributeValue));
-				}
-				if ((curAttribute.getValue().equals("#:" + attributeValue)) || (curAttribute.getValue().equals("bws:" + attributeValue))) {
-					if (debug>0) {
-					  System.out.println("--> " + curAttribute.getValue());
-					}
-					curAttribute.setValue("javascript:bwsexec(" + attributeValue + ")");
-				}
-			}
+		for (Iterator attributeIterator=results.iterator();attributeIterator.hasNext();) {
+		  curAttribute = (Attribute)attributeIterator.next();
+		  if (debug>0) {
+		    System.out.println(attributeValue + "-" + curAttribute.getValue() + "-" + curAttribute.getValue().equals("#:" + attributeValue));
+		  }
+		  if ((curAttribute.getValue().startsWith("bws:") || curAttribute.getValue().startsWith("#:")) && 	       curAttribute.getValue().indexOf(attributeValue)>0) {
+			//curAttribute.setValue("document.getElementById('BWSApplet').executeScript('" + attributeValue + "',this)");
+			//System.out.println("#:"  + curAttribute.getValue().indexOf(":"));
+		    curAttribute.setValue("document.getElementById('BWSApplet').executeScript('" + curAttribute.getValue().substring(curAttribute.getValue().indexOf(":")+1) + "',this)");
+		    //curAttribute.setValue("javascript:bwsexec(" + attributeValue + ")");
+		  }
 		}
+
 	}
 
 	/** rewrites all script calls of the form #:script_id and bws:script_id to the corresponding javascript/
@@ -213,5 +208,36 @@ public class BWSDocument {
 			curName=(String)scriptNames.elementAt(scriptCounter);
 			getAttributeElement(curName);
 		}
+	}
+
+	/** inserts the <tt>applet</tt> tag */
+	public void appendApplet() {
+	  XPath xpathSelector = DocumentHelper.createXPath("/html/body");
+      List results = xpathSelector.selectNodes(xmlDocument);
+
+	  // body should only occur once per document!
+	  if (results.size()>1) {
+	  	System.err.println("[BWSDocument.appendApplet] Warning! More than one <body> found, using the first!");
+	  }
+	  // use the first element returned
+	  Element bodyElement=(Element)results.get(0);
+	  bodyElement.addElement("applet2")
+	    .addAttribute("code","org.tsp.bws.BWSApplet")
+	    .addAttribute("id","BWSApplet")
+	    .addAttribute("width","0")
+	    .addAttribute("height","0")
+	    .addAttribute("mayscript","true");
+
+
+	}
+	
+	/** rewrite the complete document and append the applet. Equivalent to
+	 * <tt>getScriptNames()</tt>, <tt>rewriteScriptCalls()</tt> and
+	 * <tt>appendApplet()</tt>.
+	 */
+	public void rewriteDocument() {
+	  this.getScriptNames();
+	  this.rewriteScriptCalls();
+	  this.appendApplet();
 	}
 }
