@@ -1,7 +1,6 @@
-<html id="the_document">
+<html>
 <head>
 <title>BSFInterfaceExamples.html</title>
-</head>
 
 <!--
 
@@ -16,48 +15,28 @@ the .innerHTML property that is necessary to handle the script code doesn't work
 </script>
 
 <script type="x-bsf/x-rexx" language="rexx" id="hello_world">
-SAY "REXX IS RUNNING"
-
-SAY .ENVIRONMENT
-
-a="BSF"
-SAY a rxfuncquery(a)
-
-if rxfuncquery(a) then
-do 
-   call rxFuncAdd "BsfLoadFuncs", "BSF4Rexx", "BsfLoadFuncs"
-   call BsfLoadFuncs
-   call BsfLoadJava
-   SAY "BsfLoadJava <<----------------<<------"
-end
-
 theApplet=BSF('lookupBean','AppletObj')
-theSystemOutObject=BSF('lookupBean','SystemOut')
-SAY "theApplet="theApplet "theSystemOutObject="theSystemOutObject
 
-
-CALL BSF 'invoke',theSystemOutObject,'println','St','==> Rexx2Java communication working'
-
---CALL BSF 'invoke',theApplet,'setValue','St','eingabe','St','hello world'
---CALL BSF 'invoke',theApplet,'setValue','St','ausgabe','St','hello world'
+CALL BSF 'invoke',theApplet,'setValue','eingabe','hello world'
+CALL BSF 'invoke',theApplet,'setValue','ausgabe','hello world'
 
 </script>
 
 <script type="x-bsf/x-rexx" language="rexx" id="reverse_string">
 theApplet=BSF('lookupBean','AppletObj')
 
-meinString=BSF('invoke',theApplet,'getValue','St','eingabe')
-BSF('invoke',theApplet,'setValue','St','ausgabe','St',meinString~reverse)
+meinString=BSF('invoke',theApplet,'getValue','eingabe')
+BSF('invoke',theApplet,'setValue','ausgabe',meinString~reverse)
 </script>
 
 <script type="x-bsf/x-rexx" language="rexx" id="change_style">
 theApplet=BSF('lookupBean','AppletObj')
 
-stylestring2=BSF('invoke',theApplet,'getValue','St','eingabe')
+stylestring2=BSF('invoke',theApplet,'getValue','eingabe')
 stylestring="background-color:" || stylestring2 || ";"
 
-BSF('invoke',theApplet,'setValue','St','ausgabe','St',stylestring)
-BSF('invoke',theApplet,'setParamNode','St','the_body','St','style','St',stylestring)
+BSF('invoke',theApplet,'setValue','ausgabe',stylestring)
+BSF('invoke',theApplet,'setParamNode','the_body','style',stylestring)
 </script>
 
 <script type="x-bsf/x-rexx" language="rexx" id="parse_file">
@@ -66,7 +45,7 @@ theApplet=BSF('lookupBean','AppletObj')
 compText="<pre>"
 
 count=0                     /* Initialize a counter                */
-file=.stream~new(BSF('invoke',theApplet,'getValue','St','eingabe'))      /* Create a stream object for the file */
+file=.stream~new(BSF('invoke',theApplet,'getValue','eingabe'))      /* Create a stream object for the file */
 do while file~lines<>0      /* Loop as long as there are lines     */
   text=file~linein          /* Read a line from the file           */
   compText=compText text d2c(10)
@@ -75,11 +54,12 @@ end
 
 compText=compText "</pre>"
 
-call BSF 'invoke',theApplet,'setValue','St','ausgabe','St',count
-call BSF 'invoke',theApplet,'setParam','St','codearea','St','innerHTML','St',compText
+call BSF 'invoke',theApplet,'setValue','ausgabe',count
+call BSF 'invoke',theApplet,'setParam','codearea','innerHTML',compText
 </script>
+</head>
 
-<body id="the_body" onload="javascript:initBSFWS()">
+<body onload="javascript:initBSFWS()">
 
 <h1 id="heading">BSFInterface Examples</h1>
 
