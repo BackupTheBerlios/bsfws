@@ -132,21 +132,31 @@ public class BWSApplet extends Applet {
       // going to an inner class, all variables that shall be accessible
       // must be declared final
 
-      // script string will have to be parsed to enable use of arguments
-      String scriptId=this.parseScriptString(scriptString);
-      
+       // create a ScriptString
+       ScriptString currentScriptString=new ScriptString(scriptString);
+       
+       // obtain script id from the script string
+       String scriptId=currentScriptString.getScriptId();
+
+      // store script language (=scripting engine) to a final var to
+      // be able to use it in doPrivileged
+      final String scriptingEngine=this.getScriptingEngine(scriptId);
+
       try {
 	 BSFEngine evalEngine = (BSFEngine) AccessController.doPrivileged(new PrivilegedAction() {
 	    public Object run() {
 	       BSFEngine currentEngine;
 	       
 	       try {
-		  currentEngine=mgr.loadScriptingEngine("rexx");
-		  System.out.println("[BWSApplet-executeScript] scripting engine loaded successfully");
-		  return currentEngine;
+
+		   // use scriptingEngine var
+		   // currentEngine=mgr.loadScriptingEngine("rexx");
+		   currentEngine=mgr.loadScriptingEngine(scriptingEngine);
+		   System.out.println("[BWSApplet-executeScript] scripting engine loaded successfully");
+		   return currentEngine;
 	       } catch (Exception e) {
-		  System.out.println("[BWSApplet-executeScript] loading engine failed!");
-		  e.printStackTrace();
+		   System.out.println("[BWSApplet-executeScript] loading engine failed!");
+		   e.printStackTrace();
 	       }
 	       return null;
 	    }
@@ -179,11 +189,24 @@ public class BWSApplet extends Applet {
       JSNode tmpJSNode=new JSNode(jsWindow,nodeId);
       return tmpJSNode;
    }
-   
-   /** reades the scriptId from a passed scriptString
-    * @scriptString the string containing the scriptString sent via LiveConnect
-    */
-   public String parseScriptString(String scriptString) {
-      return scriptString;
-   }
+
+    /* THIS METHOD IS NOT USED ANY MORE BUT EXTERNALISED TO ScriptString CLASS
+     * WILL BE DELETED ON NEXT REVISION
+     */
+    public String parseScriptString(String scriptString) {
+	return "Hallo";
+    }
+
+    /** reades the type attribute of the script and parses it for the scripting engine 
+     * @scriptId id of the script tag
+     */
+    public String getScriptingEngine(String scriptId) {
+	JSNode tmpJSNode=new JSNode(jsWindow,scriptId);
+	String typeString=tmpJSNode.getAttribute("type");
+
+	
+
+	// get the relevant substring from the typestring
+	return typeString;
+    }
 }
