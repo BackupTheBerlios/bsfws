@@ -2,7 +2,7 @@
 ** Class BWSDocument.java
 ** 2003-11-24 by Tobias Specht
 *******************************************************************************
-** This class represents a BWS-XHTML document for parsing and rewriting 
+** This class represents a BWS-XHTML document for parsing and rewriting
 ** purpose. It provides methods to read an BWS conform XHTML document from
 ** an URL and rewrite it as an standard JavaScript XHTML document that can
 ** be interpreted by a standard compliant web browser. It uses dom4j for
@@ -16,11 +16,11 @@
 ** V0.1   @ 2003-11-24
 **
 *******************************************************************************
- * 
+ *
  * - rewriting code must be changed to enable argument passing, cf. bws wiki
  *   http://openfacts.berlios.de/index-en.phtml?title=BSFWebScripting
  * - allow printing only the final xml document (for redirection)
- * 
+ *
 *******************************************************************************
 **
 ** Licencing Information
@@ -84,6 +84,8 @@ public class BWSDocument {
 	private Document xmlDocument;
 	/** list of all bws scripts */
 	private Vector scriptNames=new Vector();
+	/** debug variable, 0=no debug except rewriten code, 1=some messages, 2=more messages */
+    private char debug=1;
 
 	/** loads a document from an URL and parses it to a dom4j XML document
 	 *
@@ -96,9 +98,11 @@ public class BWSDocument {
 			documentURL=new URL(documentURLString);
 			SAXReader xmlReader = new SAXReader();
 			this.xmlDocument = xmlReader.read(documentURL);
-			System.out.println(xmlDocument.toString());
+			if (debug>1) {
+			  System.out.println(xmlDocument.toString());
+			}
 		} catch (Exception e) {
-			System.out.println("[Error] Exception creating URL, probably malformed URL");
+            System.err.println("[Error] Exception creating URL, probably malformed URL");
 			e.printStackTrace();
 		}
 	}
@@ -132,8 +136,10 @@ public class BWSDocument {
 
 		for (Iterator elementIterator=results.iterator();elementIterator.hasNext();) {
 			curElement = (Element)elementIterator.next();
-			System.out.println("Element found");
-			System.out.println(" Name: " + curElement.getName());
+			if (debug>0) {
+              System.out.println("Element found");
+              System.out.println(" Name: " + curElement.getName());
+            }
 			try {
 				tempAttribute=curElement.attribute("id");
 				tempString=tempAttribute.getValue();
@@ -145,7 +151,9 @@ public class BWSDocument {
 					System.out.println("[Error] Script without id or name");
 				}
 			}
-			System.out.println("  " + tempString);
+			if (debug>1) {
+			  System.out.println("  " + tempString);
+			}
 			scriptNames.addElement((Object)tempString);
 		}
 	}
@@ -176,13 +184,19 @@ public class BWSDocument {
 		for (Iterator elementIterator=results.iterator();elementIterator.hasNext();) {
 			curElement = (Element)elementIterator.next();
 			elementAttributes=curElement.attributes();
-			System.out.println("Element found, name: " + curElement.getName());
+			if (debug>0) {
+			  System.out.println("Element found, name: " + curElement.getName());
+			}
 			// curElement.setName("foundElement" + curElement.getName());
 			for (Iterator attributeIterator=elementAttributes.iterator();attributeIterator.hasNext();) {
 				curAttribute=(Attribute)attributeIterator.next();
-				System.out.println(attributeValue + "-" + curAttribute.getValue() + "-" + curAttribute.getValue().equals("#:" + attributeValue));
+				if (debug>0) {
+				  System.out.println(attributeValue + "-" + curAttribute.getValue() + "-" + curAttribute.getValue().equals("#:" + attributeValue));
+				}
 				if ((curAttribute.getValue().equals("#:" + attributeValue)) || (curAttribute.getValue().equals("bws:" + attributeValue))) {
-					System.out.println("--> " + curAttribute.getValue());
+					if (debug>0) {
+					  System.out.println("--> " + curAttribute.getValue());
+					}
 					curAttribute.setValue("javascript:bwsexec(" + attributeValue + ")");
 				}
 			}
