@@ -78,6 +78,10 @@
 ** V0.53	@ 2003-06-21
 **		-	fixed a major bug in executeScript() that broke BWS
 **		-	is 1.0RC2
+** V0.6		@ 2003-06-25
+**		-	scripts can now be called from the initBSFWS function
+**			by passing the script name as initBSFWS parameter
+**			e.g. initBSFWS("hello_world");
 **
 *******************************************************************************
 **
@@ -135,9 +139,9 @@
 var tempArray;
 tempArray=new Array();
 var browserType=null;
-var theBWSApplet=null;
+var theBWSApplet;
 
-function initBSFWS() {
+function initBSFWS(execThisScript) {
   	theBWSApplet=document.getElementById("bsfWSInterfaceApplet");
 
         // determine used browser:
@@ -188,13 +192,7 @@ function initBSFWS() {
                 code=code.replace(endObjectRegExp,'<param name="code" value="bsfWSInterfaceApplet.class"><param name="mayscript" value="true"><param name="scriptable" value="true"></object>');
         }
 
-// ---rgf        document.getElementById('the_body').innerHTML=code;
-        // showTags();
-
         document.getElementsByTagName('body')[0].innerHTML=code;    // ---rgf, 2003-05-03
-
-        // alert("now body got changed...");
-        // showTags();
 
 /*
  *        var oldNode=document.getElementsByTagName('body')[0];
@@ -210,6 +208,11 @@ function initBSFWS() {
 //        window.setTimeout("eval(initBSF())", 3000);
 
         initBSF();
+
+	if (execThisScript!="") {
+		alert("Trying to exec " + execThisScript);
+		callBSF(execThisScript);
+	}
 }
 
 function initBSF() {
