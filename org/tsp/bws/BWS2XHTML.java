@@ -2,10 +2,10 @@
  * Class BWS2XTHML.java
  * 2003-12-27 by Tobias Specht
  ******************************************************************************
- * A small application that reades a BWS-XHTML document from an URL and 
+ * A small application that reades a BWS-XHTML document from an URL and
  * rewrites it to a browser-interpretable XHTML document. Uses BWSDocument.
  * Prints final document to the standard output
- * 
+ *
  * Invokation: java BWSRewriter URLToRewrite
  *       e.g.: java BWSRewriter http://some.server.com/document.xhtml
  ******************************************************************************
@@ -18,7 +18,7 @@
 *******************************************************************************
  *
  * - Add option to write output directly to a file
- * 
+ *
  ******************************************************************************
  *
  * Licencing Information
@@ -69,22 +69,26 @@ public class BWS2XHTML {
      * (optional) specifies to which file the output shall be written
      */
     public static void main(String args[]) {
-	BWSDocument docToRewrite=new BWSDocument();
-	
+	  char debug=0;
+	  BWSDocument docToRewrite=new BWSDocument();
+	  
+
 	try {
 	    docToRewrite.readDocumentFromURL(args[0]);
 	    // write to standard error
-	    System.out.println(docToRewrite.toString());
+	    if (debug>0) {
+	      System.err.println(docToRewrite.toString());
+	    }
 	} catch (Exception e) {
 	    // write to standard error
 	    System.out.println("[Error] Exception while building document");
 	}
 	docToRewrite.getScriptNames();
 	docToRewrite.rewriteScriptCalls();
-	
+
 	// if a second parameter is given, write the output to a file
 	// with the given name
-	if (args[1]!=null) {
+	if (args.length>1) {
 	    String fileName=args[1];
 	    // open file and write (not implementet)
 	} else {
