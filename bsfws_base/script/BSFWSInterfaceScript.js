@@ -42,6 +42,11 @@
 **		-	created new global variable tempArray to enable passing
 **			of arrays between functions possible on IE, rewrote
 **			array passing accordingly
+** V0.32	@ 2002-02-03
+**		-	modified initBSFWS, now script handlers for all 
+**			languages found by getLanguages are installed (all 
+**			scripts are passed to the rexx engine at the moment,
+**			this will be changed soon)
 **
 *******************************************************************************
 **
@@ -105,12 +110,25 @@ tempArray=new Array();
 function initBSFWS() {
 	code=document.getElementById('the_body').innerHTML;
 
+	// getUsedLanguages
 	usedLanguages=new Array();
 	getLanguages();
 	usedLanguages=tempArray;
 
+	// get script references
 	scriptReferencesMultiple=new Array();
-	scriptReferencesMultiple=code.match(/"rexx:\w+"/g);
+	scriptReferencesCurrent=new Array();
+
+	// for each language
+	for (getReferencesCounter=0;getReferencesCounter<usedLanguages.length;getReferencesCounter++) {
+		tempRegExString = '"' + usedLanguages[getReferencesCounter] + ':\\w+"';
+		tempRegEx=new RegExp(tempRegExString,"g");
+		// get script references from code
+		scriptReferencesCurrent=code.match(tempRegEx);
+		if (scriptReferencesCurrent!=null) {
+			scriptReferencesMultiple=scriptReferencesMultiple.concat(scriptReferencesCurrent);
+		}
+	}
 
 	// remove duplicates from script references
 	tempArray=scriptReferencesMultiple;
