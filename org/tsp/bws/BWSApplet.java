@@ -153,15 +153,57 @@ public class BWSApplet extends Applet {
 	String[] paramArray=currentScriptString.getParameters();
 
 	Vector argumentVector=evaluateParameters(paramArray,domObject);
-/*	// check for 'this'
-	for (int paramCounter=0;paramCounter<paramArray.length;paramCounter++) {
-		
-      		
-	}*/
 
-	 // execute script
-	 try {
-	    evalEngine.eval("",0,0,script);
+	// parameters must be accessible in scripts under know references
+	// to keep scriptcalls easy (parameter nameing unnecessary)
+	// these names are predefined as argument+number, eg. argument1, argument2, ...
+	// starting with argument0
+	Vector namesVector=new Vector();
+	
+	int nrOfArguments=argumentVector.size();
+    for (int argumentCounter=0;argumentCounter<nrOfArguments;argumentCounter++) {
+      String nextArgumentName="argument" + String.valueOf(argumentCounter);
+      if (debugLevel>1) {
+      	System.out.println("[BWSApplet.executeScript] names vector gets this string: " + nextArgumentName);
+      }
+      namesVector.add(nextArgumentName);
+    }
+
+    // the return value of the apply function will be stored to the bsf registry
+    // under the key specified in the ScriptString
+    // get this return value key from ScriptString:
+	String returnKey=currentScriptString.getRetKey();
+      
+	// execute script
+	try {
+	  // for parameter use and returning values, use apply()
+	  // retVal=evalEngine.apply()
+	  /* method prototype for apply()
+	   * public Object apply(String source,
+       *                     int lineNo,
+       *                     int columnNo,
+       *                     Object funcBody,
+       *                     Vector namesVec,
+       *                     Vector argsVec)
+       *    throws org.apache.bsf.BSFException
+       * 
+       * script code must be in 'funcBody'
+       * namesVec contains the names of the arguments passed
+       * argsVec contains the values
+       */
+	   
+	   // the script is executed, return value referenced by applyReturnedObject
+	   Object applyReturnedObject=evalEngine.apply("",0,0,script,namesVector,argumentVector);
+	   
+	   if (debugLevel>0) {
+	   	 System.out.println("[BWSApplet.executeScript] apply returned the following object: " + applyReturnedObject);
+	   }
+	   
+	   // the returned object now gets referenced in the bsf registry be the specified
+	   // key (returnKey) (from where it is accessible by any bsf script)
+	   if (applyReturnedObject!=null) {
+	     mgr.registerBean(returnKey,applyReturnedObject);
+	   }
 	 } catch (Exception e) {
 	    System.out.println("[BWSApplet-executeScript] exception while trying to execute");
 	 }
@@ -216,13 +258,6 @@ public class BWSApplet extends Applet {
       return tmpJSNode;
    }
 
-    /* THIS METHOD IS NOT USED ANY MORE BUT EXTERNALISED TO ScriptString CLASS
-     * WILL BE DELETED ON NEXT REVISION
-     */
-    public String parseScriptString(String scriptString) {
-	return "Hallo";
-    }
-
     /** reades the type attribute of the script and parses it for the scripting engine
      * @scriptId id of the script tag
      */
@@ -271,7 +306,7 @@ public class BWSApplet extends Applet {
     }
     return null;
   }
-  
+
   private Vector evaluateParameters(String[] paramArray, JSObject thisObject) {
   	if (debugLevel>1) {
   	  System.out.println("[BWSApplet.evaluateParameters] just entered evaluateParameters");
@@ -282,16 +317,16 @@ public class BWSApplet extends Applet {
 	}
 
     Vector paramVector=evaluateParameters(paramArray);
-    
+
     // check every element in the Vector if it equals 'this'
     for (int paramCounter=0;paramCounter<paramVector.size();paramCounter++) {
       try {
         String tempString=(String) paramVector.elementAt(paramCounter);
-      
+
         if (debugLevel>0) {
           System.out.println("[BWSApplet.evaluateParameters] got this from the Vector: " + tempString);
         }
-      
+
         if (tempString.equals("this")) {
           // replace 'this' with the JSObject handed over
           System.out.println("[BWSApplet.evaluateParameters] found 'this', replacing with: " + thisObject);
@@ -301,35 +336,35 @@ public class BWSApplet extends Applet {
       	System.out.println("[BWSApplet.evaluateParameters] caught an exception, object probably wasn't a String, ignoring object");
       }
     }
-    
+
     return paramVector;
   }
-  
+
   private Vector evaluateParameters(String[] paramArray) {
   	if (debugLevel>1) {
   	  System.out.println("[BWSApplet.evaluateParameters] just entered evaluateParameters");
   	}
-  	
+
   	if (debugLevel>0) {
   	  System.out.println("[BWSApplet.evaluateParameters] paramArray has #" + paramArray.length + "# Elements");
   	}
-  	
+
   	// create a new vector the size of the current array
   	Vector paramVector=new Vector(paramArray.length);
-  	
+
   	// fill the vector with n nulls
   	for (int paramCounter=0;paramCounter<paramArray.length;paramCounter++) {
   	  paramVector.add(null);
   	}
-  	
+
   	for (int paramCounter=0;paramCounter<paramArray.length;paramCounter++) {
  	  String currentString=paramArray[paramCounter];
- 	  
+
  	  if (debugLevel>1) {
  	    System.out.println("[BWSApplet.evaluateParameters] current string: " + currentString);
  	  }
- 	  
- 	  // if the current string is enclosed in quotation marks, strip the quotation marks and use it as String	
+
+ 	  // if the current string is enclosed in quotation marks, strip the quotation marks and use it as String
   	  if ((currentString.indexOf("\"")==0) && (currentString.lastIndexOf("\"")==currentString.length())) {
   	    String paramString=currentString.substring(1,currentString.length()-1);
   	    System.out.println("[BWSApplet.evaluateParameters] parameter string: " + paramString);
@@ -350,7 +385,7 @@ public class BWSApplet extends Applet {
           paramVector.setElementAt(tmpObject,paramCounter);
         } else {
 	  	  JSNode tempNode=this.getNode(currentString);
-	  	  
+
 	  	  // if the string references an existing node, use it
 	  	  if (tempNode.getNode()!=null) {
 	  	    System.out.println("[BWSApplet.evaluateParameters] +- found a JSNode -> Vector");
@@ -361,9 +396,9 @@ public class BWSApplet extends Applet {
 	  	    paramVector.setElementAt(currentString,paramCounter);
 	  	  }
   	    }
-  	  }  
+  	  }
   	}
-  	
+
   	return paramVector;
   }
 }
