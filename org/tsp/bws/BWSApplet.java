@@ -142,81 +142,12 @@ public class BWSApplet extends Applet {
 	 // load the scripting engine
 	 BSFEngine evalEngine=this.loadScriptingEngine(scriptId);
 
-	 // lookup script from the given id
+	 // lookup script tag from the given id
 	 JSNode scriptContainer=getNode(scriptId);
 
-	 String script;
+	 // read the script code from the container
+	 String script=this.getScript(scriptContainer);
 	 
-	 // check if the script has got an source (src="") attribute
-	 // if a src attribute is given, the content of the script tag
-	 // is ignored
-
-	 if (!((scriptContainer.getAttribute("src")==null) || ("".equals(scriptContainer.getAttribute("src"))))) {
-	   String scriptSrc=scriptContainer.getAttribute("src");
-	   if (debugLevel>1) {
-	     System.out.println("[BWSApplet.executeScript] code source is: " + scriptSrc);
-	   }
-	
-	   // if the scriptSrc contains a ':', it is treated as an absolute path to the document
-	   //  Note: permissions must be set to allow the applet access to any directory not lying
-	   //        under the appletCodeBase directory!
-	   // else the url is treated as relative
-	   String urlString;
-	   if (scriptSrc.indexOf(":")==-1) {
-		 String appletCodeBase=this.getCodeBase().toString();
-  	     System.out.println("[BWSApplet.executeScript] code base is: " + appletCodeBase);
-  	     urlString=appletCodeBase + scriptSrc;
-  	   } else {
-  	     urlString=scriptSrc;
-  	   }
-  	   
-  	   URL scriptCodeURL=null;
-  	   
-  	   try {
-  	     scriptCodeURL=new URL(urlString);
-  	   } catch (java.net.MalformedURLException e) {
-  	   	 System.out.println("[BWSApplet.executeScript] MalformedURLException, stack trace:");
-  	   	 e.printStackTrace();
-  	   	 script="";
-  	   } 
-  	   
-       if (debugLevel>0) {  	   
-	     System.out.println("[BWSApplet.executeScript] code url is: " + urlString);
-	     System.out.println("[BWSApplet.executeScript] created URL: " + scriptCodeURL);
-	   }
-	   
-	   Object tempScriptObject=null;
-
-	   try {
-	     tempScriptObject=scriptCodeURL.getContent();
-	    	   
-	     if (tempScriptObject instanceof java.io.InputStream) {
-	       // convert to InputStream
-	       java.io.InputStream tempScriptInputStream=(java.io.InputStream)tempScriptObject;
-	       // see how many bytes are available
-	       int availableBytes=tempScriptInputStream.available();
-	     
-	       // create an according byte[]
-	       byte[] urlContent=new byte[availableBytes];
-	     
-	       // read content
-	       tempScriptInputStream.read(urlContent);
-	     
-	       // convert to a String
-	       script=new String(urlContent);
-	     } else {
-	   	   System.out.println("[BWSApplet.executeScript] referenced object was not a string! It was: " + tempScriptObject);
-	   	   script="";
-	     }
-       } catch (java.io.IOException e) { 
-         System.out.println("[BWSApplet.executeScript] IOException, stack trace:");
-         e.printStackTrace();
-         script="";
-       }
-   	 } else {
-	   script=scriptContainer.getInnerHTML();
-     }
-     
 	 if (debugLevel>0) {
 	   System.out.println("[BWSApplet.executeScript] script code");
 	   System.out.println(script);
@@ -491,5 +422,82 @@ public class BWSApplet extends Applet {
   	}
 
   	return paramVector;
+  }
+  
+  private String getScript(JSNode scriptContainer) {
+     String script;
+     
+	 // check if the script has got an source (src="") attribute
+	 // if a src attribute is given, the content of the script tag
+	 // is ignored
+
+	 if (!((scriptContainer.getAttribute("src")==null) || ("".equals(scriptContainer.getAttribute("src"))))) {
+
+	   String scriptSrc=scriptContainer.getAttribute("src");
+	   if (debugLevel>1) {
+	     System.out.println("[BWSApplet.getScript] code source is: " + scriptSrc);
+	   }
+	
+	   // if the scriptSrc contains a ':', it is treated as an absolute path to the document
+	   //  Note: permissions must be set to allow the applet access to any directory not lying
+	   //        under the appletCodeBase directory!
+	   // else the url is treated as relative
+	   String urlString;
+	   if (scriptSrc.indexOf(":")==-1) {
+		 String appletCodeBase=this.getCodeBase().toString();
+  	     System.out.println("[BWSApplet.getScript] code base is: " + appletCodeBase);
+  	     urlString=appletCodeBase + scriptSrc;
+  	   } else {
+  	     urlString=scriptSrc;
+  	   }
+  	   
+  	   URL scriptCodeURL=null;
+  	   
+  	   try {
+  	     scriptCodeURL=new URL(urlString);
+  	   } catch (java.net.MalformedURLException e) {
+  	   	 System.out.println("[BWSApplet.getScript] MalformedURLException, stack trace:");
+  	   	 e.printStackTrace();
+  	   	 script="";
+  	   } 
+  	   
+       if (debugLevel>0) {  	   
+	     System.out.println("[BWSApplet.getScript] code url is: " + urlString);
+	     System.out.println("[BWSApplet.getScript] created URL: " + scriptCodeURL);
+	   }
+	   
+	   Object tempScriptObject=null;
+
+	   try {
+	     tempScriptObject=scriptCodeURL.getContent();
+	    	   
+	     if (tempScriptObject instanceof java.io.InputStream) {
+	       // convert to InputStream
+	       java.io.InputStream tempScriptInputStream=(java.io.InputStream)tempScriptObject;
+	       // see how many bytes are available
+	       int availableBytes=tempScriptInputStream.available();
+	     
+	       // create an according byte[]
+	       byte[] urlContent=new byte[availableBytes];
+	     
+	       // read content
+	       tempScriptInputStream.read(urlContent);
+	     
+	       // convert to a String
+	       script=new String(urlContent);
+	     } else {
+	   	   System.out.println("[BWSApplet.getScript] referenced object was not a string! It was: " + tempScriptObject);
+	   	   script="";
+	     }
+       } catch (java.io.IOException e) { 
+         System.out.println("[BWSApplet.getScript] IOException, stack trace:");
+         e.printStackTrace();
+         script="";
+       }
+   	 } else {
+	   script=scriptContainer.getInnerHTML();
+     }
+     
+     return script;
   }
 }
