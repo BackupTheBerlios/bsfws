@@ -10,7 +10,56 @@ The starting point of a BWS compliant document is a standard well-formed HTML do
 
 \item Attributes must have exactly one value, empty attributes that are allowed in standard HTML, e.g. the \ttfamily{mayscript} attribute of objects must be given as \ttfamily{<object mayscript="true" />}, not only \ttfamily{<object mayscript>}, all attributes must be enclosed in quotes.
 
+\item The document must have exactly one root element, i.e. a construction \ttfamily{<html><!-- htmlcode --></html><somethingElse></somethingElse>} is not allowed. 
+
+%example in figure? multiline?
+
 \end{itemize}
+
+Any document conforming to these requirements can be used as a BWS document and extended with BWS scripts; generally, an XHTML compliant document will work. For an example an incorrect document as well as a corrected version of this document (changes are emphasized), see figure \ref{fig:xhtmlDocumentExample}. 
+
+\begin{figure}
+\label{fig:xhtmlDocumentExample}
+
+%preformated
+
+<html>
+<head>
+<Title>An incorrect document</title>
+</head>
+
+<body>
+<h1>This is a heading<H1>
+<div>This is <em>the first part</div></em>
+<p>A new paragraph.
+<p>And another one.<br>
+The last one ended with a linebreak.
+</body>
+
+</html>
+
+The incorrect document.
+
+
+<html>
+<head>
+<_t_itle>An incorrect document</title>
+</head>
+
+<body>
+<h1>This is a heading<_H_1>
+<div style=_"_fontFamily:Verdana_"_>This is <em>the first part_</em></div>_
+<p>A new paragraph._</p>_
+<p>And another one._</p><br >_
+The last one ended with a linebreak.
+</body>
+
+</html>
+
+A corrected version.
+
+
+\end{figure}
 
 %references http://www.intelligenteai.com/XMLRepository/well_formed_xml_document.htm
 %			http://www.w3.org/TR/2000/REC-xml-20001006#sec-well-formed
