@@ -192,7 +192,7 @@ public class BWSApplet extends Applet {
     // get this return value key from ScriptString:
 	String returnKey=currentScriptString.getRetKey();
 
-	Object applyReturnedObject;
+	Object applyReturnedObject=null;
 
 	// execute script
 	try {
@@ -213,7 +213,28 @@ public class BWSApplet extends Applet {
        */
 
 	   // the script is executed, return value referenced by applyReturnedObject
-	   applyReturnedObject=evalEngine.apply("",0,0,script,namesVector,argumentVector);
+
+       final String finalScript=script;
+       final Vector finalNamesVector=namesVector;
+       final Vector finalArgumentVector=argumentVector;
+       final BSFEngine finalEvalEngine=evalEngine;
+
+       try {
+         applyReturnedObject = AccessController.doPrivileged(new PrivilegedAction() {
+           public Object run() {
+             Object applyReturnedObjectInner = new Object();
+             try {
+               applyReturnedObjectInner=finalEvalEngine.apply("",0,0,finalScript,finalNamesVector,finalArgumentVector);
+             } catch (Exception e) {
+               System.out.println("[BWSApplet.executeScript] Uups! Something went wrong during apply!");
+ //              System.out.println("[BWSApplet.executeScript] Stack trace: " + e.printStackTrace());
+             }
+             return applyReturnedObjectInner;
+           }
+         });
+       } catch (Exception e) {
+         System.out.println("[BWSApplet.executeScript] exception at ?");
+       }
 
 	   if (debugLevel>0) {
 	   	 System.out.println("[BWSApplet.executeScript] apply returned the following object: " + applyReturnedObject);
@@ -301,7 +322,7 @@ public class BWSApplet extends Applet {
           BSFEngine currentEngine;
 
           try {
-              currentEngine=mgr.loadScriptingEngine(scriptingEngine); 
+              currentEngine=mgr.loadScriptingEngine(scriptingEngine);
 //            currentEngine=newBSFManager.loadScriptingEngine(scriptingEngine);
 		    if (debugLevel>0) {
               System.out.println("[BWSApplet.loadScriptingEngine] scripting engine loaded successfully");
@@ -405,6 +426,7 @@ public class BWSApplet extends Applet {
 	  	  if (tempNode.getNode()!=null) {
 	  	    System.out.println("[BWSApplet.evaluateParameters] +- found a JSNode -> Vector");
 	  	    System.out.println("[BWSApplet.evaluateParameters] +- JSNode was: " + tempNode.getNode().toString());
+	  	    System.out.println("[BWSApplet.evaluateParameters] +- JSNode id: " + tempNode.getAttribute("id"));
 	  	    paramVector.setElementAt(tempNode,paramCounter);
 	  	  } else {
 	  	    // else use the string
@@ -492,7 +514,18 @@ public class BWSApplet extends Applet {
          script="";
        }
    	 } else {
-	   script=scriptContainer.getInnerHTML();
+   	   // using innerHTML, does not work with all browsers (not konqueror, opera)
+	   //script=scriptContainer.getInnerHTML();
+	   // using getData, should work browser independent
+	   try {
+         JSNode scriptTextNode=scriptContainer.getFirstChild();
+         script=scriptTextNode.getData();
+       } catch (Exception e) {
+         System.err.println("An exception occurred: " + e);
+         e.printStackTrace();
+         System.err.println("trying another way");
+         script=scriptContainer.getInnerHTML();
+       }
      }
 
      return script;
