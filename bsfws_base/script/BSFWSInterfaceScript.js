@@ -19,51 +19,62 @@
 ** V0.3beta.1        -         forwarding works
 ** V0.3beta.2        -         some code 'cleaning', renamed to installScriptingHandlers
 ** V0.3rc.1        @ 2002-12-20
-**                -         separated removeDuplicates from installScriptingHandlers-
-**                            function,
-**                -         renamed some array to clarify their use or make them more
-**                            generic (i.e. replace 'rexx' with 'script')
-**                -         extended changelog to contain dates of change
-**                -         changed layout of the comment/information part
+**               -       separated removeDuplicates from installScriptingHandlers-
+**                       function,
+**               -       renamed some array to clarify their use or make them more
+**                       generic (i.e. replace 'rexx' with 'script')
+**               -       extended changelog to contain dates of change
+**               -       changed layout of the comment/information part
 ** V0.3rc.2 @ 2003-01-20
-**                -        renamed installScriptingHandlers() to initBSFWS()
-**                -        removed parameter from initBSFWS(), document body is now obtained
-**                        with document.getElementById("").innerHTML
-**                -         separated buildHandler() from initBSFWS()
-**                -        added multi-language capability to buildHandler()
-**                -        some code 'cleaning' to improve understandability
-**                -        changed filename to "BSFWSInterfaceScript.js"
+**               -       renamed installScriptingHandlers() to initBSFWS()
+**               -       removed parameter from initBSFWS(), document body is now obtained
+**                       with document.getElementById("").innerHTML
+**               -       separated buildHandler() from initBSFWS()
+**               -       added multi-language capability to buildHandler()
+**               -       some code 'cleaning' to improve understandability
+**               -       changed filename to "BSFWSInterfaceScript.js"
 ** V0.3final = V0.30 @ 2003-01-21
-**                -        some debugging
-**                    -           new numbering of versions
+**               -       some debugging
+**               -       new numbering of versions
 ** V0.31         @ 2003-01-23
-**                -        added getLanguage() function to enable parsing of
-**                        used languages from the html-document
-**                -        created new global variable tempArray to enable passing
-**                        of arrays between functions possible on IE, rewrote
-**                        array passing accordingly
-** V0.32        @ 2003-02-03
-**                -        modified initBSFWS, now script handlers for all
-**                        languages found by getLanguages are installed (all
-**                        scripts are passed to the rexx engine at the moment,
-**                        this will be changed soon)
-** V0.33        @ 2003-04-01
-**                -        first version working on IE, atm different versions are
-**                        necessary for Mozilla and IE
-**                -        added </object>-replace code to stop IE forgeting parameters
-**                -        some changes to <object> tag to make it work on IE
-**                -        added getBrowserType for central differenciation between
-**                        different browsers
-**                -        handler scripts are not working on internet explorer
+**               -       added getLanguage() function to enable parsing of
+**                       used languages from the html-document
+**               -       created new global variable tempArray to enable passing
+**                       of arrays between functions possible on IE, rewrote
+**                       array passing accordingly
+** V0.32         @ 2003-02-03
+**               -       modified initBSFWS, now script handlers for all
+**                       languages found by getLanguages are installed (all
+**                       scripts are passed to the rexx engine at the moment,
+**                       this will be changed soon)
+** V0.33         @ 2003-04-01
+**               -       first version working on IE, atm different versions are
+**                       necessary for Mozilla and IE
+**               -       added </object>-replace code to stop IE forgeting parameters
+**               -       some changes to <object> tag to make it work on IE
+**               -       added getBrowserType for central differenciation between
+**                       different browsers
+**               -       handler scripts are not working on internet explorer
+** V0.4          @ 2003-04-30
+**		 - 	 BWS is now almost scripting language independent 
+**			 (almost: all scripts should atm be linked as 
+**			          rexx:script_id, java applet does not load any
+**				  engines but bsf4rexx)
+**		 -	 used scripting language is read from the script-tags
+**			 mime-type (not from the link as was the case before 0.4,
+**			 the mime-type is forwarded to the applet that determines
+**			 to which engine the script code should be forwarded)
+**		 -	 script works with MSIE, Mozilla-based browsers (Mozilla 1.4
+**			 and Netscape 7 tested)
 **
 *******************************************************************************
 **
-** Planned improvements - Release criteria:
-** ----------------------------------------
-**
-**  - support further BSF languages (0.4final)
-**  - support Opera (as soon as innerHTML works there)
-**  - read used languages from a used MIME-types (x-bsf/x-lang)
+** Planned improvements
+** --------------------
+**  - support Opera (as soon as document.getElementById works there)
+**  - replace scripting_language:script_id with #script_id or bsf:script_id
+**	in links and events (language is determined by script type and not by
+**	link anymore)
 **
 *******************************************************************************
 **
@@ -95,7 +106,7 @@
 ** -------------------
 **
 ** For further information on this script mail me at:
-** tobias.specht@student.uni-augsburg.de
+** tobi@mail.berlios.de
 **
 *******************************************************************************
 **
@@ -171,7 +182,7 @@ function initBSFWS() {
 
                 // "6","5" must be replaced by language.length for scripting
                 // language independance,
-                // browser specific code, mozilla is 6,curstring.length-1
+                // browser specific code,  mozilla is 6,curstring.length-1
                 if (browserType==0) {
                         functionname=curstring.substring(6,curstring.length-1);
                 } else if (browserType==1) {
@@ -181,7 +192,7 @@ function initBSFWS() {
                 // functionname=script
                 // names of functions must not contain any brackets
 
-                // soll rexx direkt ausgeführt werden, wäre es notwendig,
+                // soll rexx direkt ausgeführt werden, wäre es notwendig,
                 // routinen/methodenaufrufe eindeutig zu kennzeichnen!
 
 // different with dynamic handler-calling
@@ -194,7 +205,7 @@ function initBSFWS() {
                 code=code.replace(theRegEx,replacementstring);
 
 
-/*
+/* buildHandler is not called anymore
  *                // JavaScript handlers are built with buildHandler (expects engine and functionname);
  *                if (browserType==0) {
  *                        buildHandler("rx", functionname);
@@ -219,7 +230,10 @@ function initBSFWS() {
         initBSF();
 }
 
-// build and install handler function code, probably not necessary anymore
+// build and install handler function code, 
+// replaced with static handler 'callBSF'
+// not necessary anymore
+// function will be removed from code
 function buildHandler(engine, funcName) {
         // first:         browser gateway
         // --> mozilla-based via 'new Function()'
@@ -269,9 +283,10 @@ function initBSF() {
                 bsfWSInterfaceApplet=document.getElementById('bsfWSInterfaceApplet');
         }
 
-          bsfWSInterfaceApplet.registerWindow(self);
+        bsfWSInterfaceApplet.registerWindow(self);
         bsfWSInterfaceApplet.registerDocument(document);
-//        bsfWSInterfaceApplet.appletToBSFReg();
+	// now done by the applet
+	//        bsfWSInterfaceApplet.appletToBSFReg();
 }
 
 function callrx(rexxcode) {
@@ -308,7 +323,7 @@ function removeDuplicates(duplicateArray) {
 function getLanguages() {
         // languages can be determined by all script types
         // languages are: x-bsf/x-language
-        //                          ^^^^^^^^
+        //                        ^^^^^^^^
         // match for languages: /"x-bsf\/x-\w+"/g
         // then do a remove duplicates or resulting array
         // and search for each languages handlers individually
@@ -359,7 +374,7 @@ function getBrowserType() {
 //                // test if mozilla-style js works
 //                return 0;
 // ----
-// use 'mozilla-style' for konqueror
+// use 'mozilla-style' for konqueror (konqueror doesn't work yet)
 	} else if (navigator.userAgent.indexOf("Konqueror")>0) {
 		return 0;
         } else {
@@ -370,6 +385,13 @@ function getBrowserType() {
 
 // dynamic replacement for calling bsf-functions
 function callBSF(idToCall) {
-        //alert(document.getElementById(idToCall).innerHTML);
-        eval(callrx(document.getElementById(idToCall).innerHTML));
+	//        alert(document.getElementById(idToCall).type);
+	scriptTag=document.getElementById(idToCall);
+	bsfWSInterfaceApplet.executeScript(scriptTag.innerHTML,scriptTag.type);
+
+	// callrx will be replaced with a direct executeScript call to the applet
+	// when the language is determined from the mime-type of the script
+        
+	//alert(document.getElementById(idToCall).innerHTML);
+	// eval(callrx(document.getElementById(idToCall).innerHTML));
 }
