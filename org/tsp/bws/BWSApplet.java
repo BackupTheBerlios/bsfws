@@ -453,15 +453,32 @@ public class BWSApplet extends Applet {
 	     System.out.println("[BWSApplet.getScript] code source is: " + scriptSrc);
 	   }
 
+	   // scriptSrc may contain either:
+	   //   - a URL -> contains ://
+	   //   - an absolute path ->  starts with /
+	   //   - a relative path -> neither of the two above
 	   // if the scriptSrc contains a ':', it is treated as an absolute path to the document
 	   //  Note: permissions must be set to allow the applet access to any directory not lying
 	   //        under the appletCodeBase directory!
 	   // else the url is treated as relative
 	   String urlString;
-	   if (scriptSrc.indexOf(":")==-1) {
-		 String appletCodeBase=this.getCodeBase().toString();
-  	     System.out.println("[BWSApplet.getScript] code base is: " + appletCodeBase);
-  	     urlString=appletCodeBase + scriptSrc;
+	   
+	   // if it does not contain :// it is not an URL
+	   if (scriptSrc.indexOf("://")==-1) {
+	     // if it starts with / it is an absolute path, else it is an relative path
+	     if (scriptSrc.startsWith("/")) {
+	       // absolute, obtain server name and protocol, concat protocol, serverName and path
+	       java.net.URL documentURL=this.getDocumentBase();
+	       urlString=documentURL.getProtocol() + "://" + documentURL.getHost() + ":" + documentURL.getPort() + scriptSrc;
+	       if (debugLevel>0) {
+	         System.out.println("[BWSApplet.getScript] generated URL is: " +urlString);
+	       }
+	     } else {
+		   // relative, obtain document code base, append path		   
+		   String documentCodeBase=this.getDocumentBase().toString();
+  	       System.out.println("[BWSApplet.getScript] code base is: " + documentCodeBase);
+  	       urlString=documentCodeBase + scriptSrc;
+  	     }
   	   } else {
   	     urlString=scriptSrc;
   	   }
