@@ -4,7 +4,7 @@ ActiveScripting is based on COM interfaces that can be used to communicate with 
 
 %ref MsCreateSE: http://msdn.microsoft.com/library/default.asp?url=/library/en-us/script56/html/scripting.asp
 
-\begin{table}
+\begin{table}[hb]
 	\centering
 		\begin{tabular}{ll}
 			\textbf{Language}& \textbf{Vendor} \\
@@ -14,9 +14,12 @@ ActiveScripting is based on COM interfaces that can be used to communicate with 
 			JScript & Microsoft \\
 			& \texttt{http://www.microsoft.com/scripting/jscript/} \\
 			Perl & ActiveState \\
-			Python & \sffamily http://www.python.org/ \\
-			Haskell & \sffamily http://www.haskell.org/haskellscript \\
+			& \texttt{http://www.activestate.com/Products/ActivePerl/}\\
+			Python & Python.org \\
+			&\texttt{http://www.python.org/windows/win32com/ActiveXScripting.html} \\
+		%	Haskell & \sffamily http://www.haskell.org/haskellscript \\
 			Object Rexx & IBM \\
+			& \texttt{http://www-306.ibm.com/software/awdtools/obj-rexx/}\\
 			
 		\end{tabular}
 	\caption{Active Scripting Engines}
@@ -28,20 +31,20 @@ Used as a client side web scripting language, some of the advantages of ActiveSc
 
 \begin{description}
 	
-	\item [Language Independent] ActiveScript is a scripting language independent framework form dynamic HTML documents, it is not limited to a specific language.
+	\item [Language Independent] ActiveScript not depending on a specific programming language developers must use; instead, it provides the possibility to choose one of several available languages like JScript, VBScript or Perl.
 	
-	\item [Powerful] ActiveScript allows developers to access all features (like file system or database access) the Windows Scripting Host provides within HTML documents.
+	\item [Powerful] ActiveScripting languages are based on the windows COM and can therefore use all parts of a system that provide COM interfaces, including system ressources and most Windows applications.
 	
-	\item [Easy to Use] Using ActiveScripting languages in HTML documents works exactly as using standard JavaScript scripts\footnote{Microsoft's JScript itself is an ActiveScripting language.}, the learning barrier to using non-JavaScript languages in HTML environments is very low.
+	\item [Easy to Use] ActiveScripting languages can access the DOM of HTML documents works exactly as this works using standard JavaScript scripts\footnote{Microsoft's JScript itself is an ActiveScripting language.}, the \emph{learning barrier} to using non-JavaScript languages in HTML environments is very low.
 
 \end{description}
 
-Drawbacks of ActiveScripting are:
+In contrast to these advantages, ActiveScripting also has some severe disadvantages:
 
 \begin{description}
   
-  \item [Insecure] The security model used in ActiveScripting: ActiveScripting within HTML documents can only be switched on or off\footnote{The decision if scripting shall be allowed can be made based on signatures and URLs.}, a differentiated approach to allow or prohibit specific actions of a script is not possible. It also is impossible to run scripts in a secure environment similar to the Java sandbox.
+  \item [Insecure] ActiveScripting within HTML documents can only be switched on or off\footnote{The decision if scripting shall be allowed can be made based on signatures and URLs.}, a differentiated approach to allow or prohibit specific actions of a script is not possible. It also is impossible to run scripts in a secure environment similar to the Java sandbox.
   
-  \item [Platform Dependence] ActiveScripting is limited to the Microsoft Windows/Internet Explorer platform and thus the creation of applications based on this technology creates massive lock-in effects and raises switching costs to other platforms.
+  \item [Platform Dependence] ActiveScripting is limited to the Microsoft Windows/Internet Explorer platform and thus the creation of applications based on this technology creates massive lock-in effects and raises switching costs to other platforms as solutions based on this platform would have to be rewritten at least partially.
   
 \end{description}
