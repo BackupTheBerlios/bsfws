@@ -1,0 +1,20 @@
+<html>
+ <head>
+  <title>
+   BWSExamplaryDocument
+  </title>
+  <script id="readFile" type="bws/rexx" src="org/tsp/bws/readFileScript.rex">
+  </script>
+ </head>
+
+ <body>
+  File to open: <input type="text" id="filename" />
+  <input type="button" onclick="document.getElementById('BWSApplet').executeScript('readFile(filename,output)'),this)" value="Open!" />
+  <div id="output">
+  </div>
+
+
+  <applet code="org.tsp.bws.BWSApplet" name="BWSApplet" id="BWSApplet" mayscript="true" width="0" height="0"></applet>
+ </body>
+
+</html>
