@@ -290,6 +290,9 @@ public class JSNode {// extends JSObject {
 		Object[] callArgs=new Object[1];
 		callArgs[0]=attributeName;
 		String attribute=(String)node.call("getAttribute",callArgs);
+		if (debug>0) {
+			System.out.println("[JSNode.getAttribute] got this attribute: " + attribute);
+		};
 		return attribute;
     }
 
@@ -561,20 +564,14 @@ public class JSNode {// extends JSObject {
 
 		JSObject attributeNode=(JSObject)node.getMember("style");
 
-		if (debug==1) {
+		if (debug>0) {
 		   System.out.println("[setStyleAttributeNode] attributeNode: " + attributeNode);
 		}
 
 		attributeNode.setMember(styleAttribute,value);
 
-		if (debug==1) {
+		if (debug>0) {
 			System.out.println("[setStyleAttributeNode] attributeNode: " + attributeNode + attributeNode.getMember(styleAttribute));
-		}
-
-//		callArgs1[0]=attributeNode;
-//		attributeNode.call("setAttributeNode",callArgs1);
-
-		if (debug==1) {
 			System.out.println("[setStyleAttributeNode] attributeNode value: " + attributeNode.getMember(styleAttribute));
 		}
 
@@ -590,30 +587,17 @@ public class JSNode {// extends JSObject {
     	return nodeData;
     }
 
-    /** DOCUMENT IT */
+    /** returns the html content of a tag 
+     *
+     * (the part between the opening tag and the closing tag (including html entities),
+     * e.g. <div>this <em>is</em> the text</div>
+     * returns 'this <em>is</em> the text'
+     */
     public String getInnerHTML() {
-    	String theInnerText=(String)node.getMember("innerHTML");
+    	String theInnerHTML=(String)node.getMember("innerHTML");
     	if (debug>0) {
-    		System.out.println("[JSNode-getInnerHTML] innerHTML: " + theInnerText);
+    		System.out.println("[JSNode.getInnerHTML] innerHTML: " + theInnerHTML);
     	}
-    	return theInnerText;
+    	return theInnerHTML;
     }
-
-    /** Requiered to enable extension of JSObject
-
-    public void setSlot(int index,Object value) {
-    	System.out.println("setSlot() not implemented");
-    }
-
-    /** Requiered to enable extension of JSObject
-
-    public Object getSlot(int index) {
-    	return new Object();
-    }
-
-    /** Requiered to enable extension of JSObject
-
-    public void removeMember(String name) {
-    }
-    */
 }

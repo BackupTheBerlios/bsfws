@@ -71,6 +71,7 @@ import java.lang.*;
 import java.applet.*;
 import java.util.*;
 import java.security.*;
+import java.net.URL;
 
 // the bsf
 import com.ibm.bsf.*;
@@ -143,8 +144,79 @@ public class BWSApplet extends Applet {
 
 	 // lookup script from the given id
 	 JSNode scriptContainer=getNode(scriptId);
-	 String script=scriptContainer.getInnerHTML();
 
+	 String script;
+	 
+	 // check if the script has got an source (src="") attribute
+	 // if a src attribute is given, the content of the script tag
+	 // is ignored
+
+	 if (!((scriptContainer.getAttribute("src")==null) || ("".equals(scriptContainer.getAttribute("src"))))) {
+	   String scriptSrc=scriptContainer.getAttribute("src");
+	   if (debugLevel>1) {
+	     System.out.println("[BWSApplet.executeScript] code source is: " + scriptSrc);
+	   }
+	
+	   // if the scriptSrc contains a ':', it is treated as an absolute path to the document
+	   //  Note: permissions must be set to allow the applet access to any directory not lying
+	   //        under the appletCodeBase directory!
+	   // else the url is treated as relative
+	   String urlString;
+	   if (scriptSrc.indexOf(":")==-1) {
+		 String appletCodeBase=this.getCodeBase().toString();
+  	     System.out.println("[BWSApplet.executeScript] code base is: " + appletCodeBase);
+  	     urlString=appletCodeBase + scriptSrc;
+  	   } else {
+  	     urlString=scriptSrc;
+  	   }
+  	   
+  	   URL scriptCodeURL=null;
+  	   
+  	   try {
+  	     scriptCodeURL=new URL(urlString);
+  	   } catch (java.net.MalformedURLException e) {
+  	   	 System.out.println("[BWSApplet.executeScript] MalformedURLException, stack trace:");
+  	   	 e.printStackTrace();
+  	   	 script="";
+  	   } 
+  	   
+       if (debugLevel>0) {  	   
+	     System.out.println("[BWSApplet.executeScript] code url is: " + urlString);
+	     System.out.println("[BWSApplet.executeScript] created URL: " + scriptCodeURL);
+	   }
+	   
+	   Object tempScriptObject=null;
+
+	   try {
+	     tempScriptObject=scriptCodeURL.getContent();
+	    	   
+	     if (tempScriptObject instanceof java.io.InputStream) {
+	       // convert to InputStream
+	       java.io.InputStream tempScriptInputStream=(java.io.InputStream)tempScriptObject;
+	       // see how many bytes are available
+	       int availableBytes=tempScriptInputStream.available();
+	     
+	       // create an according byte[]
+	       byte[] urlContent=new byte[availableBytes];
+	     
+	       // read content
+	       tempScriptInputStream.read(urlContent);
+	     
+	       // convert to a String
+	       script=new String(urlContent);
+	     } else {
+	   	   System.out.println("[BWSApplet.executeScript] referenced object was not a string! It was: " + tempScriptObject);
+	   	   script="";
+	     }
+       } catch (java.io.IOException e) { 
+         System.out.println("[BWSApplet.executeScript] IOException, stack trace:");
+         e.printStackTrace();
+         script="";
+       }
+   	 } else {
+	   script=scriptContainer.getInnerHTML();
+     }
+     
 	 if (debugLevel>0) {
 	   System.out.println("[BWSApplet.executeScript] script code");
 	   System.out.println(script);
@@ -154,7 +226,14 @@ public class BWSApplet extends Applet {
 	// get parameters
 	String[] paramArray=currentScriptString.getParameters();
 
-	Vector argumentVector=evaluateParameters(paramArray,domObject);
+	Vector argumentVector;
+	
+	// check if arguments are given, do evaluate only if yes
+	if (paramArray==null) {
+  	  argumentVector=new Vector();
+  	} else {
+  	  argumentVector=evaluateParameters(paramArray,domObject);
+	}
 
 	// parameters must be accessible in scripts under know references
 	// to keep scriptcalls easy (parameter nameing unnecessary)
@@ -205,14 +284,15 @@ public class BWSApplet extends Applet {
 
 	   // the returned object now gets referenced in the bsf registry be the specified
 	   // key (returnKey) (from where it is accessible by any bsf script)
-	   if (applyReturnedObject!=null) {
+	   if ((applyReturnedObject!=null) && (returnKey!=null)) {
 	     mgr.registerBean(returnKey,applyReturnedObject);
 	   }
 	 } catch (Exception e) {
 	 	applyReturnedObject=null;
-	    System.out.println("[BWSApplet-executeScript] exception while trying to execute");
+	    System.out.println("[BWSApplet.executeScript] exception while trying to execute");
+	    e.printStackTrace();
 	 }
-	 
+
      return applyReturnedObject;
    }
 
@@ -222,13 +302,18 @@ public class BWSApplet extends Applet {
     */
    // code execution could probably also be done by the BSFManager, i.e.
    // without explicitly loading a scripting engine
-   public void executeScript(String scriptString) {
+   public Object executeScript(String scriptString) {
      // create a ScriptString
      ScriptString currentScriptString=new ScriptString(scriptString);
 
      // obtain script id from the script string
      String scriptId=currentScriptString.getScriptId();
 
+	 // if no 'this' object is given, use the script as 'this'
+	 Object returnedObject=executeScript(scriptString,this.getNode(scriptId).getNode());
+	 
+	 return returnedObject;
+	 /*
      // load scripting engine
 	 BSFEngine evalEngine=this.loadScriptingEngine(scriptId);
 
@@ -253,7 +338,7 @@ public class BWSApplet extends Applet {
 	   evalEngine.eval("",0,0,script);
 	 } catch (Exception e) {
 	   System.out.println("[BWSApplet-executeScript] exception while trying to execute");
-	 }
+	 }*/
    }
 
    /** returns the html/xml node with the specified id

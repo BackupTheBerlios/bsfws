@@ -13,7 +13,7 @@
 
  <script id="rexxscript" type="bws/rexx">
  AppletObj=BSF('lookupBean','BWSApplet')
- --SystemOutObj=BSF('lookupBean','SystemOut')
+ SystemOutObj=BSF('lookupBean','SystemOut')
  ANode=BSF('invoke',AppletObj,'getNode','ueberschrift')
  CALL BSF 'invoke',ANode,'setStyleAttribute','fontFamily','Verdana'
  CALL BSF 'invoke',ANode,'setStyleAttribute','backgroundColor','#ccffcc'
@@ -21,17 +21,23 @@
  CALL BSF 'invoke',ANode,'setStyleAttribute','textAlign','center'
  CALL BSF 'invoke',ANode,'setStyleAttribute','border','1px solid #000000'
 
+-- SystemOutObj~println('argument0')
 
  O=.bsf~lookupbean('BWSApplet')
  ANode=O~getNode('ueberschrift')
  ANode~setStyleAttribute('color','#ff0000')
  ANode~setStyleAttribute('textAlign','left')
 
+ return ANode
+
  ::REQUIRES BSF.CLS
  </script>
 
- <body onClick="document.getElementById('BWSApplet').executeScript('hallo=rexxscript(param1,SystemOut,this,ueberschrift)',this)">
-  <h1 id="ueberschrift">Testing the applet...</h1>
+ <script id="secscript" type="bws/rexx" src="org/tsp/bws/scripturl.rexx">
+ </script>
+  <body>
+  <h1 id="ueberschrift" onClick="document.getElementById('BWSApplet').executeScript('retVal=rexxscript(ueberschrift,this,eins)',this)">Testing the applet...</h1>
+  <h1 id="zweite" onClick="document.getElementById('BWSApplet').executeScript('secscript')">Test script referencing</h1>
   <applet code="org.tsp.bws.BWSApplet" name="BWSApplet" id="BWSApplet" mayscript="true" width="0" height="0"></applet>
  </body>
 </html>
