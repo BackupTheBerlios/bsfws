@@ -1,0 +1,27 @@
+<html>
+ <head>
+  <title>
+   TestApplet
+  </title>
+ </head>
+
+ <script language="javascript" type="text/javascript">
+ function setAnAttribute() {
+//	attributeNode=document.createAttribute('style');
+//	attributeNode.nodeValue='background-color:#00ff00;';
+//	document.getElementById('theBody').setAttributeNode(attributeNode);
+//	attributeNode=document.createAttribute('style').nodeValue='background-color:#00ff00';
+//	document.getElementById('theBody').setAttributeNode(attributeNode);
+//	document.getElementById('theBody').replaceData(1,4,'repl');
+ }
+
+ function alertContent() {
+	alert(document.getElementsByTagName('html')[0].innerHTML);
+ }
+ </script>
+ 
+ <body id="theBody" style="">
+  <h1 id="testhead" onDoubleClick="javascript:setAnAttribute()" onClick="javascript:alertContent()">&Uuml;berschrift</h1><span id="sp1">Dies ist ein Text</span><span id="sp2">Noch ein Text!</span><ul align="center" bgColor="lightblue" id="dieListe"><li>Element1</li><li>Element2</li><li>Element3</li></ul>
+  <applet code="bwsDevelopmentApplet.class" name="simple_applet" mayscript="true" width="0" height="0"></applet>
+ </body>
+</html>

@@ -1,0 +1,37 @@
+<html>
+ <head>
+  <title>
+   BWSTestApplet
+  </title>
+ </head>
+
+ <script language="javascript" type="text/javascript">
+ function alertContent() {
+	alert(document.getElementsByTagName('html')[0].innerHTML);
+ }
+ </script>
+ 
+ <script id="rexxscript" type="bws/rexx">
+ AppletObj=BSF('lookupBean','BWSApplet')
+ --SystemOutObj=BSF('lookupBean','SystemOut')
+ ANode=BSF('invoke',AppletObj,'getNode','ueberschrift')
+ CALL BSF 'invoke',ANode,'setStyleAttribute','fontFamily','Verdana'
+ CALL BSF 'invoke',ANode,'setStyleAttribute','backgroundColor','#ccffcc'
+ CALL BSF 'invoke',ANode,'setStyleAttribute','color','#00bb00'
+ CALL BSF 'invoke',ANode,'setStyleAttribute','textAlign','center'
+ CALL BSF 'invoke',ANode,'setStyleAttribute','border','1px solid #000000'
+ 
+ 
+ O=.bsf~lookupbean('BWSApplet')
+ ANode=O~getNode('ueberschrift')
+ ANode~setStyleAttribute('color','#ff0000')
+ ANode~setStyleAttribute('textAlign','left')
+ 
+ ::REQUIRES BSF.CLS
+ </script>
+ 
+ <body onClick="document.getElementById('BWSApplet').executeScript(document.getElementById('rexxscript').innerHTML)">
+  <h1 id="ueberschrift">Testing the applet...</h1>
+  <applet code="BWSApplet.class" name="BWSApplet" id="BWSApplet" mayscript="true" width="0" height="0"></applet>
+ </body>
+</html>
