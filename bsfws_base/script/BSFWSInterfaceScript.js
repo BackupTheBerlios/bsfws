@@ -1,5 +1,5 @@
 /******************************************************************************
-** Script installScriptingHandlers.js
+** Script BSFWSInterfaceScript.js
 ** 2002-11-23 by Tobias Specht
 *******************************************************************************
 ** This script replaces Rexx function-calls in HTML-Document-Bodys with
@@ -10,7 +10,7 @@
 ** ---------
 **
 ** V0.1final	- 	Handlers are installed, forwarding to BSF is not implemented
-**		  			yet
+**		  	yet
 ** V0.2alpha  	- 	Removing duplicates from Handler included
 ** V0.2final	- 	some errors removed (global replacement necessary due to
 **                	unduplicated array)
@@ -20,9 +20,9 @@
 ** V0.3beta.2	- 	some code 'cleaning', renamed to installScriptingHandlers
 ** V0.3rc.1	@ 2002-12-20
 **		- 	separated removeDuplicates from installScriptingHandlers-
-**		    function,
+**		    	function,
 **		- 	renamed some array to clarify their use or make them more
-**		    generic (i.e. replace 'rexx' with 'script')
+**		    	generic (i.e. replace 'rexx' with 'script')
 **		- 	extended changelog to contain dates of change
 **		- 	changed layout of the comment/information part
 ** V0.3rc.2 @ 2003-01-20
@@ -33,6 +33,15 @@
 **		-	added multi-language capability to buildHandler()
 **		-	some code 'cleaning' to improve understandability
 **		-	changed filename to "BSFWSInterfaceScript.js"
+** V0.3final = V0.30 @ 2003-01-21
+**		-	some debugging
+**	    	-   	new numbering of versions
+** V0.31 	@ 2002-01-23
+**		-	added getLanguage() function to enable parsing of 
+**			used languages from the html-document
+**		-	created new global variable tempArray to enable passing
+**			of arrays between functions possible on IE, rewrote
+**			array passing accordingly
 **
 *******************************************************************************
 **
@@ -40,9 +49,8 @@
 ** ----------------------------------------
 **
 **  - support further BSF languages (0.4final)
-**  - split install scripting handlers into several functions (0.3final)
 **  - support Opera (as soon as innerHTML works there)
-**  - read used languages from a html-tag within the document (possible?)
+**  - read used languages from a used MIME-types (x-bsf/x-lang)
 **
 *******************************************************************************
 **
@@ -76,22 +84,39 @@
 ** For further information on this script mail me at:
 ** tobias.specht@student.uni-augsburg.de
 **
+*******************************************************************************
+**
+** Global variable
+** ---------------
+** 
+** Array tempArray
+**
+**	this is a dirty workaround for the internet explorer/jscript as it
+**	doesn't support passing an array from one function to another (this,
+**	of course, is not a problem with mozilla ;)
+**	instead of passing the array it is stored in the tempArray where it
+**	can be accessed from all functions :(
+**
 ******************************************************************************/
+
+var tempArray;
+tempArray=new Array();
 
 function initBSFWS() {
 	code=document.getElementById('the_body').innerHTML;
 
-	// languages can be determined by all script types
-	// languages are: x-bsf/x-language
-	//						  ^^^^^^^^
-	// match for languages: /"x-bsf/x-\w+"/g
-	// then do a remove duplicates or resulting array
-	// and search for each languages handlers individually
+	usedLanguages=new Array();
+	getLanguages();
+	usedLanguages=tempArray;
 
+	scriptReferencesMultiple=new Array();
 	scriptReferencesMultiple=code.match(/"rexx:\w+"/g);
 
 	// remove duplicates from script references
-	scriptReferences=removeDuplicates(scriptReferencesMultiple);
+	tempArray=scriptReferencesMultiple;
+	removeDuplicates();
+	scriptReferences=tempArray;	
+
 	functionnames=new Array();
 
 	// replace for with foreach from scriptReferences
@@ -174,7 +199,7 @@ function buildHandler(engine, funcName) {
 
 	// --> internet explorer via 'script DEFER'
 	if (navigator.userAgent.indexOf("MSIE")>0) {
-		funcCode+='<script language="javascript" type="text/javascript" DEFER>\n';
+		funcCode='<script language="javascript" type="text/javascript" DEFER>\n';
 		funcCode+='function ' + funcName + '() {\n';
 		funcCode+="call" + engine + "(document.getElementById(\'" + functionname + "\').innerHTML;\n";
 		funcCode+='}';
@@ -194,7 +219,6 @@ function initBSF() {
 
 function callrx(rexxcode) {
 	bsfInterfaceApplet.executeScript(rexxcode,"rx");
-	// alert("hallo");
 }
 
 function removeDuplicates(duplicateArray) {
@@ -202,7 +226,11 @@ function removeDuplicates(duplicateArray) {
 	// first, all elements are stored in a hash with var[value]=value
 	// this automatically removes duplicates
 	// declaration of singletonArray is necessary to enable using it as array
-	singletonArray = new Array;
+	var duplicateArray;
+	duplicateArray=new Array();
+	duplicateArray=tempArray;
+
+	singletonArray = new Array();
 
 	for (counter=0;counter<duplicateArray.length;counter++) {
 		singletonArray[duplicateArray[counter]]=duplicateArray[counter];
@@ -211,11 +239,47 @@ function removeDuplicates(duplicateArray) {
 	// second, the elements from the unduped hash are copied to
 	// a new (numbered) array
 	// finalArray of course must also be declared to use the array functionality
-	var finalArray=new Array;
+	var finalArray=new Array();
 
 	for (var curIndex in singletonArray) {
 		finalArray.push(singletonArray[curIndex]);
 	}
 
-	return finalArray;
+	tempArray=finalArray;
+}
+
+function getLanguages() {
+	// languages can be determined by all script types
+	// languages are: x-bsf/x-language
+	//			  ^^^^^^^^
+	// match for languages: /"x-bsf\/x-\w+"/g
+	// then do a remove duplicates or resulting array
+	// and search for each languages handlers individually
+
+	// read complete document into a variable for parsing by the script
+	theDocument=document.getElementById("the_document").innerHTML;
+
+	// create an array where the used languages are stored
+	usedLanguagesDup=new Array();
+
+	// get the languages/mime-types from documents
+	// alternative for only non-standardized mime-types, i.e. x-.../x-...
+	usedLanguagesDup=theDocument.match(/"x-bsf\/x-\w+"|type=x-bsf\/x-\w+(\W|\s)/g);
+
+	// alternative for any x-bsf mime-tye
+	//	usedLanguagesDup=theDocument.match(/"x-bsf\/(x-\w+"|\w+")/g);
+
+	// remove duplicates
+	tempArray=usedLanguagesDup;
+	removeDuplicates();
+	usedLanguagesSing=tempArray;
+	
+	// strip ("x-bsf/x-) and (")
+	for (counter=0;counter<usedLanguagesSing.length;counter++) {
+		position=usedLanguagesSing[counter].indexOf("x-bsf");
+		usedLanguagesSing[counter]=usedLanguagesSing[counter].substring(position+8,usedLanguagesSing[counter].length-1);
+	}
+
+	// return array
+	tempArray=usedLanguagesSing;
 }
