@@ -213,19 +213,19 @@ public class JSNode {// extends JSObject {
 	 */
     public int appendData(int childId, String data) {
 		if (debug==1) {
-		   	System.out.println("[appendData] entered, node is " + node);		   	
+		   	System.out.println("[appendData] entered, node is " + node);
 		}
-			
+
 		callArgs1[0]=htmlId;
 		JSObject tempNode=(JSObject) getDocument().call("getElementById",callArgs1);
-		
+
 		if (!(tempNode.equals(node))) {
 			System.out.println("[appendData] corrected node!");
 			node=tempNode;
-		}		
-		
+		}
+
 		JSObject childNodes=(JSObject)node.getMember("childNodes");
-		
+
 		if (debug==1) {
 		   	System.out.println("[appendData] childNodes: " + childNodes);
 		}
@@ -586,12 +586,12 @@ public class JSNode {// extends JSObject {
     	System.out.println("[getData] string: " + nodeData);
     	return nodeData;
     }
-    
+
     /** DOCUMENT IT */
-    public String getInnerText() {
-    	String theInnerText=(String)node.getMember("innerText");
-    	if (debug==1) {
-    		System.out.println("[JSNode-getInnerText] innerText: " + theInnerText);
+    public String getInnerHTML() {
+    	String theInnerText=(String)node.getMember("innerHTML");
+    	if (debug>0) {
+    		System.out.println("[JSNode-getInnerHTML] innerHTML: " + theInnerText);
     	}
     	return theInnerText;
     }
