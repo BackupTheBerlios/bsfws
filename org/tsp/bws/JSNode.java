@@ -10,6 +10,9 @@
 ** ---------
 **
 ** V0.1   @ 2003-01-21
+ * V0.2   @ 2003-12-12
+ *   Nearly complete rewrite, JSNode should no work without problems with
+ *   any DOM/LiveConnect compliant browser
 **
 *******************************************************************************
 **
