@@ -1,0 +1,10 @@
+\texttt{ScriptString} is the class providing interpretation of BWS script call strings for the runtime environment. These call strings are the strings used in DOM event handlers to call BWS scripts\footnote{An example for such a string is \texttt{returnValue=scriptId(parameter1,parameter2)}.}. These strings are passed to the \texttt{BWSApplet} using the \texttt{executeScript()} method and then have to be interpreted by the applet/runtime enviroment to call the appropriate script, lookup the specified parameters and store the return value to the specified place after script execution. A class diagram of the \texttt{ScriptString} class is depicted in figure \ref{fig:classDiagramScriptString}.
+
+\begin{figure}[htbp]
+	\centering
+		\includegraphics{classDiagrammScriptString.eps}
+		\caption{Class Diagram: \texttt{ScriptString}}
+	\label{fig:classDiagramScriptString}
+\end{figure}
+
+The \texttt{get*} methods of this class provide other classes access to the result of the interpretation. The interpretation itself is done in the \texttt{ScriptString} constructor\footnote{\emph{I know this is plain evil!}} using the \texttt{parseParameters()} method to interpret the parameter part of the string.

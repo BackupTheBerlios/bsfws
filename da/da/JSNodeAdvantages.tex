@@ -1,0 +1,35 @@
+The purpose of \texttt{JSNode} is to ease the access to DOM elements at runtime in comparision to LiveConnect. As LiveConnect handels all DOM interaction over \texttt{JSObject} which provides very limited functionallity, DOM interaction only using LiveConnect directly usually leads to long and error-prone code. Especially when compared to JavaScript DOM interaction, direct Java DOM interaction is unnecessary complicated.\footnote{Cf. figure \ref{fig:ComparisionOfDOMAccessInJavaAndJavaScript}}. 
+
+One of the most problematic and 'code-consuming' problems with \texttt{JSObject} is the \texttt{JSObject}'s \texttt{call()} method. This method can be used to call methods of the underlying DOM node in Java, for example, it can be used to call a nodes \texttt{getAttributeNode()} method. The syntax for calling these DOM methods is \texttt{nodeObject.call(methodName,arguments)} where \texttt{methodName} is a string representing the name of the method to be invoked, e.g. "getAttributeNode" and \texttt{arguments} is an array of \texttt{Object}s that contains the arguments that are to be passed to the method. This means that for every DOM method call, an \texttt{Object} array has to be created and the individual argument have to be saved to this array. If an argument is a primitive value, it additionaly has to be converted to an object before it can be put in the array. 
+
+To overcome these drawbacks of 'pure' LiveConnect, \texttt{JSNode} capsules the methods normally used in JavaScript using the DOM node object. This capsuling is implemented using the methods provided by LiveConnect's \texttt{JSObject}. An example of how these methods are implemented is given in figures \ref{fig:ImplementationGetAttributeNode} and figure \ref{fig:ImplementationSetStyleAttribute}.\footnote{Debug messages were omitted in this examples to improve comprehensibility.}
+
+The \texttt{getAttributeNode()} method expects a string that identifies the desired attribute, e.g. the \texttt{name} attribute, and returns this attribute as a \texttt{JSNode} object. To do this, \texttt{getAttributeNode()} first creates a new \texttt{Object} array with one field and assignes this field the string that was passed as \texttt{attributeName}. It then calls the \texttt{call()} method of the \texttt{JSNode}'s \texttt{node} property to obtain a \texttt{JSObject} representation of the attribute node. This \texttt{JSObject} represention is assigned to the \texttt{attributeNode} variable that is then used to create a new \texttt{JSNode} containing the \texttt{attributeNode}. This \texttt{JSNode} is then return to the calling function.
+
+\begin{figure}[htbp]
+ \begin{verbatim}
+public JSNode getAttributeNode(String attributeName) {
+  Object[] callArgs=new Object[1];
+  callArgs[0]=attributeName;
+  JSObject attributeNode=(JSObject)node.call("getAttributeNode",callArgs);
+  JSNode attributeJSNode=this.getJSNode(attributeNode);
+  return attributeJSNode;
+}
+ \end{verbatim}
+	\caption{Implementation getAttributeNode()}
+	\label{fig:ImplementationGetAttributeNode}
+\end{figure}
+
+\texttt{setStyleAttribute()} is a shorter method as it does not involve calling the \texttt{JSObject}'s \texttt{call()} method and thus creating and \emph{filling} an \texttt{Object} array is not necessary here. The method expects two strings, \texttt{styleAttribute} specifying the attribute that is to be set, e.g. \texttt{fontFamily} or \texttt{color}, and \texttt{value} specifying the value this attribute shall be set to.
+
+\begin{figure}[htbp]
+	\begin{verbatim}
+public int setStyleAttribute(String styleAttribute, String value) {
+  JSObject styleNode=(JSObject)node.getMember("style");
+  styleNode.setMember(styleAttribute,value);
+  return 0;
+}
+	\end{verbatim}
+	\caption{Implementation setStyleAttribute}
+	\label{fig:ImplementationSetStyleAttribute}
+\end{figure}

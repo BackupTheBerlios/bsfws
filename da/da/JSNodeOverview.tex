@@ -1,0 +1,36 @@
+
+
+A \texttt{JSNode} object can be constructed using one of three available constructors, see table \ref{tab:JSNodeConstructors}.
+
+\begin{table}[htbp]
+	\centering
+		\begin{tabular}{ll}
+			\textbf{Method Head} & \textbf{Description} \\
+			\texttt{JSNode(JSObject window,} & Creates a reference to the node with the \texttt{id nodeRef}\\
+			\texttt{ String nodeRef)}&  in the \texttt{window}.\\
+			
+			\texttt{JSNode(JSObject window,}& Creates a reference to the node passed as \texttt{existingNode}.\\
+			\texttt{ JSObject existingNode)}& \\
+			
+			\texttt{JSNode(JSObject window,}& Creates a reference to the node passed as \texttt{exitingNode}\\
+			\texttt{ JSObject existingNode,}&  and sets its \texttt{id} to the specified \texttt{id}.\\
+			\texttt{ String id)}& \\
+		\end{tabular}
+	\caption{JSNode Constructors}
+	\label{tab:JSNodeConstructors}
+\end{table}
+
+Additionaly, a node can be obtained without specifing a window calling an existing \texttt{JSNode}'s \texttt{getJSNode()} method. This method expects a reference to a existing node of the type \texttt{JSObject} as its argument. It returns a new JSNode with the window of the called node.
+
+%texttt{JSNode} also provides methods
+
+Other methods provided by \texttt{JSNode} can be used to obtain the nodes window (\texttt{getWindow()} and document (\texttt{getDocument()}), its \texttt{id}(\texttt{getIdentifier()}), the full content in HTML of an element (\texttt{getInnerHTML()}) and the node object referenced by the \texttt{JSNode} (\texttt{getNode()}).
+
+\texttt{JSNode} also provides three methods for creating new nodes of different types:
+
+\begin{itemize}
+	\item \texttt{createAttribute(String attributeType, String attributeValue)}, creates an attribute named \texttt{attributeType}, e.g. \texttt{style} or \texttt{name}, set to the value \texttt{attributeValue}.
+	\item \texttt{createElement(String elementType)}, creates an element of the type \texttt{elementType}, e.g. \texttt{h1} or \texttt{div}.
+	\item \texttt{createTextNode(String elementText)}, creates a text node with the specified content (\texttt{elementText}).
+\end{itemize}
+
