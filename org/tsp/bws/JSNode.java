@@ -289,7 +289,9 @@ public class JSNode {// extends JSObject {
     public String getAttribute(String attributeName) {
 		Object[] callArgs=new Object[1];
 		callArgs[0]=attributeName;
-		String attribute=(String)node.call("getAttribute",callArgs);
+//		String attribute=(String)node.call("getAttribute",callArgs);
+// alternative try with getMemeber
+		String attribute=(String)node.getMember(attributeName);
 		if (debug>0) {
 			System.out.println("[JSNode.getAttribute] got this attribute: " + attribute);
 		};
@@ -578,16 +580,9 @@ public class JSNode {// extends JSObject {
 		return 0;
 	}
 
-	/** DOCUMENT IT */
-    public String getData() {
-		//    	callArgs2[0]=new String("getAttribute");
-    	callArgs1[0]=new String("data");
-    	String nodeData=(String)node.call("getAttribute",callArgs1);
-    	System.out.println("[getData] string: " + nodeData);
-    	return nodeData;
-    }
 
-    /** returns the html content of a tag 
+
+    /** returns the html content of a tag
      *
      * (the part between the opening tag and the closing tag (including html entities),
      * e.g. <div>this <em>is</em> the text</div>
@@ -600,4 +595,68 @@ public class JSNode {// extends JSObject {
     	}
     	return theInnerHTML;
     }
-}
+
+
+/*********************************************************
+ ***     methods for accessing DOM node attributes     ***
+ *********************************************************
+ * these are named get + CamelCase attribute name for
+ *	obtaining the attribute and set + CamelCase attribute
+ *	name for setting it: e.g. getNodeValue and
+ *	setNodeValue for modifying nodeValue
+ *********************************************************/
+    
+    /** returns the value of an node/input field */
+    public String getNodeValue() {
+      return (String) node.getMember("nodeValue");
+    }
+    
+    /** returns the first child node of the current
+     * JSNode 
+     */
+    public JSNode getFirstChild() {
+      JSObject jsObjNode=(JSObject)node.getMember("firstChild");
+      if (debug>0) {
+        System.out.println("[JSNode.getFirstChild] first child is: " + jsObjNode);
+      }
+      JSNode theFirstChild=new JSNode(this.jsWindow,jsObjNode);
+      if (debug>0) {
+        System.out.println("[JSNode.getFirstChild] JSNode is: " + theFirstChild);
+      }
+      return theFirstChild;
+    }
+
+    /** retrieves the textual content of a text node */
+    public String getData() {
+        //      callArgs2[0]=new String("getAttribute");
+//        callArgs1[0]=new String("data");
+		System.out.println("[JSNode.getData] about to invoke getAttribute!");
+// getAttribute seems not to work here!
+//        String nodeData=(String)node.call("getAttribute",callArgs1);
+		String nodeData=(String)node.getMember("data");
+        System.out.println("[JSNode.getData] string: " + nodeData);
+        return nodeData;
+    }
+
+/*********************************************************
+ ***               event handler methods               ***
+ *********************************************************
+ * dom event handler attaching works with the
+ * .attachEventListener method, the same is done here.
+ * however, the implementation of this is _NOT_ DOM
+ * conform, it uses node.setMember, which should
+ * work with any up-to-date browser. The DOM conform
+ * event handling does not work with any IE, cf.
+ * http://www.quirksmode.org/dom/w3c_events.html#registration
+ *********************************************************/
+
+    /** sets the specified event of the node to the specified
+     * handler
+     * @event the event for which the event handler shall be
+     *    set, e.g. <tt>onclick</tt>
+     * @handler the code that shall be run upon code execution
+     */
+    public void addEventListener(String event, String handler) {
+      node.setMember(event,handler);
+    }
+ }
