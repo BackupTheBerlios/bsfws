@@ -93,7 +93,7 @@
 **
 ** Global variable
 ** ---------------
-**
+** 
 ** Array tempArray
 **
 **	this is a dirty workaround for the internet explorer/jscript as it
@@ -294,7 +294,7 @@ function getLanguages() {
 	tempArray=usedLanguagesDup;
 	removeDuplicates();
 	usedLanguagesSing=tempArray;
-
+	
 	// strip ("x-bsf/x-) and (")
 	for (counter=0;counter<usedLanguagesSing.length;counter++) {
 		position=usedLanguagesSing[counter].indexOf("x-bsf");
