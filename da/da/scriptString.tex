@@ -2,9 +2,20 @@
 
 \begin{figure}[htbp]
 	\centering
-		\includegraphics{classDiagrammScriptString.eps}
+		\includegraphics{classDiagrammScriptString}
 		\caption{Class Diagram: \texttt{ScriptString}}
 	\label{fig:classDiagramScriptString}
 \end{figure}
 
 The \texttt{get*} methods of this class provide other classes access to the result of the interpretation. The interpretation itself is done in the \texttt{ScriptString} constructor\footnote{\emph{I know this is plain evil!}} using the \texttt{parseParameters()} method to interpret the parameter part of the string.
+
+Interpretation of the script strings works according to the following description:
+\begin{enumerate}
+  \item Before the string is interpreted it is tested if it assigns a return value and if it's got parameter passed.\footnote{The string is tested for the assignment operator (\texttt{=}) and an opening parentheses (\texttt{(}).}
+	\item If the string contains has got neither return value nor parameters, it is interpreted as only the script \texttt{id} and stored as \texttt{ScriptString} property \texttt{scriptId}, available using \texttt{getScriptId()}.
+	\item The part of the string qualified as parameters is passed to the \texttt{parseParameters()} method, the \texttt{String} array returned by this method is stored as \texttt{parameters} and can be obtained calling \texttt{getParameters}.\footnote{The \texttt{parseParameters} method takes the string it gets passed, removes everything not in parentheses (\texttt{()}) and splits the remaining string using colons as delimiters. The resulting parameter keys are the returned as a \texttt{String} array.}
+	\item If available, the return value key is stored as \texttt{returnValue}. It is available with \texttt{getRetKey()}.
+	
+\end{enumerate}
+
+The assignment of values to the keys, i.e. the creation of references to DOM nodes etc. is not done during \texttt{ScriptString} interpretation but at runtime using the keys obtained during interpretation.

@@ -1,0 +1,13 @@
+Loading a scripting engine in BWS works in two steps:
+\begin{enumerate}
+	\item The language of the script and the according scripting engine is determined by reading the respective script's \texttt{type} attribute. This is done with \texttt{getScriptingEngine()}.
+	\item The engine itself is loaded explicitly as a \texttt{BSFEngine}\footnote{Cf. figure \ref{fig:bsfOverview}} with the \texttt{private loadScriptingEngine()} method.
+\end{enumerate}
+
+\texttt{getScriptingEngine()} expects the \texttt{id} of the script as its only parameter. Upon calling with the \texttt{id}, it creates a \texttt{JSNode}, reads its \texttt{type} attribute to a \texttt{String} variable and takes the substring of this string as the \texttt{engineString} that identifies script engines to the \texttt{BSFManager}. This string is then returned to the calling method.
+
+Usually, this calling method is \texttt{loadScriptingEngine()}. \texttt{loadScriptingEngine()} also expects the script \texttt{id} of the script for which the engine shall be loaded as its only parameter. This parameter is then used calling \texttt{getScriptingEngine()}; the returned engine identifier is the stored as \emph{a \texttt{final} variable}.
+
+After the apropriate scripting engine has been determined, the loading procedure starts: As the scripting engine may be based on native code\footnote{I.e. written not in Java but in C/C++ or any platform specific, compiled code. An example for such engines are the Rexx engines contained in BSF4Rexx.}, the JNI might be used for loading the engine. This is normally not allowed for applets and thus this code must be granted the rights to do so. To minimize the amount of code not running with the Java applet security, Java provides the possiblity to run code within a \texttt{privileged} environment. This is done here using the \texttt{java.security.AccessController}'s \texttt{doPrivileged()} method with an anonymous \emph{instance} of the \texttt{java.security.PrivilegedAction} interface.\footnote{The portal page for Java 2 SDK 1.4.2 security is \cite{JSecOver}; for details on java security architecture see \cite{JSecArch}, for information on the Privileged Block API \cite{JPrivBl}.} 
+
+Within this privileged block, only the direct loading of the sripting engine takes place; after the engine has been loaded, it is returned out of the privileged environment and from there on directly to the method that called \texttt{loadScriptingEngine()}.

@@ -1,0 +1,20 @@
+The \texttt{BWSApplet} class is the centerpiece of the BWS runtime environment. It is embedded automatically during document rewriting in BWS/HTML documents and provides methods for running scripts embedded in or referenced from BWS/HTML documents as well as methods to easily obtain nodes of the current document. It is, as any applet must be, an extention of the \texttt{java.applet.Applet} class.
+
+\texttt{BWSApplet} provides six public methods and one constructor. 
+
+The constructor is a standard constructor that doesn't expect parameters and does nothing besides writing a debug message to the standard output.
+
+Two methods, \texttt{init()} and \texttt{destroy()} are overwriten \texttt{Applet} methods that are automatically executed on loading repective unloading of the applet. 
+
+The \texttt{init()} method creates a new \texttt{BSFManager} and stores three objects to the BSF registry so these are always easily available for any BWS script. These objects are:
+
+\begin{itemize}
+	\item The BWS applet itself.\footnote{Registry key: \texttt{BWSApplet}.}
+	\item The \texttt{java.lang.System.out} object to allow scripts access to the Java console.\footnote{Registry key: \texttt{SystemOut}.}
+	\item The window the applet resides in.\footnote{Registry key: \texttt{DocumentWindow}.}
+\end{itemize}
+
+\texttt{destroy()} is a rudimentary method that only sets the \texttt{BSFManager} \texttt{null} and prints a string to the standard output.
+
+Of the remaining four methods one, \texttt{getNode()}, is a shortcut to obtain a DOM node as a \texttt{JSNode} object using the applet and the node's \texttt{id} as the only parameter to the function.
+
