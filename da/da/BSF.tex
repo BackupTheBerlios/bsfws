@@ -1,1 +1,34 @@
-BSF.tex
+The Bean Scripting Framework (BSF) is
+
+\begin{quotation}
+	a set of Java classes which provides scripting language support within Java applications. It also provides access to Java object and methods from supported scripting languages.\footnote{\cite{BsfFaq}}
+\end{quotation}
+%ref BsfFaq: http://jakarta.apache.org/bsf/faq.html#what-is-bsf
+
+The main accent of BSF usage at the moment\footnote{February 2004} is the use of scripting languages within JSPs and to allow these scripting languages access to the Java class library. Additionally, BSF enables the creation of Java applications complete or partially in scripting languages. To enable these possibilities, BSF provides an API that allows the invokation of scripting engines from Java and an central object registry, the BSF registry, that allows to register object \emph{that are then} available for the scripts called.
+
+BSF was initally developed at an IBM research center with the motivation to provide access to JavaBeans from scripting languages. It was moved to IBM's AphaWorks\footnote{Cf. \cite{IbmAlpha}} site\footnote{A website whereon IBM provides developers access to its latest inovations} where it found significant interest. This led IBM to move it on to its developerWorks\footnote{developerWorks `is IBM's technical resource for developers'\cite{IbmDevelAbout}; it provides technical information and code for developers using IBM and open standards technologies like WebSphere, DB2, Java, Linux, etc.}  site\footnote{Cf. \cite{IbmDevel}} where it was developed as an Open Source project until the release of BSF 2.2. BSF was incorporated into IBM's application server WebSphere\footnote{http://www.ibm.com/websphere} and also into the Xalan XSLT processor developed by the Apache project.
+%ref IbmAlpha: http://alphaworks.ibm.com/, http://alphaworks.ibm.com/about
+%ref IbmDevel: http://www.ibm.com/developerworks
+%ref IbmDevelAbout: http://www.ibm.com/developerworks/aboutdw/
+
+The interest of the Apache project in BSF finally led IBM to hand over the project to the Apache foundation where it is developed since 2002 as an subproject of Jakarta\footnote{\textbf{What is Jakarta?}}. As of February 2004, the current release of BSF is 2.3.
+
+\paragraph{BSF Architecture}
+
+For consists of two primary components, the \texttt{BSFManager} and the \texttt{BSFEngine}. The \texttt{BSFManager} maintains the BSF object registry and handles the scripting engines. To use the BSF, a Java application must instanciate a \texttt{BSFManager} and then either load a scripting engine directly using the \texttt{BSFEngine} interface or indirectly using the \texttt{BSFManager} as a proxy. The \texttt{BSFManager} also caches scripting engines so these only have to be instanciated once.
+
+The \texttt{BSFEngine} interface represents a single scripting engine. Scripting engines are returned by a \texttt{BSFManager}'s \texttt{loadScriptEngine()} method and can then be used to execute scripts passed to them.\footnote{Cf. \cite{BsfManual}.}
+%ref http://jakarta.apache.org/bsf/manual.html
+
+For an overview of the structure of BSF and the two methods of executing scripts see figure \ref{fig:bsfOverview}.
+
+\begin{figure}
+	\centering
+		\includegraphics[width=0.90\textwidth]{bsfOverview}
+	\caption{BSF Overview}
+	\label{fig:bsfOverview}
+\end{figure}
+
+An overview of the methods provided by BSF is available at \cite{BsfManual}.
+

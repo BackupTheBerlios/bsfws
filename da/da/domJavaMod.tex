@@ -80,20 +80,37 @@ Once the desired element has been found, several methods are available for modif
 
 \begin{table}[htbp]
 	\centering
-		\begin{tabular}{lll}
-			Return Value & Method Head & Description \\
-			\texttt{void} & \texttt{addAttribute(String, String)} & sets the specified attribute to the specified value.\\
-			\texttt{Attribute} & \texttt{attribute(int)} & returns the specified attribute.\\
-			\ttfamily Attribute & \texttt{attribute(String)} & returns the specified attribute.\\
-			\texttt{List} & \texttt{attributes()} & returns as a backed\footnote{I.e. any change in the attribute is 
+		\begin{tabular}{ll}
+			\textbf{Return Value} & \textbf{Method Head} \\
+			& \textbf{Description} \\
+			
+			\texttt{void} & \texttt{addAttribute(String name, String value)} \\ 
+			& Sets the attribute \texttt{name} to the value \texttt{value}.\\
+			
+			\texttt{Attribute} & \texttt{attribute(int index)} \\
+			& Returns the attribute at \texttt{index}.\\
+			
+			\ttfamily Attribute & \texttt{attribute(String name)}\\
+			& Returns the attribute \texttt{name}.\\
+			 
+			\texttt{List} & \texttt{attributes()}\\
+			& Returns as a backed\footnote{I.e. any change in the attribute is 
 			  done directly to the referenced Attribute, not to a clone.} \texttt{List}.\\
-			\texttt{String} & \texttt{attributeValue(String)} & Same as \texttt{attribute(String)}, but returns the value instead of the attribute itself.\\
-			\texttt{String} & \texttt{getText()} & returns the text value of the element.\\
-			\texttt{void} & \texttt{setAttributes(List)} & Sets the attributes of the element.\\
-			\texttt{void} & \texttt{setText(String)}\footnote{Inherited unchanged from \texttt{org.dom4j.Node}} & Sets the Text of the Attribute\\
+			  
+			\texttt{String} & \texttt{attributeValue(String name)}\\
+			& Returns the value of the attribute \texttt{name}.\\
+			  
+			\texttt{String} & \texttt{getText()}\\
+			& returns the text value of the element.\\
+			
+			\texttt{void} & \texttt{setAttributes(List attributes)}\\
+			& Sets the attributes of the element.\\
+			
+			\texttt{void} & \texttt{setText(String text)}\footnote{Inherited unchanged from \texttt{org.dom4j.Node}}\\
+			& Sets the Text of the Attribute to \texttt{text}\\
 			
 			  
 		\end{tabular}
-	\caption{dom4j Element Methods}
+	\caption{Important \texttt{org.dom4j.Element} Methods}
 	\label{tab:dom4jElementMethods}
 \end{table}
