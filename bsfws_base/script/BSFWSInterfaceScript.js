@@ -66,6 +66,10 @@
 **			 to which engine the script code should be forwarded)
 **		 -	 script works with MSIE, Mozilla-based browsers (Mozilla 1.4
 **			 and Netscape 7 tested)
+** V0.5		 @ 2003-05-07, changes contributed by Rony G. Flatscher
+**		 -	 id's for body and html tags are not necessary anymore
+**		 -	 html entities used in scripts are decoded (necessary
+**			 for mozilla/netscape
 **
 *******************************************************************************
 **
@@ -125,7 +129,7 @@
 
 var tempArray;
 tempArray=new Array();
-var browserType;
+var browserType=null;
 
 function initBSFWS() {
 
@@ -135,7 +139,23 @@ function initBSFWS() {
         //         -1 = not identified
         browserType=getBrowserType();
 
-        code=document.getElementById('the_body').innerHTML;
+// rgf        code=document.getElementById('the_body').innerHTML;
+
+/*
+        fCh=document.firstChild;
+        sCh=fCh.nextSibling;
+        sHead=fCh.firstChild;
+        sBody=sHead.nextSibling;
+
+        // sBody=fCh.getElementsByName('body').length;
+        alert("fCh="+fCh+", sCH="+sCh);
+        alert("sHead="+sHead+", sBody="+sBody);
+        alert("fCh=\n["+fCh.innerHtml()+"]");
+*/
+
+//        alert("nr of bodies: "+document.getElementsByTagName('body').length);
+        code=document.getElementsByTagName('body')[0].innerHTML;    // ---rgf, 2003-05-03
+//--rgf alert("initBSFWS() after code...");
 
         // getUsedLanguages
         usedLanguages=new Array();
@@ -182,7 +202,7 @@ function initBSFWS() {
 
                 // "6","5" must be replaced by language.length for scripting
                 // language independance,
-                // browser specific code,  mozilla is 6,curstring.length-1
+                // browser specific code, mozilla is 6,curstring.length-1
                 if (browserType==0) {
                         functionname=curstring.substring(6,curstring.length-1);
                 } else if (browserType==1) {
@@ -225,8 +245,25 @@ function initBSFWS() {
                 code=code.replace(endObjectRegExp,'<param name="code" value="bsfWSInterfaceApplet.class"><param name="mayscript" value="true"><param name="scriptable" value="true"></object>');
         }
 
-        document.getElementById('the_body').innerHTML=code;
-        //alert(document.getElementById('the_body').innerHTML);
+// ---rgf        document.getElementById('the_body').innerHTML=code;
+        // showTags();
+        document.getElementsByTagName('body')[0].innerHTML=code;    // ---rgf, 2003-05-03
+        // alert("now body got changed...");
+        // showTags();
+
+/*
+        var oldNode=document.getElementsByTagName('body')[0];
+        var oNewNode = document.createElement("body");
+        oNewNode.innerHTML = code;
+        oldNode.replaceNode(oNewNode);
+        alert ("newCode=["+code+"]");
+*/
+
+// alert("initBSFWS() after setting body to new code...");
+
+// alert ("before calling initBSF() ..."+new Date());
+//        window.setTimeout("eval(initBSF())", 3000);
+
         initBSF();
 }
 
@@ -329,9 +366,9 @@ function getLanguages() {
         // and search for each languages handlers individually
 
         // read complete document into a variable for parsing by the script
-        theDocument=document.getElementById("the_document");
         //alert(theDocument);
-        theDocument=document.getElementById("the_document").innerHTML;
+        // theDocument=document.getElementById("the_document").innerHTML;
+        theDocument=document.getElementsByTagName("html")[0].innerHTML;
 
         // create an array where the used languages are stored
         usedLanguagesDup=new Array();
@@ -374,7 +411,7 @@ function getBrowserType() {
 //                // test if mozilla-style js works
 //                return 0;
 // ----
-// use 'mozilla-style' for konqueror (konqueror doesn't work yet)
+// use 'mozilla-style' for konqueror
 	} else if (navigator.userAgent.indexOf("Konqueror")>0) {
 		return 0;
         } else {
@@ -385,13 +422,24 @@ function getBrowserType() {
 
 // dynamic replacement for calling bsf-functions
 function callBSF(idToCall) {
-	//        alert(document.getElementById(idToCall).type);
 	scriptTag=document.getElementById(idToCall);
-	bsfWSInterfaceApplet.executeScript(scriptTag.innerHTML,scriptTag.type);
 
-	// callrx will be replaced with a direct executeScript call to the applet
-	// when the language is determined from the mime-type of the script
-        
-	//alert(document.getElementById(idToCall).innerHTML);
-	// eval(callrx(document.getElementById(idToCall).innerHTML));
+        code=scriptTag.innerHTML;   // seems Netscape turns "<", ">", "&" into entities!
+
+        if (browserType!=1) {
+           code=decodeEntities(code);
+        }
+        // alert (new Date()+" code: "+code);
+
+	bsfWSInterfaceApplet.executeScript(code,scriptTag.type);
+}
+
+function decodeEntities (text) {          // ---rgf, 2003-05-05
+       re=/&gt;/g;
+       text=text.replace(re, ">");
+       re=/&lt\;/g;
+       text=text.replace(re, "<");
+       re=/&amp\;/g;
+       text=text.replace(re, "&");
+       return text;
 }
