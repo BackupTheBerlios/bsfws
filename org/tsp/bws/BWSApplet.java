@@ -103,15 +103,6 @@ public class BWSApplet extends Applet {
 			System.out.println("[BWSApplet-init] got a window: " + jsWindow);
 		}
 		mgr.registerBean("DocumentWindow",jsWindow);		
-
-//		String myScript="AppletObj=BSF('lookupBean','BWSApplet')\n";
-//		myScript+="SystemOutObj=BSF('lookupBean','SystemOut')\n";
-//		myScript+="ANode=BSF('invoke',AppletObj,'getNode','ueberschrift')\n";
-//		myScript+="NodeString=BSF('invoke',ANode,'setStyleAttribute','fontFamily','Verdana')\n";
-//		myScript+="CALL BSF 'invoke',SystemOutObj,'println',NodeString\n";
-
-
-//		this.executeScript("rexxscript");
 	}
 	
 	/** reads a script form the document and executes it
