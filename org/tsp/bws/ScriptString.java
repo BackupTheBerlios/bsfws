@@ -97,18 +97,18 @@ class ScriptString {
 			System.out.println("[ScriptString.parseParameters] parametersString: " + parametersString);
 		}
 
-		// now split with parametersString.splite(",");		
+		// now split with parametersString.split(",");
 		String[] parametersArray=parametersString.split(",");
-		
+
 		for (int parametersCounter=0;parametersCounter<parametersArray.length;parametersCounter++) {
 
 			parametersArray[parametersCounter]=parametersArray[parametersCounter].trim();
 
 			if (debugLevel>0) {
-				System.out.println("[ScriptString.parseParameters] parameter " + parametersCounter + ": " + parametersArray[parametersCounter]);
+				System.out.println("[ScriptString.parseParameters] +- parameter " + parametersCounter + ": " + parametersArray[parametersCounter]);
 			}
-		}			
-		
+		}
+
 		// return a String array
 		return parametersArray;
 	}
@@ -116,5 +116,9 @@ class ScriptString {
     /** returns the script id of the referenced script */
     public String getScriptId() {
 		return scriptId;
+    }
+    
+    public String[] getParameters() {
+    	return parameters;
     }
 }
