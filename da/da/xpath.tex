@@ -1,4 +1,5 @@
-XPath, standarized by the W3C is a XML element query language: It allowes to specify certain criteria that are then used to select all elements of a XML document that match these criteria. The easiest way is specifying the path to an element, to address the \texttt{h1} element in figure \ref{fig:simpleDomTree}, the apropriate XPath expression would be \verb|/html/body/h1|, that is, the root element (\verb-/-) and all relevant children types separated by (forward) slashes.
+XPath, standarized by the W3C in \cite{W3XPDef} is a XML element query language: It allowes to specify certain criteria that are then used to select all elements of a XML document that match these criteria. The easiest way is specifying the path to an element, to address the \texttt{h1} element in figure \ref{fig:simpleDomTree}, the apropriate XPath expression would be \verb|/html/body/h1|, that is, the root element (\verb-/-) and all relevant children types separated by (forward) slashes.
+%w3xpdef url:http://www.w3.org/TR/xpath
 
 For selecting the \texttt{h1} content, the procedure would be this:
 
@@ -17,3 +18,5 @@ This would allow to use the following procedure for selecting the \texttt{h1} co
 \end{enumerate}
 
 The difference between the two examples using XPath above is that the second example would return any \texttt{h1} element within the document independant of its position (i.e. it would also return a \texttt{h1} lying under the \texttt{p} element in the given document whereas the first expression would only reply \texttt{h1} elements that are exacly in the third layer of the document and have \texttt{html/body} as parents.
+
+Besides these selections based on the elment type, XPath supports selecting elements by the existence of specified attributes, by attribute values and several other criteria. A tutorial on the miscellaneous ways of selecting XML nodes using XPath is available from \cite{w3xptut} %http://www.zvon.org/xxl/XPathTutorial/General/examples.html.

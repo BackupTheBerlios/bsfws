@@ -1,0 +1,47 @@
+The first step in modifying an existing\footnote{dom4j also provides the possibility to build DOM trees/XML documents form scratch. As this possibility is not used in BWS, it is not \emph{detailed} in this paper.}  DOM in Java is parsing the DOM underlying XML document and building the DOM tree in Java. dom4j uses the Simple API for XML (SAX)\footnote{SAX is available from \cite{SaxHP}} for this purpose.
+
+%saxhp=www.saxproject.org
+
+Reading the XML document is done by using a \texttt{org.dom4j.io.SAXReader} objects \texttt{read()} method on the source of the XML document; the source may be a \texttt{String}, an \texttt{URL}, a \texttt{InputStream}, a \texttt{Reader} or a \texttt{org.sax.InputSource}. This method returns a DOM tree as an \texttt{org.dom4j.Document}.
+
+The root element of the parsed document can then be obtained using the \texttt{getRootElement()} method on the document returned from the \texttt{SAXReader}. Elements in dom4j are objects of the class \texttt{org.dom4j.Element}.
+
+To allow access to child elements of the current element, each \texttt{Element} provides a standard Java \texttt{Iterator} that allows iteration over all child objects. Figure \ref{fig:AMinimalDom4jExample} shows a minimal dom4j example that provides two methods: \texttt{parseDocFromURL()} to read an XML document from an URL and \texttt{printRootChildren()} to print the element types of all direct child nodes of the root element of the document read with the \texttt{parseDocFromURL()} method.
+
+\begin{figure}[htb]
+  \begin{verbatim}
+import java.util.Iterator;
+import java.net.URL;
+
+import org.dom4j.*;
+import org.dom4j.io.SAXReader;
+
+public class Dom4jExample {
+  private Document dom4jDocument;
+  
+  /* SAXReader.read() throws a DocumentException when problems reading
+   * or parsing an XML document occur, for example if the document is
+   * not available at the specified place or if it is not well-formed.
+   */
+  public void parseDocFromURL(URL anURL) throws DocumentException {
+    SAXReader xmlReader = new SAXReader();
+    this.dom4jDocument = xmlReader.read(anURL);
+  }
+  
+  public void printRootChildren() {
+    Element documentRoot = this.dom4jDocument.getRootElement();
+    
+    Iterator elementIterator = documentRoot.elementIterator();
+    
+    // iterate over all children
+    while(elementIterator.hasNext()) {
+      Element currentElement = (Element)elementIterator.next();
+      System.out.println(currentElement.getName());
+    }
+  }
+}
+  \end{verbatim}
+	
+	\caption{A minimal dom4j example}
+	\label{fig:AMinimalDom4jExample}
+\end{figure}
