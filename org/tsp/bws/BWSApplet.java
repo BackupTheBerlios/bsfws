@@ -1,6 +1,6 @@
 /******************************************************************************
  * Class BWSApplet.java
- * 2002-11-23 by Tobias Specht
+ * 2003-11-15 by Tobias Specht
 *******************************************************************************
  * This applet handles DOM->BSF communication, passes scripts from the document
  * to their respective scripting engines and provides methods scripting
@@ -16,15 +16,15 @@
  *
  * Planned improvements
  * --------------------
- * 
- * - multi-scripting-engine support
+ *
+ * - multi-scripting-engine support (done, give engine via type string)
  * - use apply instead of eval
  * - parse script invokation for arguments and return value
- * - execute code using BSFManager (instead of BSFEngine)
- * 
+ * - execute code using BSFManager (instead of BSFEngine)?
+ *
  * see also bws wiki:
  *   http://openfacts.berlios.de/index-en.phtml?title=BSFWebScripting
- * 
+ *
 *******************************************************************************
  *
  * Licencing Information
@@ -81,22 +81,22 @@ import netscape.javascript.*;
 public class BWSApplet extends Applet {
    // the bsf manager
    private BSFManager mgr;
-	
+
    // object for the browser window
    private JSObject jsWindow;
-	
+
    // an int for setting the debug leve
    // 0 = no debug output
    // 1 = normal debug
-   int debugLevel=1;
-	
+   private static int debugLevel=1;
+
    /** the standard constructor, nothing special */
    public BWSApplet() {
       if (debugLevel>0) {
 	 System.out.println("[BWSApplet constructor] applet object created ...");
       }
    }
-   
+
    /** init creates a BSFManager, obtains the applet window and registers
     * the applet and java.System.out to the bsf registry
     */
@@ -104,21 +104,21 @@ public class BWSApplet extends Applet {
       // first the manager is created
       mgr=new BSFManager();
       if (debugLevel>0) {
-	 System.out.println("[BWSApplet-init] BSFManager instantiated: "+mgr);
+		System.out.println("[BWSApplet-init] BSFManager instantiated: "+mgr);
       }
-      
+
       // register applet and java.System
       mgr.registerBean("BWSApplet",this);
       mgr.registerBean("SystemOut",System.out);
-      
+
       // get the window and register it
       jsWindow=JSObject.getWindow(this);
       if (debugLevel>0) {
-	 System.out.println("[BWSApplet-init] got a window: " + jsWindow);
+	  	System.out.println("[BWSApplet-init] got a window: " + jsWindow);
       }
-      mgr.registerBean("DocumentWindow",jsWindow);		
+      mgr.registerBean("DocumentWindow",jsWindow);
    }
-   
+
    /** reads a script form the document and executes it
     * at the moment, only rexx is used as scripting language
     * Must be modified to read the script from dom (instead of getting
@@ -129,48 +129,47 @@ public class BWSApplet extends Applet {
    // code execution could probably also be done by the BSFManager, i.e.
    // without explicitly loading a scripting engine
    public void executeScript(String scriptString) {
-      // going to an inner class, all variables that shall be accessible
-      // must be declared final
+     // going to an inner class, all variables that shall be accessible
+     // must be declared final
 
-       // create a ScriptString
-       ScriptString currentScriptString=new ScriptString(scriptString);
-       
-       // obtain script id from the script string
-       String scriptId=currentScriptString.getScriptId();
+     // create a ScriptString
+     ScriptString currentScriptString=new ScriptString(scriptString);
 
-      // store script language (=scripting engine) to a final var to
-      // be able to use it in doPrivileged
-      final String scriptingEngine=this.getScriptingEngine(scriptId);
+     // obtain script id from the script string
+     String scriptId=currentScriptString.getScriptId();
 
-      try {
-	 BSFEngine evalEngine = (BSFEngine) AccessController.doPrivileged(new PrivilegedAction() {
-	    public Object run() {
-	       BSFEngine currentEngine;
-	       
-	       try {
+     // store script language (=scripting engine) to a final var to
+     // be able to use it in doPrivileged
+     final String scriptingEngine=this.getScriptingEngine(scriptId);
 
-		   // use scriptingEngine var
-		   // currentEngine=mgr.loadScriptingEngine("rexx");
-		   currentEngine=mgr.loadScriptingEngine(scriptingEngine);
-		   System.out.println("[BWSApplet-executeScript] scripting engine loaded successfully");
-		   return currentEngine;
-	       } catch (Exception e) {
-		   System.out.println("[BWSApplet-executeScript] loading engine failed!");
-		   e.printStackTrace();
-	       }
-	       return null;
-	    }
+     try {
+       BSFEngine evalEngine = (BSFEngine) AccessController.doPrivileged(new PrivilegedAction() {
+	   public Object run() {
+	   BSFEngine currentEngine;
+
+	   try {
+         // use scriptingEngine var
+         // currentEngine=mgr.loadScriptingEngine("rexx");
+         currentEngine=mgr.loadScriptingEngine(scriptingEngine);
+         System.out.println("[BWSApplet-executeScript] scripting engine loaded successfully");
+         return currentEngine;
+       } catch (Exception e) {
+         System.out.println("[BWSApplet-executeScript] loading engine failed!");
+         e.printStackTrace();
+       }
+       return null;
+     }
 	 });
-	 
+
 	 // lookup script from the given id
-	 //JSNode scriptContainer=getNode(scriptId);
-	 //String script=scriptContainer.getInnerHTML();
-	 String script=scriptId;
-	 
+	 JSNode scriptContainer=getNode(scriptId);
+	 String script=scriptContainer.getInnerHTML();
+	 //String script=scriptId;
+
 	 System.out.println("[BWSApplet-executeScript] script code");
 	 System.out.println(script);
 	 System.out.println("[BWSApplet-executeScript] script code end");
-	 
+
 	 // execute script
 	 try {
 	    evalEngine.eval("",0,0,script);
@@ -181,10 +180,10 @@ public class BWSApplet extends Applet {
 	 System.out.println("[BWSApplet-executeScript] exception at ?");
       }
    }
-   
+
    /** returns the html/xml node with the specified id
     * @param nodeId html/xml id attribute of the desired node
-    */ 
+    */
    public JSNode getNode(String nodeId) {
       JSNode tmpJSNode=new JSNode(jsWindow,nodeId);
       return tmpJSNode;
@@ -197,16 +196,17 @@ public class BWSApplet extends Applet {
 	return "Hallo";
     }
 
-    /** reades the type attribute of the script and parses it for the scripting engine 
+    /** reades the type attribute of the script and parses it for the scripting engine
      * @scriptId id of the script tag
      */
     public String getScriptingEngine(String scriptId) {
-	JSNode tmpJSNode=new JSNode(jsWindow,scriptId);
-	String typeString=tmpJSNode.getAttribute("type");
+		JSNode tmpJSNode=new JSNode(jsWindow,scriptId);
+		String typeString=tmpJSNode.getAttribute("type");
 
-	
-
-	// get the relevant substring from the typestring
-	return typeString;
+		// get the relevant substring from the typestring
+		// typstring is bsf/engine
+		String engineString=typeString.substring(typeString.indexOf("/")+1,typeString.length());
+		
+		return engineString;
     }
 }
