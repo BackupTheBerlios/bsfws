@@ -5,19 +5,19 @@ The starting point of a BWS compliant document is a standard well-formed HTML do
 
 \item For every start tag, there must be a closing tag, i.e. for every \texttt{<li>} tag there must be a
 \texttt{</li>} tag; an exception to this rule is allowed for tags that have no content, e.g. \texttt{<br>}, these
-% tags must be given in the combined notation
-% \texttt{<br/>}. As some browsers do not accept the later variant, it is
-% recommended to use explicit start and end tags and, in cases where this is not possible, seperate the closing slash 
-% by a space from the tag itself, e.g. \texttt{<br />}. This notation should work with any BWS supporting browser.
+ tags must be given in the combined notation
+ \texttt{<br/>}. As some browsers do not accept the later variant, it is
+ recommended to use explicit start and end tags and, in cases where this is not possible, seperate the closing slash 
+ by a space from the tag itself, e.g. \texttt{<br />}. This notation should work with any BWS supporting browser.
 
 
-%\item Elements can have subelements, they must use strict nesting, 'overlapping' tags, for example \texttt{<h1>Text<center>Centered</h1>also centered</center>}, are not allowed.
+\item Elements can have subelements, they must use strict nesting, 'overlapping' tags, for example \texttt{<h1>Text<center>Centered</h1>also centered</center>}, are not allowed.
 
-%\item Tags and attributes are case-sensitve, for example \texttt{<h1>} and \texttt{</H1>} are not matching.
+\item Tags and attributes are case-sensitve, for example \texttt{<h1>} and \texttt{</H1>} are not matching.
 
-%\item Attributes must have exactly one value, empty attributes that are allowed in standard HTML, e.g. the \texttt{mayscript} attribute of objects must be given as \texttt{<object mayscript="true" />}, not only \texttt{<object mayscript>}, all attributes must be enclosed in quotes.
+\item Attributes must have exactly one value, empty attributes that are allowed in standard HTML, e.g. the \texttt{mayscript} attribute of objects must be given as \texttt{<object mayscript="true" />}, not only \texttt{<object mayscript>}, all attributes must be enclosed in quotes.
 
-%\item The document must have exactly one root element, i.e. a construction \texttt{<html><!-- htmlcode --></html><somethingElse></somethingElse>} is not allowed. 
+\item The document must have exactly one root element, i.e. a construction \texttt{<html><!-- htmlcode --></html><somethingElse></somethingElse>} is not allowed. 
 
 %example in figure? multiline?
 \end{itemize}
