@@ -1,4 +1,4 @@
-/******************************************************************************
+?/******************************************************************************
 ** Script BSFWSInterfaceScript.js
 ** 2002-11-23 by Tobias Specht
 *******************************************************************************
@@ -71,7 +71,10 @@
 **		-	html entities used in scripts are decoded (necessary
 **			for mozilla/netscape
 ** V0.51	@ 2003-05-08
-**		-	no id necessary for the applet anymore 
+**		-	!(no id necessary for the applet anymore)
+** V0.52	@ 2003-05-25
+** 		-	applet id still necessary
+**		-	is 1.0RC1
 **
 *******************************************************************************
 **
@@ -139,22 +142,22 @@ function initBSFWS() {
 
         // determine used browser:
         //         0 = mozilla/gecko
-        //        1 = internet explorer
+        //         1 = internet explorer
         //         -1 = not identified
         browserType=getBrowserType();
 
 // rgf        code=document.getElementById('the_body').innerHTML;
 
 /*
-        fCh=document.firstChild;
-        sCh=fCh.nextSibling;
-        sHead=fCh.firstChild;
-        sBody=sHead.nextSibling;
-
-        // sBody=fCh.getElementsByName('body').length;
-        alert("fCh="+fCh+", sCH="+sCh);
-        alert("sHead="+sHead+", sBody="+sBody);
-        alert("fCh=\n["+fCh.innerHtml()+"]");
+*        fCh=document.firstChild;
+*        sCh=fCh.nextSibling;
+*        sHead=fCh.firstChild;
+*        sBody=sHead.nextSibling;
+*
+*        // sBody=fCh.getElementsByName('body').length;
+*        alert("fCh="+fCh+", sCH="+sCh);
+*        alert("sHead="+sHead+", sBody="+sBody);
+*        alert("fCh=\n["+fCh.innerHtml()+"]");
 */
 
 //        alert("nr of bodies: "+document.getElementsByTagName('body').length);
@@ -444,16 +447,17 @@ function decodeEntities (text) {          // ---rgf, 2003-05-05
 }
 
 // not used yet (and not working yet)
-function getApplet() {
-	documentApplets=document.getElementsByTagName('object');
-	numberOfApplets=(documentApplets.length);
-	for (theAppletCounter=0;theAppletCounter<numberOfApplets;theAppletCounter++) {
-			alert("found the following applet:" + documentApplets[theAppletCounter].code);
-		if (documentApplets[theAppletCounter].code.indexOf("bsfWSInterfaceApplet")>-1) {
-
-			return documentApplets[theAppletCounter];
-		}
-	}
-	alert("necessary applet (bsfWSInterfaceApplet.class) not found! BWS will not work!");
-	return null;	
-}
+/*function getApplet() {
+ *	documentApplets=document.getElementsByTagName('object');
+ *	numberOfApplets=(documentApplets.length);
+ *	for (theAppletCounter=0;theAppletCounter<numberOfApplets;theAppletCounter++) {
+ *			alert("found the following applet:" + documentApplets[theAppletCounter].code);
+ *		if (documentApplets[theAppletCounter].code.indexOf("bsfWSInterfaceApplet")>-1) {
+ *
+ *			return documentApplets[theAppletCounter];
+ *		}
+ *	}
+ *	alert("necessary applet (bsfWSInterfaceApplet.class) not found! BWS will not work!");
+ *	return null;	
+ *}
+ */
