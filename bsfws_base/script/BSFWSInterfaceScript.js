@@ -181,7 +181,7 @@ function initBSFWS() {
                 // functionname=script
                 // names of functions must not contain any brackets
 
-                // soll rexx direkt ausgeführt werden, wäre es notwendig,
+                // soll rexx direkt ausgeführt werden, wäre es notwendig,
                 // routinen/methodenaufrufe eindeutig zu kennzeichnen!
 
 // different with dynamic handler-calling
