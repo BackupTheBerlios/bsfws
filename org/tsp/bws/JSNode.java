@@ -5,15 +5,15 @@
 ** This class capsules the DOM-node object provided by the Mozilla JavaScript
 ** engine
 *******************************************************************************
-**
-** Changelog
-** ---------
-**
-** V0.1   @ 2003-01-21
+ *
+ * Changelog
+ * ---------
+ *
+ * V0.1   @ 2003-01-21
  * V0.2   @ 2003-12-12
  *   Nearly complete rewrite, JSNode should no work without problems with
  *   any DOM/LiveConnect compliant browser
-**
+ *
 *******************************************************************************
 **
 ** Planned improvements - Release criteria:
@@ -64,9 +64,17 @@ package org.tsp.bws;
 import java.lang.*;
 import netscape.javascript.*;
 
-// it must be secured that all created notes get their ID-Attribute set!
-// so that they can be referenced via document.getElementById()
-
+/** 
+ * This class capsules the DOM-node object provided by the JavaScript/ECMAScript
+ * engine.
+ * All core methods defined in the DOM (Core) Level 1 Standard as methods of DOM node
+ * are available. Additionally, the methods of the <tt>CharacterData</tt> and the
+ * <tt>Element</tt> interfaces are implemented except the <tt>Element</tt>'s
+ * <tt>getElementsByTagName()</tt> and <tt>normalize()</tt> methods.
+ *
+ * @author Tobias Specht
+ * @version 1.0
+ */
 public class JSNode {// extends JSObject {
     private JSObject node;
     private JSObject jsWindow;
@@ -82,6 +90,12 @@ public class JSNode {// extends JSObject {
 
 	private String htmlId;
 
+	/**
+	 * Creates a new JSNode reference to the indicated DOM node.
+	 *
+	 * @param window the window the DOM node resides in.
+	 * @param nodeRef the <tt>id</tt> of the node.
+	 */
     public JSNode(JSObject window, String nodeRef) {
 		htmlId=nodeRef;
 		Object[] callArgs=new Object[1];
@@ -101,9 +115,10 @@ public class JSNode {// extends JSObject {
     }
 
 	/**
-	 * creates a new JSNode in the specified window and from an existing node
-	 * @param window the base window of the new JSNode
-	 * @param existingNode the node that shall be constructed in this window
+	 * Creates a new JSNode in the specified window and from an existing {@link JSObject} node.
+	 *
+	 * @param window the base window of the new JSNode.
+	 * @param existingNode the node that shall be constructed in this window.
 	 */
 	public JSNode(JSObject window, JSObject existingNode) {
 		jsWindow=window;
@@ -112,11 +127,12 @@ public class JSNode {// extends JSObject {
 	}
 
 	/**
-	 * creates a new JSNode in the specified window and from an existing node, also
-	 * sets the <tt>id</tt> attribute so the element can be accessed easily later
-	 * @param window the base window of the new JSNode
-	 * @param existingNode the node that shall be constructed in this window
-	 * @param id the id under which the node shall be available in the dom
+	 * Creates a new JSNode in the specified window and from an existing node, also
+	 * sets the <tt>id</tt> attribute so the element can be accessed easily later.
+	 *
+	 * @param window the base window of the new JSNode.
+	 * @param existingNode the node that shall be constructed in this window.
+	 * @param id the id under which the node shall be available in the dom.
 	 */
 	public JSNode(JSObject window, JSObject existingNode, String id) {
 		jsWindow=window;
@@ -125,12 +141,18 @@ public class JSNode {// extends JSObject {
 		node=existingNode;
 	}
 
+	/**
+	 * Overwritten destructor, prints a 'notice of destruction' to the standard out.
+	 */
 	protected void finalize() {
 		System.out.println("[JSNode.finalize] deleting reference to this node: " + node.toString());
 	}
 
-	/** creates a JSNode from an existing JavaScript/JSObject node
-	 * @param newNode the pre-existing node
+	/**
+	 * Creates a JSNode from an existing JavaScript/JSObject node.
+	 *
+	 * @param newNode the pre-existing node.
+	 * @return the newly created JSNode.
 	 */
     public JSNode getJSNode(JSObject newNode) {
 		JSNode tempNode;
@@ -142,16 +164,31 @@ public class JSNode {// extends JSObject {
 		}
 		return tempNode;
     }
-
+	
+	/**
+	 * Returns the JSObject underlying this JSNode.
+	 *
+	 * @return the underlying node as JSObject.
+	 */
 	public JSObject getNode() {
 		return node;
 	}
 
+	/**
+	 * Returns this node's parent window.
+	 *
+	 * @return the parent window as JSObject.
+	 */
     private JSObject getWindow() {
 		// get the window the node exists in
 		return jsWindow;
     }
 
+	/**
+	 * Returns this node's parent document.
+	 *
+	 * @return the parent document as JSObject.
+	 */
     private JSObject getDocument() {
 		// get the document the node exists in
 		System.out.println(jsWindow.toString());
@@ -160,9 +197,12 @@ public class JSNode {// extends JSObject {
 		return theDocument;
     }
 
-	/** creates a attribute node of the specified type and with the specified value
-	 * @param attributeType type of the attribute
-	 * @param attributeValue value the attribute will be set to
+	/** 
+	 * Creates a attribute node of the specified type and with the specified value.
+	 *
+	 * @param attributeType type of the attribute.
+	 * @param attributeValue value the attribute will be set to.
+	 * @return a JSNode referencing the attribute.
 	 */
 	public JSNode createAttribute(String attributeType, String attributeValue) {
 		callArgs1[0]=attributeType;
@@ -173,8 +213,11 @@ public class JSNode {// extends JSObject {
 		return theNode;
 	}
 
-	/** creates a HTML element (for example <tt>&lt;h1&gt;</tt>)
-	 * @param elementType type of the element
+	/** 
+	 * Creates a HTML element (for example <tt>&lt;h1&gt;</tt>).
+	 *
+	 * @param elementType type of the element.
+	 * @return a JSNode referencing this element.
 	 */
 	public JSNode createElement(String elementType) {
 		callArgs1[0]=elementType;
@@ -183,8 +226,11 @@ public class JSNode {// extends JSObject {
 		return theNode;
 	}
 
-	/** creates a text node (text between html nodes)
+	/** 
+	 * Creates a text node (text between html nodes).
+	 *
 	 * @param elementText the text
+	 * @return a JSNode referencing the TextNode.
 	 */
 	public JSNode createTextNode(String elementText) {
 		callArgs1[0]=elementText;
@@ -193,13 +239,20 @@ public class JSNode {// extends JSObject {
 		return theNode;
 	}
 
-	/** returns the <tt>id</tt> attribute of the object */
+	/** 
+	 * Returns the <tt>id</tt> attribute of the Object.
+	 *
+	 * @return The <tt>id</tt> attribute of the underlying DOM node.
+	 */
     public String getIdentifier() {
 		return this.getAttribute("id");
     }
 
-    /** appends a child to the current node as the last child
-     * @param childNode the node to be appended
+    /** 
+     * Appends a child to the current node as the last child.
+     *
+     * @param childNode the node to be appended.
+     * @return Integer 0.
      */
     public int appendChild(JSNode childNode) {
 		Object[] callArgs=new Object[1];
@@ -210,9 +263,22 @@ public class JSNode {// extends JSObject {
 		return 0;
     }
 
-	/** appends data to the specified child
-	 * @param childId append to the n'th child
-	 * @param data the data to be appended
+	/** 
+	 * Append the string to the end of the character data of the node. DOM (Core) Level 1 conforming implementation.
+	 *
+	 * @param appendString the <tt>String</tt> to be appended.
+	 */
+	public void appendData(String appendString) {
+		callArgs1[0]=appendString;
+		node.call("appendData",callArgs1);
+	}
+
+	/** 
+	 * Appends data to the specified child.
+	 *
+	 * @param childId append to the n'th child.
+	 * @param data the data to be appended.
+	 * @return Integer 0.
 	 */
     public int appendData(int childId, String data) {
 		if (debug==1) {
@@ -244,21 +310,40 @@ public class JSNode {// extends JSObject {
 		return 0;
     }
 
-	/** creates a clone of the current node
-	 * @param sub specifies if the nodes children shall be cloned or if only the node itself is cloned
+	/** 
+	 * Creates a clone of the current node.
+	 *
+	 * @param sub specifies if the nodes children shall be cloned or if only the node itself is cloned.
+	 * @return a reference too the clone.
 	 */
     public JSNode cloneNode(boolean sub) {
-		Object[] callArgs=new Object[1];
-		callArgs[0]=new Boolean(sub);
-		JSObject newNode=(JSObject)node.call("cloneNode",callArgs);
+//		Object[] callArgs=new Object[1];
+		callArgs1[0]=new Boolean(sub);
+//		callArgs[0]=new Boolean(sub);
+		JSObject newNode=(JSObject)node.call("cloneNode",callArgs1);
 		JSNode newJSNode=this.getJSNode(newNode);
 		return newJSNode;
     }
 
-	/** deletes part of the data in the specified child of the current node
-	 * @param childId delete data from the childNumber'th child
-	 * @param startPosition delete data from this position
-	 * @param number delete as many characters
+	/** 
+	 * Remove a range of characters from the node. DOM (Core) Level 1 conforming implementation.
+	 *
+	 * @param offset The offset from which to remove characters.
+	 * @param count The number of characters to delete.
+	 */
+	public void deleteData(int offset, int count) {
+		callArgs2[0]=new Integer(offset);
+		callArgs2[1]=new Integer(count);
+		node.call("deleteData",callArgs2);
+	}
+
+	/** 
+	 * Deletes part of the data in the specified child of the current node.
+	 * 
+	 * @param childId delete data from the childNumber'th child.
+	 * @param startPosition delete data from this position.
+	 * @param number delete as many characters.
+	 * @return Integer 0.
 	 */
     public int deleteData(int childId, int startPosition, int number) {
 		if (debug==1) {
@@ -283,8 +368,11 @@ public class JSNode {// extends JSObject {
 		return 0;
     }
 
-	/** returns the value of the specified attribute
-	 * @param attributeName the name of the attribute whose value shall be returned
+	/** 
+	 * Returns the value of the specified attribute.
+	 * 
+	 * @param attributeName the name of the attribute whose value shall be returned.
+	 * @return the value of the specified attribute as <tt>String</tt>.
 	 */
     public String getAttribute(String attributeName) {
 		Object[] callArgs=new Object[1];
@@ -298,8 +386,11 @@ public class JSNode {// extends JSObject {
 		return attribute;
     }
 
-	/** returns the specified attribute of the node as a node IMPLEMENTATION????
-	 * @param attributeName the attribute that shall be returned
+	/** 
+	 * Returns the specified attribute of the node as a node.
+	 *
+	 * @param attributeName the attribute that shall be returned.
+	 * @return the specified attribute as a JSNode.
 	 */
     public JSNode getAttributeNode(String attributeName) {
 		Object[] callArgs=new Object[1];
@@ -309,16 +400,23 @@ public class JSNode {// extends JSObject {
 		return attributeJSNode;
     }
 
-    /** returns if the node has any child nodes */
+    /** 
+     * Check if the node has got any child nodes.
+     *
+     * @return <tt>true</tt> if the node has child nodes, else <tt>false</tt>.
+     */
     public boolean hasChildNodes() {
 		Object[] callArgs=new Object[0];
 		Boolean ergebnis=(Boolean) node.call("hasChildNodes",callArgs);
 		return ergebnis.booleanValue();
     }
 
-	/** inserts a child node in front of another node
+	/**
+	 * Inserts a child node in front of another node.
+	 *
 	 * @param newNode the node that will be inserted
 	 * @param positionNode the node before which the new node will be inserted
+	 * @return Integer 0.
 	 */
 	public int insertBefore(JSNode newNode, JSNode positionNode) {
 		JSObject jsNewNode=newNode.getNode();
@@ -352,11 +450,25 @@ public class JSNode {// extends JSObject {
     }
 	*/
 
-	/** inserts string data in a nodes child starting from a given position
+	/** 
+	 * Inserts data at the specified character offset. DOM (Core) Level 1 conforming implementation.
 	 *
-	 * @param childId number of the child where the data will be inserted
-	 * @param position position at which the string will be inserted
-	 * @param data String to be inserted
+	 * @param offset the offset of the <tt>String</tt> to be inserted.
+	 * @param insertString the <tt>String</tt> to be inserted.
+     */
+    public void insertData(int offset, String insertString) {
+    	callArgs2[0]=new Integer(offset);
+    	callArgs2[1]=insertString;
+    	node.call("insertData",callArgs2);
+    }
+
+	/** 
+	 * Inserts string data in a nodes child starting from a given position.
+	 *
+	 * @param childId number of the child where the data will be inserted.
+	 * @param position position at which the string will be inserted.
+	 * @param data String to be inserted.
+	 * @return Integer 0.
 	 */
     public int insertData(int childId, int position, String data) {
 		if (debug==1) {
@@ -381,9 +493,11 @@ public class JSNode {// extends JSObject {
 		return 0;
     }
 
-	/** removes an attribute (sets it to null)
+	/** 
+	 * Removes an attribute (sets it to null) from a DOM node.
 	 *
-	 * @param attributeName name of the attribute to be removed
+	 * @param attributeName name of the attribute to be removed.
+	 * @return Integer 0.
 	 */
     public int removeAttribute(String attributeName) {
 		if (debug==1) {
@@ -394,10 +508,28 @@ public class JSNode {// extends JSObject {
 		return 0;
     }
 
-	/** removes an attribute node. This is of limited use as on microsoft internet explorer
-	 *  as attributes are not numbered in order of appearance.
+    /** 
+     * Removes and returns the specified attribute; DOM (Core) Level 1 conforming implementation.
 	 *
-	 * @param attributeIdentifier number of the identifier that is required
+     * @param oldAttr The node to remove from the attribute list.
+     * @return the removed attribute as a JSNode.
+     */
+    public JSNode removeAttributeNode(JSNode oldAttr) {
+    	callArgs1[0]=oldAttr.getNode();
+    	JSObject returnedAttr=(JSObject)node.call("removeAttributeNode",callArgs1);
+    	JSNode toBeReturned=new JSNode(jsWindow,returnedAttr);
+    	return toBeReturned;
+    }
+
+	/** 
+	 * Removes an attribute node. This is of limited use as on microsoft internet explorer
+	 * as attributes are not numbered in order of appearance.
+	 *
+	 * @param attributeIdentifier number of the attribute to be removed. This is either
+	 *	 	  	the position of the attribute specified in the HTML tag (on Mozilla, Opera, etc.)
+	 *			or the position of the attribute in all attributes theoretically available for
+	 *			the attribute's element (on Internet Explorer)
+	 * @return Integer 0.
 	 */
     public int removeAttributeNode(int attributeIdentifier) {
     	JSObject attributesNode=(JSObject)node.getMember("attributes");
@@ -421,9 +553,25 @@ public class JSNode {// extends JSObject {
 		return 0;
     }
 
-	/** removes a dom node from the tree, nodes are counted differently on ie and mozilla
+    /** 
+     * Removes a child from the current node and returns it,
+     * DOM (Core) Level 1 implementation.
+     *
+     * @param refNode the node to be removed.
+     * @return The removed child as a JSNode.
+     */
+    public JSNode removeChild(JSNode refNode) {
+    	callArgs1[0]=refNode.getNode();
+    	JSObject deletedNode=(JSObject)node.call("removeChild",callArgs1);
+    	JSNode toBeReturned=new JSNode(jsWindow,deletedNode);
+    	return toBeReturned;
+    }
+
+
+	/** Removes a dom node from the tree, nodes are counted differently on ie and mozilla.
 	 *
-	 * @param number of the child to be removed
+	 * @param Number of the child to be removed.
+	 * @param Integer 0.
 	 */
     public int removeChild(int childIdentifier) {
 		if (debug==1) {
@@ -447,10 +595,12 @@ public class JSNode {// extends JSObject {
 		return 0;
     }
 
-	/** replaces the first child elements text
+	/** 
+	 * Replaces a child elements text.
 	 *
-	 * @param newNodeText The new text
-	 * @param oldNodeIdentifier number of the node that shall be accessed
+	 * @param newNodeText The new text.
+	 * @param oldNodeIdentifier number of the node that shall be accessed.
+	 * @return Integer 0.
 	 */
     public int replaceChild(String newNodeText, int oldNodeIdentifier) {
 		callArgs1[0]=newNodeText;
@@ -464,35 +614,56 @@ public class JSNode {// extends JSObject {
 		return 0;
     }
 
-	/** replaces the first child elements data, example: in <tt>&lt;h1 id="h1id"&gt;text&lt;/h1&gt;</tt>, the specified part of <tt>text</tt> is replaced.
+    /** 
+     * Replaces the child node <tt>oldChild</tt> with the node <tt>newChild</tt>
+     * and returns the <tt>oldChild</tt>. Conforms to the DOM (Core) Level 1 specification
+     *
+     * @param newChild the child that replaces oldChild
+     * @param oldChild the child that will be replaced and returned, must be a child
+     *		of this node
+     * @return The node that was replaced.
+     */
+    public JSNode replaceChild(JSNode newChild, JSNode oldChild) {
+		callArgs2[0]=newChild.getNode();
+		callArgs2[1]=oldChild.getNode();
+		JSObject oldNode=(JSObject)node.call("replaceChild",callArgs2);
+		JSNode toBeReturned=new JSNode(jsWindow,oldNode);
+		return toBeReturned;
+    }
+
+
+	/** 
+	 * Replaces the first child elements data, example: in <tt>&lt;h1 id="h1id"&gt;text&lt;/h1&gt;</tt>,
+	 * the specified part of <tt>text</tt> is replaced. DOM (Core) Level 1 conforming implementation.
 	 *
-	 * @param start the first character that will be replaced
-	 * @param value the last character that will be replaced
-	 * @param newData the string that replaces the specified part of the original string
+	 * @param start the first character that will be replaced.
+	 * @param value the last character that will be replaced.
+	 * @param newData the string that replaces the specified part of the original string.
 	 */
-    public int replaceData(int start, int length, String newData) {
+    public void replaceData(int start, int length, String newData) {
 		Object[] callArgs=new Object[3];
 		callArgs[0]=new Integer(start);
 		callArgs[1]=new Integer(length);
 		callArgs[2]=newData;
 
-		// child?
-		JSObject childElement=(JSObject)node.getMember("firstChild");
-		childElement.call("replaceData",callArgs);
+//		JSObject childElement=(JSObject)node.getMember("firstChild");
+		node.call("replaceData",callArgs);
 
 		if (debug==1) {
 			System.out.println("[replaceData] current node: " + this.toString());
 			//System.out.println("[replaceData] evalString: " + evalString);
 		}
-		return 0;
+//		return 0;
     }
 
-	/** Sets the given attribute to the given value using the JavaScript node's setAttribute method.
-	 *  If the attribute does not exist, it is created.
-	 *	This method does not work with all attributes on MSIE (for example changing an elements style does not work).
+	/** 
+	 * Sets the given attribute to the given value using the JavaScript node's setAttribute method.
+	 * If the attribute does not exist, it is created. This method does not work with all attributes 
+	 * on MSIE (for example changing an elements style does not work).
 	 *
-	 * @param attribute name of the attribute to be set
-	 * @param value the attribute shall be set to
+	 * @param attribute name of the attribute to be set.
+	 * @param value the attribute shall be set to.
+	 * @return Integer 0.
 	 */
     public int setAttribute(String attribute, String value) {
 		callArgs2[0]=attribute;
@@ -506,6 +677,13 @@ public class JSNode {// extends JSObject {
 		return 0;
     }
 
+	/**
+	 * Sets the value of a style attribute.
+	 *
+	 * @param styleAttribute the name of the attribute.
+	 * @param value the value to be set.
+	 * @return Integer 0.
+	 */
     public int setStyleAttribute(String styleAttribute, String value) {
     	if (debug==1) {
     		System.out.println("[setStyleAttribute] entered ...");
@@ -534,12 +712,27 @@ public class JSNode {// extends JSObject {
     	return 0;
     }
 
-	/** Sets the given attribute to the given value using the JavaScript node's setAttributeNode method.
-	 *  If the attribute does not exist, it is created.
-	 *	This method does not work with all attributes on MSIE (for example changing an elements style does not work).
+    /** 
+     * Adds a new attribute. If an attribute with that name is already present in the element, it is replaced by the new one.
 	 *
-	 * @param attribute name of the attribute to be set
-	 * @param value the attribute shall be set to
+     * @param newAttr the node to be added to the attribute list.
+     * @return the node that was set.
+     */
+    public JSNode setAttributeNode(JSNode newAttr) {
+    	callArgs1[0]=newAttr;
+    	JSObject oldAttribute=(JSObject)node.call("setAttributeNode",callArgs1);
+    	JSNode toBeReturned=new JSNode(jsWindow, oldAttribute);
+    	return toBeReturned;
+    }
+
+	/** 
+	 * Sets the given attribute to the given value using the JavaScript node's setAttributeNode method.
+	 * If the attribute does not exist, it is created.
+	 * This method does not work with all attributes on MSIE (for example changing an elements style does not work).
+	 *
+	 * @param attribute name of the attribute to be set.
+	 * @param value the attribute shall be set to.
+	 * @return Integer 0.
 	 */
     public int setAttributeNode(String attribute,String value) {
 		callArgs1[0]=attribute;
@@ -558,9 +751,9 @@ public class JSNode {// extends JSObject {
 		return 0;
     }
 
-	/** DOCUMENT IT
+	/* DOCUMENT IT
 		This method does not seem to be necessary, it is not different from setStyleAttribute!
-	 */
+	 /
 	public int setStyleAttributeNode(String styleAttribute, String value) {
 		callArgs1[0]=styleAttribute;
 
@@ -578,15 +771,36 @@ public class JSNode {// extends JSObject {
 		}
 
 		return 0;
+	}*/
+
+	/** 
+	 * Extracs a range of data from the Node, return this String.
+	 *
+	 * @param offset Start offset of substring to extract.
+	 * @param count The number of characters to extract.
+	 * @return the extracted String.
+	 */
+	public String substringData(int offset, int count) {
+		String fullData=this.getData();
+		if ((offset>fullData.length()) || (count<=0)) {
+			return null;
+		}
+		if (count+offset>fullData.length()) {
+			count=fullData.length()-offset;
+		}
+		int endOffset=offset+count;
+		String returnString=fullData.substring(offset,endOffset);
+		return returnString;
 	}
 
-
-
-    /** returns the html content of a tag
-     *
+    /** 
+     * Returns the html content of a tag
      * (the part between the opening tag and the closing tag (including html entities),
-     * e.g. <div>this <em>is</em> the text</div>
-     * returns 'this <em>is</em> the text'
+     * e.g. <div>this <em>is</em> the text</div>). This is a method not defined in
+     * any DOM standard by is available on Internet Explorer and Mozilla and often
+     * comes in handy.
+     * 
+     * @return The HTML content of the node.
      */
     public String getInnerHTML() {
     	String theInnerHTML=(String)node.getMember("innerHTML");
@@ -606,18 +820,24 @@ public class JSNode {// extends JSObject {
  *	setNodeValue for modifying nodeValue
  *********************************************************/
 
-    /** returns the value of an node/input field */
+    /** 
+     * Returns the value of an node/input field 
+     *
+     * @return The value of the node.
+     */
     public String getNodeValue() {
       return (String) node.getMember("nodeValue");
     }
 
-	/** returns an array of the nodes children as <tt>JSNode</tt>s */
+//	/* returns an array of the nodes children as <tt>JSNode</tt>s */
 //	public JSNode[] getChildNodes() {
 //	  node.getMember("childNodes");
 //	}
 
-    /** returns the first child node of the current
-     * JSNode
+    /** 
+     * Returns the first child node of the current JSNode.
+     *
+     * @return the first child node.
      */
     public JSNode getFirstChild() {
       JSObject jsObjNode=(JSObject)node.getMember("firstChild");
@@ -631,7 +851,11 @@ public class JSNode {// extends JSObject {
       return theFirstChild;
     }
 
-    /** retrieves the textual content of a text node */
+    /**
+     * Retrieves the textual content of the node (must be a content/text node.
+     *
+     * @return the textual content of the node.
+     */
     public String getData() {
         //      callArgs2[0]=new String("getAttribute");
 //        callArgs1[0]=new String("data");
@@ -657,11 +881,12 @@ public class JSNode {// extends JSObject {
  * http://www.quirksmode.org/dom/w3c_events.html#registration
  *********************************************************/
 
-    /** sets the specified event of the node to the specified
-     * handler
-     * @event the event for which the event handler shall be
+    /** Sets the specified event of the node to the specified
+     * handler-
+     *
+     * @param event the event for which the event handler shall be
      *    set, e.g. <tt>onclick</tt>
-     * @handler the code that shall be run upon code execution
+     * @param handler the code that shall be run upon code execution
      */
     public void addEventListener(String event, String handler) {
       node.setMember(event,handler);

@@ -12,7 +12,6 @@
  * V0.1   @ 2003-12-02
  *
 *******************************************************************************
-*******************************************************************************
  *
  * Licencing Information
  * ---------------------
@@ -61,42 +60,54 @@ import java.security.*;
 // import liveconnect
 import netscape.javascript.*;
 
+/**
+ * Test applet for Java DOM communication and the JSNode class. Demonstrates
+ * manipulating a in-browser document using JSNode and LiveConnect.
+ *
+ * @author Tobias Specht
+ * @version 1.0
+ * @deprecated Only for testing purposes, should not be used anymore.
+ */
 public class BWSDevelopmentApplet extends Applet {
    // browser window the applet is embedded in
-   public JSObject jsWindow;
+   protected JSObject jsWindow;
 
    // current document
    private JSObject jsDocument;
-   
+
    // node used for temporary storage
    private JSNode currentNode;
-   
+
    /* debug level,
     * 0 = don't debug, almost no output
     * 1 = standard debug
     */
    private int debugLevel=1;
-  
-   /** applet constructor */
+
+   /** 
+    * Applet standard constructor + debug message. 
+    */
    public BWSDevelopmentApplet() {
       if (debugLevel>0) {
 	  System.out.println("[bwsDevelopmentApplet constructor] applet object created...");
       }
    }
 
-   /** start method, calls getWindow() */
+   /** 
+    * Overwriten start method, calls getWindow() and tests several of JSNode's methods.
+    */
    public void start() {
       // obtain the applets window
       jsWindow=JSObject.getWindow(this);
       if (debugLevel > 0) {
 	 System.out.println("[getWindow] window: " + jsWindow.toString());
       }
-      
+
       JSObject jsDocument=(JSObject)jsWindow.getMember("document");
       if (debugLevel > 0) {
 	 System.out.println("[getWindow] document: " + jsDocument.toString());
       }
-      
+
       JSNode headNode=new JSNode(jsWindow,"testhead");
       JSNode bodyNode=new JSNode(jsWindow,"theBody");
       JSNode dieListe=new JSNode(jsWindow,"dieListe");
@@ -108,9 +119,9 @@ public class BWSDevelopmentApplet extends Applet {
       // this is not a debug message! it tests if JSNode.hasChildNodes() works
       // headingText does not hava any child nodes, answer should be 'false'
       System.out.println("[main] headingText has child nodes: " + headingText.hasChildNodes());
-      
+
       newHeading.appendChild(headingText);
-      
+
       bodyNode.insertBefore(newHeading,span);
 
       //bodyNode.appendChild(newHeading);
@@ -119,27 +130,29 @@ public class BWSDevelopmentApplet extends Applet {
       span.deleteData(0,2,5);
       dieListe.removeChild(0);
       dieListe.removeChild(1);
-      
+
       // again not a debug message! dieListe should have childNodes -> answer should be 'true'
       System.out.println("[main] dieListe has child nodes: " + dieListe.hasChildNodes());
-      
+
       bodyNode.setAttribute("bgColor","#00ff00");
       bodyNode.setStyleAttribute("color","red");
       headNode.setStyleAttribute("backgroundColor","#88ff88");
       headNode.setStyleAttribute("border","1px solid #555555");
       bodyNode.setStyleAttribute("fontFamily","verdana");
-      
+
       // two more test (=not debug) messages
       System.out.println("[main] body - color attribute: " + bodyNode.getAttribute("bgColor"));
       System.out.println("[main] body - color attribute node: " + bodyNode.getAttributeNode("bgColor").getNode().getMember("value"));
-      
+
       headNode.replaceChild("Replaced",0);
       headNode.replaceData(2,7,"---");
-      
+
       headNode.insertData(0,2,"(TEST)");
    }
 
-   /** obtains the document window and references it in jsWindow */
+   /** 
+    * Obtains the document window and references it in jsWindow.
+    */
    public void getWindow() {
       jsWindow=JSObject.getWindow(this);
       if (debugLevel>0) {

@@ -2,10 +2,10 @@
  * Class BWSRewriter.java
  * 2002-10-17 by Tobias Specht
 *******************************************************************************
- * A small application that reades a BWS-XHTML document from an URL and 
+ * A small application that reades a BWS-XHTML document from an URL and
  * rewrites it to a browser-interpretable XHTML document. Uses BWSDocument.
  * Prints final document an several status messages to standard out.
- * 
+ *
  * Invokation: java BWSRewriter URLToRewrite
  *       e.g.: java BWSRewriter http://some.server.com/document.xhtml
 *******************************************************************************
@@ -18,7 +18,7 @@
 *******************************************************************************
  *
  * - Add option to output only the final document or write document to file
- * 
+ *
 *******************************************************************************
  *
  * Licencing Information
@@ -60,11 +60,23 @@
 
 package org.tsp.bws;
 
+/**
+ * A small application that reades a BWS-XHTML document from an URL and
+ * rewrites it to a browser-interpretable XHTML document. Uses BWSDocument.
+ * Prints final document an several status messages to standard out.
+ * Useful only for debugging! Use {@link org.tsp.bws.BWS2XHTML} for actual
+ * rewriting.
+ *
+ * @author Tobias Specht
+ * @version 1.0
+ */
 public class BWSRewriter {
 	/** reads a document from an URL and rewrites it as an bws document */
 
-	/** main method
-	 * @param args String array of command line arguments
+	/** 
+	 * Main method, calls all other methods.
+	 *
+	 * @param args String array of command line arguments.
 	 */
 	public static void main(String args[]) {
 		BWSDocument docToRewrite=new BWSDocument();

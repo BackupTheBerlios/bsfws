@@ -12,8 +12,14 @@
 package org.tsp.bws;
 
 import java.lang.String;
-
-class ScriptString {
+/**
+ * A class for handling bws script strings (strings passed from html
+ * that are used to invoke bws scripts).
+ * 
+ * @author Tobias Specht
+ * @version 1.0
+ */
+public class ScriptString {
     // class internal representation of the string
     //private String scriptString;
 
@@ -29,8 +35,17 @@ class ScriptString {
 	// set a debug level for this class
 	private static int debugLevel=1;
 
-    /** checks validity of the string and parses it */
+    /** interprets the passed string */
     public ScriptString(String passedString) {
+		this.interpretScriptString(passedString);
+    }
+
+    /** 
+     * Checks validity of the string and parses it.
+     *
+     * @param passedString the script string to be interpreted.
+     */
+	public void interpretScriptString(String passedString) {
 		// it would be nice if the constructor checked for duplicate
 		// =,( and ) and throw an exception if these occur
 		// start indices probably should be +1
@@ -84,9 +99,17 @@ class ScriptString {
 		    System.out.println("[ScriptString.constructor] retval: " + returnValue);
 		}
 		//scriptString=passedString;
-    }
 
-    private String[] parseParameters(String passedString) {
+
+	}
+
+	/**
+	 * Parse the parameters part of the script string to the individual parameter keys.
+	 *
+	 * @param passedString the script string which parameters shall be parsed.
+	 * @return the individual keys that were parsed from the script string.
+	 */
+    protected String[] parseParameters(String passedString) {
 		if (debugLevel>0) {
 			System.out.println("[ScriptString.parseParameters] scriptString: " + passedString);
 		}
@@ -113,17 +136,23 @@ class ScriptString {
 		return parametersArray;
 	}
 
-    /** returns the script id of the referenced script */
+    /** 
+     * Returns the script id of the referenced script.
+     */
     public String getScriptId() {
 		return scriptId;
     }
-	
-	/** returns a String array of all parameters specified in the script string */
+
+	/**
+	 * Returns a String array of all parameters specified in the script string. 
+	 */
     public String[] getParameters() {
     	return parameters;
     }
-    
-    /** returns the return value key specified in the script string (the part in front of =) */
+
+    /** 
+     * Returns the return value key specified in the script string (the part in front of =) 
+     */
     public String getRetKey() {
     	return returnValue;
     }

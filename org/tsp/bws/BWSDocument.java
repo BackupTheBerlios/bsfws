@@ -79,6 +79,17 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 import org.dom4j.io.OutputFormat;
 
+/**
+ * This class represents a BWS-XHTML document for parsing and rewriting
+ * purpose. It provides methods to read an BWS conform XHTML document from
+ * an URL and rewrite it as an standard JavaScript XHTML document that can
+ * be interpreted by a standard compliant web browser. It uses dom4j for
+ * DOM manipulation, so if you want to compile it, make sure you've got the
+ * dom4j classes in your CLASSPATH.
+ *
+ * @author Tobias Specht
+ * @version 1.0
+ */
 public class BWSDocument {
 	/** internal representation of the non-bws'd xml document */
 	private Document xmlDocument;
@@ -87,10 +98,11 @@ public class BWSDocument {
 	/** debug variable, 0=no debug except rewriten code, 1=some messages, 2=more messages */
     private char debug=0;
 
-	/** loads a document from an URL and parses it to a dom4j XML document
+	/** 
+	 * Loads a document from an URL and parses it to a dom4j XML document.
 	 *
-	 * @param documentURLString URL of the document to be rewriten
-	 * @throws DocumentException occurs when building the document fails
+	 * @param documentURLString URL of the document to be rewriten.
+	 * @throws DocumentException occurs when building the document fails.
 	 */
 	public void readDocumentFromURL(String documentURLString) throws DocumentException {
 		URL documentURL;
@@ -107,7 +119,9 @@ public class BWSDocument {
 		}
 	}
 
-	/** prints the current document to the console via the dom4j XMLWriter */
+	/** 
+	 * Prints the current document to the console via the dom4j XMLWriter 
+	 */
 	public void printDocumentSource() {
 		// use pretty printing
 		OutputFormat outformat=new OutputFormat();// = OutputFormat.createPrettyPrint();
@@ -125,12 +139,18 @@ public class BWSDocument {
 		}
 	}
 
-	/** returns the complete document as a string */
+	/** 
+	 * Get the complete document as a string .
+	 *
+	 * @return A String containing the XML document.
+	 */
 	public String getDocument() {
 	  return xmlDocument.asXML();
 	}
 
-	/** prints the names and ids of all scripts found in the document */
+	/**
+	 * Prints the names and ids of all scripts found in the document. 
+	 */
 	public void getScriptNames() {
 		XPath xpathSelector = DocumentHelper.createXPath("//script");
 
@@ -164,16 +184,19 @@ public class BWSDocument {
 		}
 	}
 
-	/** prints every element from the scriptNames vector */
+	/** 
+	 * Prints every element from the scriptNames vector. 
+	 */
 	public void printVector() {
 		for (int counter=0;counter<scriptNames.size();counter++) {
 			System.out.println((String)scriptNames.elementAt(counter));
 		}
 	}
 
-	/** prints (ATM) the names of all elements with an given attribute value
+	/** 
+	 * Get and rewrite all calls to a specific BWS occuring in the document.
 	 *
-	 * @param attributeValue the id of the script that is searched for
+	 * @param attributeValue the id of the script that is searched for.
 	 */
 	public void getAttributeElement(String attributeValue) {
         XPath xpathSelector = DocumentHelper.createXPath("//@*");
@@ -198,9 +221,12 @@ public class BWSDocument {
 
 	}
 
-	/** rewrites all script calls of the form #:script_id and bws:script_id to the corresponding javascript/
-	  * liveconnect calls
-	  */
+	/** 
+	 * Rewrites the BWS script calls of all elements. Script calls are of the form #:script_id and bws:script_id
+	 * and are rewritten to the corresponding javascript/liveconnect calls using the {@link org.tsp.bws.BWSDocument#getAttributeElement} method.
+	 *
+	 * @see org.tsp.bws.BWSDocument#getAttributeElement
+	 */
 	public void rewriteScriptCalls() {
 		String curName;
 
@@ -210,7 +236,9 @@ public class BWSDocument {
 		}
 	}
 
-	/** inserts the <tt>applet</tt> tag */
+	/** 
+	 * Inserts the <tt>applet</tt> tag 
+	 */
 	public void appendApplet() {
 	  XPath xpathSelector = DocumentHelper.createXPath("/html/body");
       List results = xpathSelector.selectNodes(xmlDocument);
@@ -221,7 +249,7 @@ public class BWSDocument {
 	  }
 	  // use the first element returned
 	  Element bodyElement=(Element)results.get(0);
-	  bodyElement.addElement("applet2")
+	  bodyElement.addElement("applet")
 	    .addAttribute("code","org.tsp.bws.BWSApplet")
 	    .addAttribute("id","BWSApplet")
 	    .addAttribute("width","0")
@@ -230,8 +258,9 @@ public class BWSDocument {
 
 
 	}
-	
-	/** rewrite the complete document and append the applet. Equivalent to
+
+	/** 
+	 * Rewrite the complete document and append the applet. Equivalent to
 	 * <tt>getScriptNames()</tt>, <tt>rewriteScriptCalls()</tt> and
 	 * <tt>appendApplet()</tt>.
 	 */

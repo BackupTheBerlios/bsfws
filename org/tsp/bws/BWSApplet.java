@@ -17,10 +17,7 @@
  * Planned improvements
  * --------------------
  *
- * - multi-scripting-engine support (done, give engine via type string)
- * - use apply instead of eval
- * - parse script invokation for arguments and return value
- * - execute code using BSFManager (instead of BSFEngine)?
+ * none
  *
  * see also bws wiki:
  *   http://openfacts.berlios.de/index-en.phtml?title=BSFWebScripting
@@ -79,6 +76,14 @@ import com.ibm.bsf.*;
 // and liveconnect
 import netscape.javascript.*;
 
+/**  
+ * This applet handles DOM->BSF communication, passes scripts from the document
+ * to their respective scripting engines and provides methods scripting
+ * languages can use to access and manipulate DOM objects
+ * 
+ * @author Tobias Specht
+ * @version 1.0
+ */
 public class BWSApplet extends Applet {
    // the bsf manager
    private BSFManager mgr;
@@ -92,14 +97,17 @@ public class BWSApplet extends Applet {
    // 2 = additional messages
    private static int debugLevel=5;
 
-   /** the standard constructor, nothing special */
+   /** 
+    * Applet standard constructor, prints a message to the standard output.
+    */
    public BWSApplet() {
      if (debugLevel>0) {
        System.out.println("[BWSApplet.constructor] applet object created ...");
      }
    }
 
-   /** init creates a BSFManager, obtains the applet window and registers
+   /** 
+    * Creates a BSFManager, obtains the applet window and registers
     * the applet and java.System.out to the bsf registry
     */
    public void init() {
@@ -121,20 +129,25 @@ public class BWSApplet extends Applet {
       mgr.registerBean("DocumentWindow",jsWindow);
    }
 
-   /** relase bsf manager */
+   /**
+    * Relase bsf manager by setting it <tt>null</tt> and prints a
+    * message to the standard out.
+    */
    public void destroy() {
      mgr=null;
 	 System.out.println("[BWSApplet.destroy] unloading ...");
    }
 
-   /** reads a script from the document and passes it to the bsf engine
+   /** 
+    * Reads a script from the document and passes it to the bsf engine
     * specified in the scripts type attribute. Returns the object it gets
-    * from apply()
+    * from apply().
     *
-    * @param scriptString String containing scriptId, returnValue key and parameters keys
-    * @param domObject object that is used in script evaluation (usually <em>this</em>)
+    * @param scriptString String containing scriptId, returnValue key and parameters keys.
+    * @param domObject object that is used in script evaluation (usually <em>this</em>).
+    * @return the object returned from the executed script.
     */
-   public Object executeScript(String scriptString, JSObject domObject) {
+   public Object executeScript(String scriptString, Object domObject) {
 	 if (debugLevel>0) {
 	 	System.out.println("[BWSApplet.executeScript] got this domObject: " + domObject);
 	 }
@@ -263,13 +276,16 @@ public class BWSApplet extends Applet {
      return applyReturnedObject;
    }
 
-   /** reads a script from the docuemnt and passes it to the bsf engine
+   /** 
+    * Reads a script from the docuemnt and passes it to the bsf engine
     * specified in the scripts type attribute.
+    *
     * @param scriptString String containing scriptId, returnValue key and parameters keys
+    * @return the object returned from script execution.
     */
+   public Object executeScript(String scriptString) {
    // code execution could probably also be done by the BSFManager, i.e.
    // without explicitly loading a scripting engine
-   public Object executeScript(String scriptString) {
      // create a ScriptString
      ScriptString currentScriptString=new ScriptString(scriptString);
 
@@ -282,16 +298,22 @@ public class BWSApplet extends Applet {
 	 return returnedObject;
    }
 
-   /** returns the html/xml node with the specified id
-    * @param nodeId html/xml id attribute of the desired node
+   /** 
+    * Get the html/xml node with the specified id.
+    *
+    * @param nodeId html/xml id attribute of the desired node.
+    * @return reference to the specified node.
     */
    public JSNode getNode(String nodeId) {
       JSNode tmpJSNode=new JSNode(jsWindow,nodeId);
       return tmpJSNode;
    }
 
-    /** reades the type attribute of the script and parses it for the scripting engine
-     * @scriptId id of the script tag
+    /** 
+     * Reades the type attribute of the script and parses it for the scripting engine.
+     *
+     * @param scriptId id of the script tag.
+     * @return the bsf key of the scripting engine.
      */
     public String getScriptingEngine(String scriptId) {
 		JSNode tmpJSNode=new JSNode(jsWindow,scriptId);
@@ -343,7 +365,7 @@ public class BWSApplet extends Applet {
     return null;
   }
 
-  private Vector evaluateParameters(String[] paramArray, JSObject thisObject) {
+  private Vector evaluateParameters(String[] paramArray, Object thisObject) {
   	if (debugLevel>1) {
   	  System.out.println("[BWSApplet.evaluateParameters] just entered evaluateParameters");
   	}
@@ -462,7 +484,7 @@ public class BWSApplet extends Applet {
 	   //        under the appletCodeBase directory!
 	   // else the url is treated as relative
 	   String urlString;
-	   
+
 	   // if it does not contain :// it is not an URL
 	   if (scriptSrc.indexOf("://")==-1) {
 	     // if it starts with / it is an absolute path, else it is an relative path
@@ -474,7 +496,7 @@ public class BWSApplet extends Applet {
 	         System.out.println("[BWSApplet.getScript] generated URL is: " +urlString);
 	       }
 	     } else {
-		   // relative, obtain document code base, append path		   
+		   // relative, obtain document code base, append path
 		   String documentCodeBase=this.getDocumentBase().toString();
   	       System.out.println("[BWSApplet.getScript] code base is: " + documentCodeBase);
   	       urlString=documentCodeBase + scriptSrc;

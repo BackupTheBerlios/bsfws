@@ -60,18 +60,29 @@
 
 package org.tsp.bws;
 
+/** 
+ * This applications rewrites a BWS document to an BWS/HTML document.
+ *
+ * @author Tobias Specht
+ * @version 1.0
+ */
 public class BWS2XHTML {
     /** reads a document from an URL and rewrites it as an bws document */
 
-    /** main method
+    /** 
+     * Main method, calls the methods necessary for document rewriting and 
+     * writes the document to the standard output from where it can be
+     * redirected to a file.
+	 *
      * @param args String array of command line arguments, first parameter
      * is the URL from which the document shall be read, second parameter
-     * (optional) specifies to which file the output shall be written
+     * (optional) specifies to which file the output shall be written.
+     * <i>(This is not implemented yet)</i>
      */
     public static void main(String args[]) {
 	  char debug=0;
 	  BWSDocument docToRewrite=new BWSDocument();
-	  
+
 
 	try {
 	    docToRewrite.readDocumentFromURL(args[0]);
