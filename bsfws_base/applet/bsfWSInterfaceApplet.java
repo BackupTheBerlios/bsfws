@@ -14,6 +14,9 @@
 ** V0.2   @ 2003-04-30
 **        - scripting engine is determined by mime-type of the script which is
 **          passed from javascript
+** V0.3   @ 2003-05-20
+**        - scripting engines are loaded just-in-time
+**        - arbitrary (bsf) scripting engines can be used
 **
 *******************************************************************************
 **
@@ -52,7 +55,7 @@
 **
 ** For further information on this script mail me at:
 **
-**     tobi@bsfws.berlios.de
+**     tobi@mail.berlios.de
 **
 ** The most recent version of this file is available from 
 **
@@ -73,10 +76,12 @@ public class bsfWSInterfaceApplet extends Applet {
     // the bsf manager
     private BSFManager mgr;
 
+    // caching of engines is done by the bsf manager, not necessary
+    // in the applet
     // engine objects for the different languages
-    private BSFEngine rxEng=null; // rexx
-    private BSFEngine jsEng=null; // javascript/rhino
-
+    /*    private BSFEngine rxEng=null; // rexx
+     *private BSFEngine jsEng=null; // javascript/rhino
+     */
     private JSObject jsWindow=null;
     private JSObject jsDocument=null;
     //  private Hashtable jsObjects;
@@ -97,7 +102,7 @@ public class bsfWSInterfaceApplet extends Applet {
 
 	// this CAN NOT be a solution as it would be necessary to load ALL scripting
 	// engines here
-	this.loadScriptingEngine("rx");
+	//this.loadScriptingEngine("rx");
 
 	// appletToBSFReg moved to init()
     }
@@ -125,21 +130,21 @@ public class bsfWSInterfaceApplet extends Applet {
     // allowed strings:
     //   rexx: rx(3654), rexx(3497075), orx(not yet looked up)
     //   javascript: js(3401), javascript(188995949)
-    public void loadScriptingEngine(String lang) {
-	System.out.println("--[loadScriptingEngine]--> Loading scripting engine [" + lang + "]");
-
-	// the switch statement is based on the hashCode values of the used strings
-	// allowed strings set at method header
-	switch (lang.hashCode()) {
-	case 3654:
-	case 3497075:loadRxEngine(); break;
-	case 3401:
-	case 188995949:loadJSEngine(); break;
-	default:System.out.println(lang + " is not a known engine!"); break;
-	}
-	System.out.println("--[loadScriptingEngine]--> [" + lang + "] engine available @" + rxEng.toString());
-    }
-
+/*    public void loadScriptingEngine(String lang) {
+ *	System.out.println("--[loadScriptingEngine]--> Loading scripting engine [" + lang + "]");
+ *
+ *	// the switch statement is based on the hashCode values of the used strings
+ *	// allowed strings set at method header
+ *	switch (lang.hashCode()) {
+ *	case 3654:
+ *	case 3497075:loadRxEngine(); break;
+ *	case 3401:
+ *	case 188995949:loadJSEngine(); break;
+ *	default:System.out.println(lang + " is not a known engine!"); break;
+ *	}
+ *	System.out.println("--[loadScriptingEngine]--> [" + lang + "] engine available @" + rxEng.toString());
+ *   }
+ */
 
     // evaluate/execute script (i.e. pass script to its engine)
     // scriptcode is stored in 'script', language in 'lang'
@@ -154,41 +159,75 @@ public class bsfWSInterfaceApplet extends Applet {
     // --> other types will be removed
     //      x-bsf/x-rexx   = bsf4rexx (-809114057)
     public void executeScript(String script, String lang) {
+	// the scripting language to be loaded is read
+	// directly form the 'lang' part in 'x-bsf/x-lang'
+	// which is stored in the 'lang' parameter
+
+	// first the actual language string is obtained from
+	// the mime-type
+	int langStartPos=lang.indexOf("/x-");
+
+	String actLangString=lang.substring(langStartPos+3);
+
+	// debug: print the engine that will be loaded
+	System.out.println("--[executeScript]--> mime-type: " + lang);
+	System.out.println("--[executeScript]--> trying to load [" + actLangString + "] engine");
 	
-	// if scripting engine is not loaded yet, load it
-	// (if clause in loadLangEng method
-	loadScriptingEngine(lang);
-	System.out.println("--[executeScript]--> Script start");
-	System.out.println(script);
-	System.out.println("--[executeScript]--> Script end");
+	// declaring and loading the scripting engine
+	BSFEngine currentEngine;
 	
-	// switch statement for eval/exec necessary
 	try {
-	    // use scripting engine similar to loadScriptingEngine
-	    // ie switch case
-	    switch (lang.hashCode()) {
-	    case 3654:
-	    case 3497075:
-	    case -809114057:	{
-		// load rexx engine if not available
-		System.out.println("--[executeScript]--> language: " + lang + " - hashCode: " + lang.hashCode());
-		BSFEngine rxEng=mgr.loadScriptingEngine("rexx");
-		//		System.out.println(rxEng.eval("",0,0,"parse version a;b=bsfversion();c=bsf('Version');return a b c"));
-		
-		// explicitly loading BSFFunctions seems to be necessary on linux
-		rxEng.eval("",0,0,"if rxfuncquery(\"BSF\") then\n do \n call rxFuncAdd \"BsfLoadFuncs\", \"BSF4Rexx\", \"BsdLoadFuncs\" \n call BsfLoadFuncs \n end");
-		rxEng.eval("",0,0,script);
-	    };
-		break;
-		
-		/** insert other scripting engines here
-		    case 3401:jsEng.eval(??);
-		    case 188995949:jsEng.eval(??);
-		**/
+	    currentEngine=mgr.loadScriptingEngine(actLangString);
+	    System.out.println("--[executeScript]--> scripting engine loaded successfully");
+
+	    // print the recieved scripts code for debugging purpose
+	    System.out.println("--[executeScript]--> Script code start");
+	    System.out.println("--[eS-scriptCode]--> " + script);
+	    System.out.println("--[executeScript]--> Script code end");
+	    
+	    // now just pass the script to the loaded engine
+	    try {
+		currentEngine.eval("",0,0,script);
+	    } catch (Exception e) {
+		System.out.println("--[executeScript]--> unknown error in scriptEval");
+		e.printStackTrace();
 	    }
 	} catch (Exception e) {
+	    System.out.println("--[executeScript]--> error loading scripting engine");
+	    System.out.println("--[executeScript]--> probably non-existing language: " + actLangString);
 	    e.printStackTrace();
 	}
+
+	// Method code below is not necessary any more
+/*
+ *	// switch statement for eval/exec necessary
+ *	try {
+ *	    // use scripting engine similar to loadScriptingEngine
+ *	    // ie switch case
+ * switch (lang.hashCode()) {
+ *	    case 3654:
+ *	    case 3497075:
+ *	    case -809114057:	{
+ *		// load rexx engine if not available
+ *		System.out.println("--[executeScript]--> language: " + lang + " - hashCode: " + lang.hashCode());
+ *		BSFEngine rxEng=mgr.loadScriptingEngine("rexx");
+ *		//		System.out.println(rxEng.eval("",0,0,"parse version a;b=bsfversion();c=bsf('Version');return a b c"));
+ *		
+ *		// explicitly loading BSFFunctions seems to be necessary on linux
+ *		rxEng.eval("",0,0,"if rxfuncquery(\"BSF\") then\n do \n call rxFuncAdd \"BsfLoadFuncs\", \"BSF4Rexx\", \"BsdLoadFuncs\" \n call BsfLoadFuncs \n end");
+ *		rxEng.eval("",0,0,script);
+ *	    };
+ *		break;
+ *		
+ *		/** insert other scripting engines here
+ *		    case 3401:jsEng.eval(??);
+ *		    case 188995949:jsEng.eval(??);
+ *		
+ *	    }
+ *	} catch (Exception e) {
+ *	    e.printStackTrace();
+ *	}
+ */  
     }
     
 // some BSFRegistry functions
@@ -197,7 +236,7 @@ public class bsfWSInterfaceApplet extends Applet {
     public void registerWindow(JSObject theWindow,BSFEngine jsBSFE,BSFManager jsBSFM) {
 	jsWindow=theWindow;
 	mgr=jsBSFM;
-	rxEng=jsBSFE;
+	//	rxEng=jsBSFE;
     }
 
     // register the window only (method overloading used)
@@ -221,9 +260,9 @@ public class bsfWSInterfaceApplet extends Applet {
     }
 
     // returns the BSFRexxEngine
-    public BSFEngine getRxEngine() {
-	return rxEng;
-    }
+    //    public BSFEngine getRxEngine() {
+    //	return rxEng;
+    // }
 // end of BSFRegistry methods 
 
 
@@ -301,42 +340,45 @@ public class bsfWSInterfaceApplet extends Applet {
 	dOMObject.setMember(paramIdentifier, value);
     }
 
+   
+// all commented out, engines are loaded on the fly 
 // here comes the load scripting engines part -----------------------------------------------------
 // each engine's got its own private method, engines are ONLY loaded when they are not available
 // (if-statement in method line 1), scripting engines are loaded with bsfmanager.loadScriptingEngine
 // and stored in their respective properties (rxEng,jsEng,rbEng)
-    private void loadRxEngine() {
- 	if (rxEng==null) {
-	    try {
-		System.out.println("--[loadRxEngine]--> Trying to load rexx engine");
-		rxEng=mgr.loadScriptingEngine("rexx");
-
-		//		System.out.println(rxEng.eval("",0,0,"parse version a;b=bsfversion();c=bsf('Version');return 1 a b c"));
-		//		System.out.println(rxEng.eval("",0,0,"parse version a;b=bsfversion();c=bsf('Version');return 2 a b c"));
-		// System.out.println(rxEng.toString());
-		//		rxEng=mgr.loadScriptingEngine("rexx");
-		//		System.out.println(rxEng.toString());
-		//		System.out.println(rxEng.eval("",0,0,"parse version a;b=bsfversion();c=bsf('Version');return 3 a b c"));
-		System.out.println("--[loadRxEngine]-->" + rxEng.toString());
-	    } catch (Exception e) {
-		System.out.println("--[loadRxEngine]--> Loading scripting engine [rexx] failed! Error message:");
-		e.printStackTrace();
-	    }
-	} else {
-	    System.out.println("--[loadRxEngine]--> Rexx engine is available @ " + rxEng.toString());
-	}
-    }
-
-    private void loadJSEngine() {
-	if (jsEng==null) {
-	    try {
-		System.out.println("--[loadJSEngine]--> Trying to load javascript engine");
-		jsEng=mgr.loadScriptingEngine("javascript");
-	    } catch (Exception e) {
-		System.out.println("--[loadJSEngine]--> Error loading engine! Stack trace:");
-		e.printStackTrace();
-	    }
-	}
-    }
-// end of load scripting engines!------------------------------------------------------------------
+/*    private void loadRxEngine() {
+ *	if (rxEng==null) {
+ *	    try {
+ *		System.out.println("--[loadRxEngine]--> Trying to load rexx engine");
+ *		rxEng=mgr.loadScriptingEngine("rexx");
+ *
+ *		//		System.out.println(rxEng.eval("",0,0,"parse version a;b=bsfversion();c=bsf('Version');return 1 a b c"));
+ *		//		System.out.println(rxEng.eval("",0,0,"parse version a;b=bsfversion();c=bsf('Version');return 2 a b c"));
+ *		// System.out.println(rxEng.toString());
+ *		//		rxEng=mgr.loadScriptingEngine("rexx");
+ *		//		System.out.println(rxEng.toString());
+ *		//		System.out.println(rxEng.eval("",0,0,"parse version a;b=bsfversion();c=bsf('Version');return 3 a b c"));
+ *		System.out.println("--[loadRxEngine]-->" + rxEng.toString());
+ *	    } catch (Exception e) {
+ *		System.out.println("--[loadRxEngine]--> Loading scripting engine [rexx] failed! Error message:");
+ *		e.printStackTrace();
+ *	    }
+ *	} else {
+ *	    System.out.println("--[loadRxEngine]--> Rexx engine is available @ " + rxEng.toString());
+ *	}
+ *   }
+ *
+ *   private void loadJSEngine() {
+ *	if (jsEng==null) {
+ *	    try {
+ *		System.out.println("--[loadJSEngine]--> Trying to load javascript engine");
+ *		jsEng=mgr.loadScriptingEngine("javascript");
+ *	    } catch (Exception e) {
+ *		System.out.println("--[loadJSEngine]--> Error loading engine! Stack trace:");
+ *		e.printStackTrace();
+ *	    }
+ *	}
+ *   }
+ * // end of load scripting engines!------------------------------------------------------------------
+ */
 }
