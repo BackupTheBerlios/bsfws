@@ -11,7 +11,7 @@ Once you've got a BWS compliant document as described above, you can embed you s
 Both steps are done almost exactly like they would be done using JavaScript scripts.
 
 %paragraph or only highlighting?
-\paragraph{Embedding and referencing scripts}
+\subsubsection{Embedding and referencing scripts}
 
 For every script you want to use, create a \texttt{<script>} tag. This script tag must have at least two attributes:
 
@@ -60,14 +60,12 @@ Other tags may be specified too, but are not used by BWS (they may be used by th
 
 \end{figure}
 
-\paragraph{Attaching script calls to events}
+\subsubsection{Attaching script calls to events}
 
 After all necessary scripts are embedded or referenced in the document, script calls can be attached to events, i.e. scripts can be triggered by DOM events, for example by clicking a part of text. For an overview which events are available, see \cite{ReferenceDOMEvents}.
 %notcitedyet
 
 Scripts can be attached to any event of any element using the syntax \texttt{bws:scriptId} as the eventhandler. For example if you have a script with the id \texttt{myOnClickScript} you would like to call when the body of your document is clicked, the body tag must be:
-
-\ttfamily
 
 \begin{verbatim*}
 <html>

@@ -1,25 +1,30 @@
-JavaScript is the common name for the scripting language defined in ECMA standard 262. It was originally developed as JavaScript by Brendan Eich at Netscape. The purpose of JavaScript was to give web developers the posibility do enable the scripting of HTML documents and was therefore integrated with Netscape's Navigator since version 2.0. Microsoft based its own solutions for scriptable HTML documents on this language and called the resulting derivative JScript. Microsoft extended this solution to be language independent and \emph{called the result of this project ActiveScripting}, this approch will be detailed in section \ref{sec:activescripting}. JScript was included in the Internet Explorer starting with 3.0.
+JavaScript/ECMAScript\footnote{The language standardized in the ECMA-262 standard is called ECMAScript by the standard. This name came only up with the standardization of the language and never got used widly, JavaScript is still the more prominent name and will be used} is the common name for the scripting language defined in ECMA standard 262. It was originally developed
+% as JavaScript 
+by Brendan Eich at Netscape. The purpose of JavaScript was to give web developers the posibility create interactive HTML documents; JavaScript is integrated with Netscape's Navigator web browser since version 2.0. An alternative implementation of a JavaScript interpreter was developed by Microsoft. This interpreter however was not bound directly to Microsoft's Internet Explorer web browser but integrated into it using ActiveX/OLE/COM(?). The Microsoft JavaScript interpreter however is not fully compatible to Netscape's interpreter; the Microsoft derivative of JavaScript is called \emph{JScript}. The JScript interpreter is bundled with the Internet Explorer starting with its 3.0 release. Microsoft's approch to client side browser scripting however is not limited to JScript, section \ref{sec:activescripting} gives more information on this.
 
-The development of the standard for the language the standardized as ECMAScript started in November 1996; the standard was adopted first in June 1997. It was also accepted as ISO/IEC standard 16262 in April 1998. As of February 2004, the standard is in its third edition and availabe from \cite{ECMA-262}.
+The development of the standard for the JavaScript language, standardized as ECMAScript, started in November 1996; the standard was adopted first in June 1997. It was also accepted as ISO/IEC standard 16262 in April 1998. As of February 2004, the standard is in its third edition and availabe from \cite{ECMA-262}, which correspondes to JavaScript 1.5.
 
 %ECMA262: http://www.ecma-international.org/publications/standards/Ecma-262.htm
 %	+ pdf document
 
-JavaScript/ECMAScript to different extents is now available in almost all web browsers; additionally, stand-alone JavaScript interpreters exist that allow the use of JavaScript as a \emph{system} script language. The most prominent of these interpreters is the Rhino JavaScript interpreter maintained by and available from The Mozilla Organisation.
+JavaScript is now available -- to different extents -- in all relevant web browsers; additionally, stand-alone JavaScript interpreters exist that allow the use of JavaScript as a standalone script language not limited to in-browser use. One of the most prominent of these interpreters is the Rhino JavaScript interpreter maintained by and available from The Mozilla Organisation.
 
 %mozilla.org, mozilla.org/rhino, availablity of JS in browsers?
 
 For use as client side scripting language in web applications, JavaScript has some important disadvantages:
 
-\begin{itemize}
-	\item The usability of JavaScript is quite limited, it doesn't support any more sophisticated tasks like file system or database access. 
-	\item Another problem with Java\-Script based solutions is that although Java\-Script is standardized, different browsers interpret the same JavaScript code differently and any non-trivial application based on JavaScript has to be customized to the browser platform it will be used on. A consequence of this is that JavaScript applications get overly complex and expensive when the resulting application shall be availble on multible browsers.
-	
-\end{itemize}
+\begin{description}
+	\item[Limited Possibilites] The possibilites provided by standard conform JavaScript are very limited. Java\-Script only allows interaction with its parent document\footnote{The document that embedds or references the script.}, not with any system or network ressources. Tasks that require for example file system, database or network access are not possible with standard conform JavaScript.\footnote{These limitations do not apply to Microsoft's JScript, cf. section \ref{sec:activescripting}.} 
+	\item[Missing Standard Conformance] Another problem with Java\-Script based solutions is that although Java\-Script is standardized, different browsers interpret the same JavaScript code differently and any non-trivial application based on JavaScript has to be customized to the browser platform it will be used on. For an application that has to work on different platforms, for example Opera and Internet Explorer, some parts have to be coded for each browser separatly along with code deciding at run time which browser it runs on and which code is the one that must be used. A consequence of this is that JavaScript applications get overly complex and \emph{expensive} when the resulting application shall be availble on multiple browsers.
+\end{description}
 
-Advantages of JavaScript are:
-\begin{itemize}
-	\item JavaScript is very easy to learn, it is not a strongly typed language, the syntax is familiar for any C/Java/Perl/PHP programmer.
-	\item JavaScript is by default integrated in almost any available browser and thus provides a wide base users that can use JavaScript applications 'out of the box'.
-	\item JavaScript, in the standardized version, is quite secure, especially because it does not support any potentially hazardous actions like deleting or reading files or similar.
-\end{itemize}
+However, JavaScript also has some important advantages:
+\begin{description}
+	
+	\item [Easy to Learn] JavaScript is a loose typed language, the syntax is a mix of elements from C and Java and a lot of simple examples and tutorials is available for free on the web.\footnote{E.g. at \cite{W3SchJS}} Additionally, nothing but a web browser is necessary to start programming with JavaScript.
+	
+	\item [Wide User Base] JavaScript is integrated in all relevant browsers and thus provides a wide user base that can use JavaScript applications 'out of the box'. As JavaScript is always available when a web browser is installed,, no costs of maintaining or installing JavaScript accumulate.
+	
+	\item [Security] As JavaScript implementations conforming to the standard do not allow operations outside of their designated are -- their parent document -- potentially hazardous actions like reading content from other browser windows or accessing the local file system are theoretically not possible.\footnote{This does not to the JScript security model, cf. section \ref{sec:activescripting}.}
+	
+\end{description}

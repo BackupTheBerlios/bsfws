@@ -1,35 +1,47 @@
-Java is an object oriented programming language developed by Sun and available since 1995. Java, from the beginning of its development, was designed to be a platform independent programming language: The concept of Java consists of a 'two-step' approach in compiling and running Java programs: The Java source code is compiled into a architecture neutral bytecode; upon running, that bytecode is interpretet by the Java virtual machine that must be available on the computer running Java application.
+Java is an object oriented programming language developed by the Sun Microsystems engineer James Gosling as well as some other engineers at Sun. The development of Java was started in 1990; the first release of Java is available since November 1995.\footnote{Cf. \cite{WikiJava}.} The design goals of Java object-orientation, platform independence, distributed programming and security, especially the possiblity to run remote code securely.
 
-One of the most important reasons why Java was created platform independant was the intention to use Java as a programming language in heterogenous environments, especially the internet, where platform independence make it possible to write applications once and run them on any desired platform.
+%WikiJava http://en.wikipedia.org/wiki/Java_platform
+
+To reach the goal of platform independence, a 'two-step' approach is used: Java is not, as it is the case with conventional programming languages like C or C++, compiled into binary machine code but into an intermediate language called the Java \emph{bytecode}. This bytecode is the interpretet by a bytecode interpreter, the \emph{Java Virtual Machine}.
+
+One of the most important reasons why Java was created platform independant was the intention to use Java as a programming language in heterogenous environments, especially the internet, where platform independence makes it possible to write and provide binary applications independent of their target platform.
 
 %JAVA PLUGIN
 
-Another feature of Java is that it allows the creation of applications that can be embedded in HTML documents: Java applets. These applets reside in and control a designated area of the HTML document. As Java, in contrast to JavaScript, is a full featured language, these applets could potentially be dangerous. To allow the use of Java applets without compelling users to check the security of the applets, Java created a secure environment, the sandbox, for Java applets that allows only safe operations; in order to allow potentially harmful tasks like filesystem access, this sandbox can be left when the user explicitly allows this. The security model of the Java sandbox is fine-grained, the user can specify exactly which applet should have which permission (which files may be accessed, which hosts contacted over the internet, ...). 
+Another feature of Java is that it allows the creation of applications that can be embedded in HTML documents: Java \emph{applets}. These applets reside in and control a designated area of the HTML document. As Java, in contrast to JavaScript, is a full featured language that provides facilities for potentially hazardous task, these applets can be dangerous. To allow the use of Java applets from remote or unknown sources without the necessity of a security review by the user and without compromising a system security, Sun created a secure environment, the \emph{sandbox}, wherin all applets are run. This sandbox only allows safe operations by default; in order to allow hazardous tasks like filesystem access, this sandbox can be left when the user explicitly allows this. The security model of the Java sandbox is fine-grained, the user can specify exactly which applet should have which permission\footnote{Permissions might be for example to open a specific file or to connect to a specified host on the internet.} depending on the location and the developer or vendor\footnote{Identification of users and companies is done using certificates.} of the applet. 
 
-The Java Standard Edition comes with hugh class library that provides classes for most standard tasks like reading files from local and remote locations, database access or TCP/IP connections. All of this functionality is available in Java applets.
-
-
-Current versions of the Java plugin also allow applets access to elements of browser documents. 
-
-However, compared with JavaScript, interaction with document elements is much more complicated. 
+The Java Standard Edition comes with hugh class library that provides classes for most standard tasks like reading files from local and remote locations, database access or TCP/IP connections. All of this functionality of Java is also available in Java applets.
 
 
+With current versions of Java and web browsers, it is also possible for applets to 'leave' their designated are an interact directly with the currently loaded document using the possibilities provided by LiveConnect\footnote{Cf. section \ref{sec:liveconnect}.}. However, compared with JavaScript, interaction with document elements is much more complicated. 
 
+In a nutshell, the disadvantages of Java as a client side application language are:
 
-In a nutshell, the disadvantages of Java are:
-
-\begin{itemize}
-	\item It is much harder to learn than most scripting languages.
-	\item Interaction between Java and web browsers is more complicated than it is with 'browser native' languages.
-	\item Java code must be compiled, it can not be changed at runtime.
+\begin{description}
 	
-\end{itemize}
+	\item [Hard to Learn] As Java is a fully-fledged programming language that is build on the object-oriented developmend paradigm and uses strong typing, it is not a programming language that is as easy to learn as most scripting languages.
+	
+	\item [Bad Suited to Small Problems] The object orientation and strong typing of Java often make it necessary to write much more code for small problems compared with scripting languages that do not demand object oriented developing or strong typing.
 
-Advantages of Java are:
+	\item [Complicated DOM Access] Accessing the 'live' DOM of a document currently loaded by a web browser over LiveConnect is much more complicated than directly accessing it with languages directly supported by the browser, for example JavaScript.\footnote{Cf. figure \ref{fig:ComparisionOfDOMAccessInJavaAndJavaScript} and section \ref{sec:liveconnect}.}
+	
+	\item [Compilation Necessary] Java code must be compiled to the platform neutral bytecode, it can not be changed at runtime. Additionally, a Java compiler as well as all classes required to compile the code are necessary on the client to enable the compilation of Java.
+	
 
-\begin{itemize}
-	\item Java is a truely platform independent programming language available on all major operating system and hardware platforms.
-	\item Java comes with a huge class library.
-	\item Program execution is much faster than it is with scripting languages.
-	\item Java code distributed over the internet runs in a safe environment.
-\end{itemize}
+\end{description}
+
+Compared with the other available solutions, the advantages of using Java are:
+
+\begin{description}
+	
+	\item [Real Platform Independence] Java is a truely platform independent programming language available on all major operating system and hardware platforms. Incompatibilities or different implementations that make the cross-platform development of JavaScript based applications comparably complicated do not exist in Java.\footnote{An exception to this is Microsoft's 'Java' Virtual Machine. This however is neither developed nor distributed or supported any more. Cf. \cite{MSJavaT}.}
+%MSJavaT http://www.microsoft.com/mscorp/java/faq.asp
+	
+	\item [Class Library] Java comes with a enormous class library that provides functionality for tasks from string manipulation to HTTP transfers and from image rendering to XML transformation.\footnote{Cf. \cite{JavaAPI}.}
+%JavaAPI http://java.sun.com/j2se/1.4.2/docs/api/index.html
+	
+	\item [Speed] A programm written in Java in most cases will run much faster than a compareable program written in a scripting language like Perl or Rexx. Java execution speed for is normally compareable to oject-oriented native C++.\footnote{Cf. \textbf{der Heise .NET benchmark artikel}.}
+	
+	\item [Security] As described above, Java applets always run within the Java sandbox, which can only be left if the user grants specific rights explicitly.
+	
+\end{description}

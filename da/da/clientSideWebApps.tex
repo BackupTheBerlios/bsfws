@@ -1,0 +1,12 @@
+Most people using the internet today only use a specific part of the internet: the World Wide Web, based on the HTTP protocol, the HTML page markup language and the URL -- which specifies the location of a document -- and developed by Tim Berners-Lee and Rober Cailliau in 1990.\cite{WikWww}
+%WikWww http://en.wikipedia.org/wiki/Www
+And most of the people using the web are using web applications too: Search engines, library catalogs, online shopping systems or web based eMail clients. Most of these web applicatios are server side applications, meaning that the browser is only used for presenting the user interface, the \emph{user interface} tier of an application \ref{fig:appLayers}. The application logic and the data storage tiers reside on the server side. The alternative to this approach is to move at least the \emph{process logic} from the server and to the client. This requires that the client is able to handle the process logic, that is, there must be a way to run code on the client side, within the web browser; see figure \ref{fig:appLayers} for a depiction of server- and client-side web application classified in a three-tier application architecture schema\footnote{Information on the three-tier application schema is for example available from \cite{FOLtt}}. 
+%FOLtt http://foldoc.doc.ic.ac.uk/foldoc/foldoc.cgi?three-tier
+\begin{figure}[htb]
+	\centering
+		\includegraphics{CsSsArchitecture}
+	\caption{Web Applications in a Three-Tier Schema}
+	\label{fig:appLayers}
+\end{figure}
+
+The existing solutions for this problem all have one or another drawback that make them inconvenient or impractical to use; BWS is an attempt to overcome these drawbacks and provide a way to enable the creation of plaform and scripting language neutral client side web applications.

@@ -1,4 +1,4 @@
-ActiveScripting, also called ActiveX Scripting, is a technology developed by Microsoft Corp. that can be used for client side scripting in web browsers. It is a proprietary solution available only for the Microsoft platform, that is for the Windows operating systems and the Internet Explorer web browser.
+ActiveScripting, also called ActiveX Scripting, is a technology developed by Microsoft that can be used for client side scripting in web browsers. It is a proprietary solution available only for the Microsoft platform, that is for the Windows operating systems and the Internet Explorer web browser.
 
 ActiveScripting is based on COM interfaces that can be used to communicate with the various supported scripting engines. It is not limited to a specifig scripting language, instead scripting engines for various languages are available from Microsoft and other vendors, see table  \ref{tab:ActiveScriptingEngines} for an overview of some available languages.\footnote{Developing a scripting language for languages other than these is possible, information on this is available at \cite{MsCreateSE}.}
 
@@ -7,9 +7,12 @@ ActiveScripting is based on COM interfaces that can be used to communicate with 
 \begin{table}
 	\centering
 		\begin{tabular}{ll}
-			\textbf{Language}& \textbf{Vendor/URL} \\
+			\textbf{Language}& \textbf{Vendor} \\
+			& \textbf{URL} \\
 			VBScript & Microsoft \\
+			& \texttt{http://www.microsoft.com/scripting/vbscript/} \\
 			JScript & Microsoft \\
+			& \texttt{http://www.microsoft.com/scripting/jscript/} \\
 			Perl & ActiveState \\
 			Python & \sffamily http://www.python.org/ \\
 			Haskell & \sffamily http://www.haskell.org/haskellscript \\
@@ -21,17 +24,24 @@ ActiveScripting is based on COM interfaces that can be used to communicate with 
 \end{table}
 
 
-The advantages the ActiveScripting are:
+Used as a client side web scripting language, some of the advantages of ActiveScripting are:
 
-\begin{itemize}
-	\item ActiveScript is a scripting language independent framework form dynamic HTML documents, it is not limited to a specific language.
-	\item ActiveScript allows developers to access all features (like file system or database access) the Windows Scripting Host provides within HTML documents.
-	\item Using ActiveScripting languages in HTML documents works exactly as using standard JavaScript scripts\footnote{Microsoft's JScript itself is an ActiveScripting language.}, the learning barrier to using non-JavaScript languages in HTML environments is very low.
-\end{itemize}
+\begin{description}
+	
+	\item [Language Independent] ActiveScript is a scripting language independent framework form dynamic HTML documents, it is not limited to a specific language.
+	
+	\item [Powerful] ActiveScript allows developers to access all features (like file system or database access) the Windows Scripting Host provides within HTML documents.
+	
+	\item [Easy to Use] Using ActiveScripting languages in HTML documents works exactly as using standard JavaScript scripts\footnote{Microsoft's JScript itself is an ActiveScripting language.}, the learning barrier to using non-JavaScript languages in HTML environments is very low.
+
+\end{description}
 
 Drawbacks of ActiveScripting are:
 
-\begin{itemize}
-  \item The security model used in ActiveScripting: ActiveScripting within HTML documents can only be switched on or off\footnote{The decision if scripting shall be allowed can be made based on signatures and URLs.}, a differentiated approach to allow or prohibit specific actions of a script is not possible. It also is impossible to run scripts in a secure environment similar to the Java sandbox.
-  \item ActiveScripting is limited to the Microsoft Windows/Internet Explorer platform and thus the creation of applications based on this technology creates massive lock-in effects and raises switching costs to other platforms.
-\end{itemize}
+\begin{description}
+  
+  \item [Insecure] The security model used in ActiveScripting: ActiveScripting within HTML documents can only be switched on or off\footnote{The decision if scripting shall be allowed can be made based on signatures and URLs.}, a differentiated approach to allow or prohibit specific actions of a script is not possible. It also is impossible to run scripts in a secure environment similar to the Java sandbox.
+  
+  \item [Platform Dependence] ActiveScripting is limited to the Microsoft Windows/Internet Explorer platform and thus the creation of applications based on this technology creates massive lock-in effects and raises switching costs to other platforms.
+  
+\end{description}
