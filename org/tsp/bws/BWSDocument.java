@@ -1,3 +1,64 @@
+/******************************************************************************
+** Class BWSDocument.java
+** 2003-11-24 by Tobias Specht
+*******************************************************************************
+** This class represents a BWS-XHTML document for parsing and rewriting 
+** purpose. It provides methods to read an BWS conform XHTML document from
+** an URL and rewrite it as an standard JavaScript XHTML document that can
+** be interpreted by a standard compliant web browser. It uses dom4j for
+** DOM manipulation, so if you want to compile it, make sure you've got the
+** dom4j classes in your CLASSPATH.
+*******************************************************************************
+**
+** Changelog
+** ---------
+**
+** V0.1   @ 2003-11-24
+**
+*******************************************************************************
+ * 
+ * - rewriting code must be changed to enable argument passing, cf. bws wiki
+ *   http://openfacts.berlios.de/index-en.phtml?title=BSFWebScripting
+ * 
+*******************************************************************************
+**
+** Licencing Information
+** ---------------------
+**
+** Copyright (C) 2002-2003 Tobias Specht
+**
+** This program is free software; you can redistribute it and/or
+** modify it under the terms of the GNU General Public License
+** as published by the Free Software Foundation; either version 2
+** of the License, or (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+**
+** The GNU General Public License is also available on the Web:
+** http://www.gnu.org/copyleft/gpl.html
+**
+*******************************************************************************
+**
+** Contact information
+** -------------------
+**
+** For further information on this script mail me at:
+**
+**     tobi@mail.berlios.de
+**
+** The most recent version of this file is available from
+**
+**     http://bsfws.berlios.de/
+**
+******************************************************************************/
+
 package org.tsp.bws;
 
 import java.io.File;
@@ -17,7 +78,7 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 import org.dom4j.io.OutputFormat;
 
-public class bwsDocument {
+public class BWSDocument {
 	/** internal representation of the non-bws'd xml document */
 	private Document xmlDocument;
 	/** list of all bws scripts */
