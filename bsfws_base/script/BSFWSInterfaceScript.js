@@ -9,67 +9,69 @@
 ** Changelog
 ** ---------
 **
-** V0.1final        -         Handlers are installed, forwarding to BSF is not implemented
-**                          yet
-** V0.2alpha          -         Removing duplicates from Handler included
-** V0.2final        -         some errors removed (global replacement necessary due to
-**                        unduplicated array)
-** V0.3alpha.1         -        testing forwarding to bsf
-** V0.3alpha.2  -         actual forwarding
-** V0.3beta.1        -         forwarding works
-** V0.3beta.2        -         some code 'cleaning', renamed to installScriptingHandlers
-** V0.3rc.1        @ 2002-12-20
-**               -       separated removeDuplicates from installScriptingHandlers-
-**                       function,
-**               -       renamed some array to clarify their use or make them more
-**                       generic (i.e. replace 'rexx' with 'script')
-**               -       extended changelog to contain dates of change
-**               -       changed layout of the comment/information part
-** V0.3rc.2 @ 2003-01-20
-**               -       renamed installScriptingHandlers() to initBSFWS()
-**               -       removed parameter from initBSFWS(), document body is now obtained
-**                       with document.getElementById("").innerHTML
-**               -       separated buildHandler() from initBSFWS()
-**               -       added multi-language capability to buildHandler()
-**               -       some code 'cleaning' to improve understandability
-**               -       changed filename to "BSFWSInterfaceScript.js"
+** V0.1final    -       Handlers are installed, forwarding to BSF is not implemented
+**                      yet
+** V0.2alpha    -       Removing duplicates from Handler included
+** V0.2final    -       some errors removed (global replacement necessary due to
+**                      unduplicated array)
+** V0.3alpha.1  -       testing forwarding to bsf
+** V0.3alpha.2  -       actual forwarding
+** V0.3beta.1   -       forwarding works
+** V0.3beta.2   -       some code 'cleaning', renamed to installScriptingHandlers
+** V0.3rc.1     @ 2002-12-20
+**              -       separated removeDuplicates from installScriptingHandlers-
+**                      function,
+**              -       renamed some array to clarify their use or make them more
+**                      generic (i.e. replace 'rexx' with 'script')
+**              -       extended changelog to contain dates of change
+**              -       changed layout of the comment/information part
+** V0.3rc.2      @ 2003-01-20
+**              -       renamed installScriptingHandlers() to initBSFWS()
+**              -       removed parameter from initBSFWS(), document body is now obtained
+**                      with document.getElementById("").innerHTML
+**              -       separated buildHandler() from initBSFWS()
+**              -       added multi-language capability to buildHandler()
+**              -       some code 'cleaning' to improve understandability
+**              -       changed filename to "BSFWSInterfaceScript.js"
 ** V0.3final = V0.30 @ 2003-01-21
-**               -       some debugging
-**               -       new numbering of versions
-** V0.31         @ 2003-01-23
-**               -       added getLanguage() function to enable parsing of
-**                       used languages from the html-document
-**               -       created new global variable tempArray to enable passing
-**                       of arrays between functions possible on IE, rewrote
-**                       array passing accordingly
-** V0.32         @ 2003-02-03
-**               -       modified initBSFWS, now script handlers for all
-**                       languages found by getLanguages are installed (all
-**                       scripts are passed to the rexx engine at the moment,
-**                       this will be changed soon)
-** V0.33         @ 2003-04-01
-**               -       first version working on IE, atm different versions are
-**                       necessary for Mozilla and IE
-**               -       added </object>-replace code to stop IE forgeting parameters
-**               -       some changes to <object> tag to make it work on IE
-**               -       added getBrowserType for central differenciation between
-**                       different browsers
-**               -       handler scripts are not working on internet explorer
-** V0.4          @ 2003-04-30
-**		 - 	 BWS is now almost scripting language independent 
-**			 (almost: all scripts should atm be linked as 
-**			          rexx:script_id, java applet does not load any
-**				  engines but bsf4rexx)
-**		 -	 used scripting language is read from the script-tags
-**			 mime-type (not from the link as was the case before 0.4,
-**			 the mime-type is forwarded to the applet that determines
-**			 to which engine the script code should be forwarded)
-**		 -	 script works with MSIE, Mozilla-based browsers (Mozilla 1.4
-**			 and Netscape 7 tested)
-** V0.5		 @ 2003-05-07, changes contributed by Rony G. Flatscher
-**		 -	 id's for body and html tags are not necessary anymore
-**		 -	 html entities used in scripts are decoded (necessary
-**			 for mozilla/netscape
+**              -       some debugging
+**              -       new numbering of versions
+** V0.31        @ 2003-01-23
+**              -       added getLanguage() function to enable parsing of
+**                      used languages from the html-document
+**              -       created new global variable tempArray to enable passing
+**                      of arrays between functions possible on IE, rewrote
+**                      array passing accordingly
+** V0.32        @ 2003-02-03
+**              -       modified initBSFWS, now script handlers for all
+**                      languages found by getLanguages are installed (all
+**                      scripts are passed to the rexx engine at the moment,
+**                      this will be changed soon)
+** V0.33        @ 2003-04-01
+**              -       first version working on IE, atm different versions are
+**                      necessary for Mozilla and IE
+**              -       added </object>-replace code to stop IE forgeting parameters
+**              -       some changes to <object> tag to make it work on IE
+**              -       added getBrowserType for central differenciation between
+**                      different browsers
+**              -       handler scripts are not working on internet explorer
+** V0.4         @ 2003-04-30
+**		-	BWS is now almost scripting language independent 
+**			(almost:all scripts should atm be linked as 
+**			        rexx:script_id, java applet does not load any
+**				engines but bsf4rexx)
+**		-	used scripting language is read from the script-tags
+**			mime-type (not from the link as was the case before 0.4,
+**			the mime-type is forwarded to the applet that determines
+**			to which engine the script code should be forwarded)
+**		-	script works with MSIE, Mozilla-based browsers (Mozilla 1.4
+**			and Netscape 7 tested)
+** V0.5		@ 2003-05-07, changes contributed by Rony G. Flatscher
+**	 	-	id's for body and html tags are not necessary anymore
+**		-	html entities used in scripts are decoded (necessary
+**			for mozilla/netscape
+** V0.51	@ 2003-05-08
+**		-	no id necessary for the applet anymore 
 **
 *******************************************************************************
 **
@@ -130,8 +132,10 @@
 var tempArray;
 tempArray=new Array();
 var browserType=null;
+var theBWSApplet=null;
 
 function initBSFWS() {
+	theBWSApplet=document.getElementById("bsfWSInterfaceApplet");
 
         // determine used browser:
         //         0 = mozilla/gecko
@@ -157,84 +161,112 @@ function initBSFWS() {
         code=document.getElementsByTagName('body')[0].innerHTML;    // ---rgf, 2003-05-03
 //--rgf alert("initBSFWS() after code...");
 
+// not necessary anymore (done by the applet)
         // getUsedLanguages
-        usedLanguages=new Array();
-        getLanguages();
-        usedLanguages=tempArray;
-
-        // get script references
-        scriptReferencesMultiple=new Array();
-        scriptReferencesCurrent=new Array();
-        // for each language
-        for (getReferencesCounter=0;getReferencesCounter<usedLanguages.length;getReferencesCounter++) {
-
-                // browser specific code necessary, IE forgets double-quotes!
-                if (browserType==0) {
-                        tempRegExString = '"' + usedLanguages[getReferencesCounter] + ':\\w+"';
-                }
-
-                if (browserType==1) {
-                        tempRegExString = usedLanguages[getReferencesCounter] + ':\\w+';
-                }
-
-                tempRegEx=new RegExp(tempRegExString,"g");
-                // get script references from code
-                scriptReferencesCurrent=code.match(tempRegEx);
-                if (scriptReferencesCurrent!=null) {
-                        scriptReferencesMultiple=scriptReferencesMultiple.concat(scriptReferencesCurrent);
-                }
-        }
-
-        // remove duplicates from script references
-        tempArray=scriptReferencesMultiple;
-        removeDuplicates();
-        scriptReferences=tempArray;
-
-        functionnames=new Array();
-
-        // replace for with foreach from scriptReferences
-        // must be done for each language
-        for (counter=0;counter<scriptReferences.length;counter++) {
-                curstring=scriptReferences[counter];
-                // curstring="language:script"
-                // to consider: internet explorer forgets double-quotes!
-                // not necessary on mozilla, browser specific code
-
-                // "6","5" must be replaced by language.length for scripting
-                // language independance,
-                // browser specific code, mozilla is 6,curstring.length-1
-                if (browserType==0) {
-                        functionname=curstring.substring(6,curstring.length-1);
-                } else if (browserType==1) {
-                        functionname=curstring.substring(5,curstring.length);
-                }
-
-                // functionname=script
-                // names of functions must not contain any brackets
-
-                // soll rexx direkt ausgeführt werden, wäre es notwendig,
-                // routinen/methodenaufrufe eindeutig zu kennzeichnen!
-
-// different with dynamic handler-calling
-//                replacementstring='javascript:' + functionname + '()';
-
-// dynamic version
-                replacementstring="javascript:callBSF('" + functionname + "')";
-
-                theRegEx=new RegExp(curstring,"g");
-                code=code.replace(theRegEx,replacementstring);
+//        usedLanguages=new Array();
+//        getLanguages();
+//        usedLanguages=tempArray;
 
 
-/* buildHandler is not called anymore
- *                // JavaScript handlers are built with buildHandler (expects engine and functionname);
- *                if (browserType==0) {
- *                        buildHandler("rx", functionname);
- *                } else if (browserType==1) {
- *                        code=buildHandler("rx", functionname);
- *                }
+	// now all bsf scripts are detected and their calls in the document 
+	// (bsf:script and #:script) are replaced with calls to
+	// callBSF('scriptid')
+
+	// all script tages are stored in an array
+	theScriptTags=document.getElementsByTagName("script");
+	
+	// for each element of the script tag array
+	for (theScriptsCounter=0;theScriptsCounter<theScriptTags.length;theScriptsCounter++) {
+		// the script type (MIME type) is determined and compared to x-bsf
+		// if it is a bsf script (i.e. if type contains x-bsf)
+		if (theScriptTags[theScriptsCounter].type.indexOf("x-bsf")>-1) {
+			// the script id is obtained (a shortcut is defined)
+			curScrId=theScriptTags[theScriptsCounter].id;
+			
+                	replacementstring="javascript:callBSF('" + curScrId + "')";
+			// all code of the document matching 'bsf:scriptid' is replaced with
+			// 'callBSF('scriptid') via Regular Expression
+			currentReference="bsf:" + curScrId;
+			theRegEx=new RegExp(currentReference,"g");
+			code=code.replace(theRegEx,replacementstring);
+
+			// the same is done for '#:scriptid'
+                        currentReference="#:" + curScrId;
+			theRegEx=new RegExp(currentReference,"g");
+			code=code.replace(theRegEx,replacementstring);
+		}
+	}
+
+/*
+ *	this is some code that should not be necessary anymore as it is used to determin
+ *	used scripting language and generate individual scripting handlers both of which
+ *	is not necessary any more
+ *
+ *       // get script references
+ *       scriptReferencesMultiple=new Array();
+ *       scriptReferencesCurrent=new Array();
+ *       // for each language
+ *       for (getReferencesCounter=0;getReferencesCounter<usedLanguages.length;getReferencesCounter++) {
+ *
+ *               // browser specific code necessary, IE forgets double-quotes!
+ *               if (browserType==0) {
+ *                       tempRegExString = '"' + usedLanguages[getReferencesCounter] + ':\\w+"';
+ *               }
+ *
+ *               if (browserType==1) {
+ *                       tempRegExString = usedLanguages[getReferencesCounter] + ':\\w+';
+ *               }
+ *
+ *               tempRegEx=new RegExp(tempRegExString,"g");
+ *               // get script references from code
+ *               scriptReferencesCurrent=code.match(tempRegEx);
+ *               if (scriptReferencesCurrent!=null) {
+ *                       scriptReferencesMultiple=scriptReferencesMultiple.concat(scriptReferencesCurrent);
+ *               }
+ *       }
+ *
+ *      // remove duplicates from script references
+ *       tempArray=scriptReferencesMultiple;
+ *       removeDuplicates();
+ *       scriptReferences=tempArray;
+ *
+ *       functionnames=new Array();
+ *
+ *       // replace for with foreach from scriptReferences
+ *       // must be done for each language
  */
-        }
-
+	// part of this code is used! don't delete
+	// it's used above (copied) -> commented out 
+/*
+ *       for (counter=0;counter<scriptReferences.length;counter++) {
+ *               curstring=scriptReferences[counter];
+ *               // curstring="language:script"
+ *               // to consider: internet explorer forgets double-quotes!
+ *               // not necessary on mozilla, browser specific code
+ *
+ *               // "6","5" must be replaced by language.length for scripting
+ *               // language independance,
+ *               // browser specific code, mozilla is 6,curstring.length-1
+ *               if (browserType==0) {
+ *                       functionname=curstring.substring(6,curstring.length-1);
+ *               } else if (browserType==1) {
+ *                       functionname=curstring.substring(5,curstring.length);
+ *               }
+ *
+ *               // functionname=script
+ *               // names of functions must not contain any brackets
+ *
+ *               // sollen script implementierte funktionen direkt ausgeführt werden, wäre es notwendig,
+ *               // routinen/methodenaufrufe eindeutig zu kennzeichnen!
+ *
+ *		// dynamic version (only one handler function, function=scriptname
+ *		// 	as parameter)
+ *               replacementstring="javascript:callBSF('" + functionname + "')";
+ *
+ *               theRegEx=new RegExp(curstring,"g");
+ *               code=code.replace(theRegEx,replacementstring);
+ *       }
+ */
         // rewriting the document and initializing BSF
         // no more language dependant code from here
 
@@ -252,12 +284,12 @@ function initBSFWS() {
         // showTags();
 
 /*
-        var oldNode=document.getElementsByTagName('body')[0];
-        var oNewNode = document.createElement("body");
-        oNewNode.innerHTML = code;
-        oldNode.replaceNode(oNewNode);
-        alert ("newCode=["+code+"]");
-*/
+ *        var oldNode=document.getElementsByTagName('body')[0];
+ *       var oNewNode = document.createElement("body");
+ *       oNewNode.innerHTML = code;
+ *       oldNode.replaceNode(oNewNode);
+ *       alert ("newCode=["+code+"]");
+ */
 
 // alert("initBSFWS() after setting body to new code...");
 
@@ -267,67 +299,13 @@ function initBSFWS() {
         initBSF();
 }
 
-// build and install handler function code, 
-// replaced with static handler 'callBSF'
-// not necessary anymore
-// function will be removed from code
-function buildHandler(engine, funcName) {
-        // first:         browser gateway
-        // --> mozilla-based via 'new Function()'
-        if (browserType==0) {
-                funcCode="try {";
-                funcCode+="call" + engine + "(document.getElementById(\'" + funcName + "\').innerHTML);";
-                funcCode+="} catch (e) {";
-                //funcCode+="alert(e);";
-                funcCode+="}";
-
-                completeFunction=funcName + '=new Function("' + funcCode + '")';
-
-                try { eval(completeFunction); } catch (e) { alert (e); }
-        }
-
-        // --> internet explorer via 'script DEFER'
-        if (browserType==1) {
-                funcCode='<script language="javascript" type="text/javascript" DEFER id="' + funcName + '_js">\n';
-                funcCodeCore='function ' + funcName + '() {\n';
-                funcCodeCore+="call" + engine + "(document.getElementById(\'" + functionname + "\').innerHTML);\n";
-                funcCodeCore+='}';
-                funcCode=funcCode + funcCodeCore + "</script>";
-                code=code +  funcCode /*+ code*/;
-                eval(funcCodeCore);
-                return code;
-        }
-
-        // --> internet exploer via 'node'-Object
-        if (browserType==2) {
-                // use document.createElement to create a script
-                theScript=document.createElement("script");
-
-                // create a 'textNode' containing the script
-                funcCode='function ' + funcName + '() {';
-                funcCode+="call" + engine + "(document.getElementById(\'" + functionname + "\').innerHTML);";
-                funcCode+='}\n';
-
-        }
-
-
-        // --> add further browsers here ;)
-}
-
-
 function initBSF() {
-        if (navigator.userAgent.indexOf("Gecko")>0) {
-                bsfWSInterfaceApplet=document.getElementById('bsfWSInterfaceApplet');
-        }
+//        if (navigator.userAgent.indexOf("Gecko")>0) {
+//                bsfWSInterfaceApplet=document.getElementById('bsfWSInterfaceApplet');
+//        }
 
-        bsfWSInterfaceApplet.registerWindow(self);
-        bsfWSInterfaceApplet.registerDocument(document);
-	// now done by the applet
-	//        bsfWSInterfaceApplet.appletToBSFReg();
-}
-
-function callrx(rexxcode) {
-        bsfWSInterfaceApplet.executeScript(rexxcode,"rx");
+        theBWSApplet.registerWindow(self);
+        theBWSApplet.registerDocument(document);
 }
 
 function removeDuplicates(duplicateArray) {
@@ -357,21 +335,44 @@ function removeDuplicates(duplicateArray) {
         tempArray=finalArray;
 }
 
-function getLanguages() {
-        // languages can be determined by all script types
-        // languages are: x-bsf/x-language
-        //                        ^^^^^^^^
-        // match for languages: /"x-bsf\/x-\w+"/g
-        // then do a remove duplicates or resulting array
-        // and search for each languages handlers individually
 
-        // read complete document into a variable for parsing by the script
-        //alert(theDocument);
-        // theDocument=document.getElementById("the_document").innerHTML;
-        theDocument=document.getElementsByTagName("html")[0].innerHTML;
+// determining scripting languages is not necessary any more for the script
+// as scripting language detection is done by bsf
+function getLanguages() {
+/* old version of this function, new see below
+ *       // languages can be determined by all script types
+ *       // languages are: x-bsf/x-language
+ *       //                        ^^^^^^^^
+ *       // match for languages: /"x-bsf\/x-\w+"/g
+ *       // then do a remove duplicates or resulting array
+ *       // and search for each languages handlers individually
+ *
+ *       // read complete document into a variable for parsing by the script
+ *       //alert(theDocument);
+ *       // theDocument=document.getElementById("the_document").innerHTML;
+ *       theDocument=document.getElementsByTagName("html")[0].innerHTML;
+ */
+
+// scripting languages are now determined by reading all script tags' type information
+
+	// first an empty array is created
+        usedLanguagesDup=new Array();
+
+	// all script tages are stored in another array
+	theScriptTags=document.getElementsByTagName("script");
+	
+	// for each element of the script tag array
+	for (theScriptsCounter=0;theScriptsCounter<theScriptTags.length;theScriptsCounter++) {
+		// the script type (MIME type) is determined and compared to x-bsf
+		if (theScriptTags[theScriptsCounter].type.indexOf("x-bsf")>-1) {
+			
+
+			alert(theScriptTags[theScriptsCounter].type);
+		}
+	}
 
         // create an array where the used languages are stored
-        usedLanguagesDup=new Array();
+
 
         // get the languages/mime-types from documents
         // alternative for only non-standardized mime-types, i.e. x-.../x-...
@@ -397,8 +398,6 @@ function getLanguages() {
 
 // central browser 'gateway'
 function getBrowserType() {
-        //alert("hi");
-        //alert(navigator.userAgent);
         if (navigator.userAgent.indexOf("Gecko")>0) {
                 // mozilla/gecko based browser, return 0
                 return 0;
@@ -431,7 +430,7 @@ function callBSF(idToCall) {
         }
         // alert (new Date()+" code: "+code);
 
-	bsfWSInterfaceApplet.executeScript(code,scriptTag.type);
+	document.getElementById("bsfWSInterfaceApplet").executeScript(code,scriptTag.type);
 }
 
 function decodeEntities (text) {          // ---rgf, 2003-05-05
@@ -442,4 +441,19 @@ function decodeEntities (text) {          // ---rgf, 2003-05-05
        re=/&amp\;/g;
        text=text.replace(re, "&");
        return text;
+}
+
+// not used yet (and not working yet)
+function getApplet() {
+	documentApplets=document.getElementsByTagName('object');
+	numberOfApplets=(documentApplets.length);
+	for (theAppletCounter=0;theAppletCounter<numberOfApplets;theAppletCounter++) {
+			alert("found the following applet:" + documentApplets[theAppletCounter].code);
+		if (documentApplets[theAppletCounter].code.indexOf("bsfWSInterfaceApplet")>-1) {
+
+			return documentApplets[theAppletCounter];
+		}
+	}
+	alert("necessary applet (bsfWSInterfaceApplet.class) not found! BWS will not work!");
+	return null;	
 }
