@@ -17,8 +17,10 @@ the .innerHTML property that is necessary to handle the script code doesn't work
 <script type="x-bsf/x-rexx" language="rexx" id="hello_world">
 theApplet=BSF('lookupBean','AppletObj')
 
-CALL BSF 'invoke',theApplet,'setValue','eingabe','hello world'
+call BSF 'invoke',theApplet,'setValue','eingabe','hello world'
+--call bsf 'invokeStrict', theApplet, 'setValue', 'string', 'eingabe', 'string', 'hallo, Welt!'
 CALL BSF 'invoke',theApplet,'setValue','ausgabe','hello world'
+--call bsf 'invokeStrict', theApplet, 'setValue', 'str', 'ausgabe', 'str', 'hallo, Welt!'
 
 </script>
 
@@ -57,10 +59,9 @@ compText=compText "</pre>"
 call BSF 'invoke',theApplet,'setValue','ausgabe',count
 call BSF 'invoke',theApplet,'setParam','codearea','innerHTML',compText
 </script>
-
 </head>
 
-<body onload="javascript:initBSFWS()">
+<body onload="javascript:initBSFWS()" id="the_body">
 
 <h1 id="heading">BSFInterface Examples</h1>
 
@@ -74,7 +75,7 @@ and the Interface Applet (BSFInterfaceApplet.class). Choose from one of the four
 <h2>Example 1: Hello World</h2>
 Print &quot;Hello World&quot; in input and output.<br />
 
-<a href="rexx:hello_world">Say &quot;Hello World&quot;</a><br />
+<a href="#:hello_world">Say &quot;Hello World&quot;</a><br />
 
 </td>
 <td>
@@ -82,7 +83,7 @@ Print &quot;Hello World&quot; in input and output.<br />
 <h2>Example 2: Reverse String</h2>
 Reverses the string from input and prints it into output.<br />
 
-<a href="rexx:reverse_string">Reverse String</a><br />
+<a href="#:reverse_string">Reverse String</a><br />
 
 </td>
 </tr>
@@ -94,7 +95,7 @@ Reverses the string from input and prints it into output.<br />
 Change the background color of the document to the color entered in input
 (can be either a rgb-hexcode or the name of a color, e.g. #000000 or black)<br />
 
-<a href="rexx:change_style">Change style</a><br />
+<a href="#:change_style">Change style</a><br />
 
 
 </td>
@@ -104,11 +105,12 @@ Change the background color of the document to the color entered in input
 Read the contents of a (text) file and print it under the input/output
 file. Also counts the number of words in the document and prints it in output.<br />
 
-<a href="rexx:parse_file">Datei einlesen</a><br />
+<a href="#:parse_file">Datei einlesen</a><br />
 
 </td>
 </tr>
 </table>
+
 
 <br />
 
@@ -121,7 +123,7 @@ Output <input type="text" name="ausgabe" id="ausgabe"></input><br />
 </form>
 
 
-<object classid="java:bsfWSInterfaceApplet.class" codetype="application/java" codebase="file:///d:/programme/bsf/" name="bsfWSInterfaceApplet" id="bsfWSInterfaceApplet" mayscript="true"></object>
+<object classid="java:bsfWSInterfaceApplet.class" codetype="application/java" archive="bws.jar" codebase="file:///d:/programme/bsf/" name="bsfWSInterfaceApplet" id="bsfWSInterfaceApplet" mayscript="true"></object>
 
 
 <div id="codearea">
