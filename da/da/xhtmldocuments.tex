@@ -1,0 +1,16 @@
+The starting point of a BWS compliant document is a standard well-formed HTML document, that is, it must fullfil the following requirements\footnote{There are some additional requirements that do not apply to BWS documents, see \cite{references}, the exact requirements of well-formedness for XML documents is \cite{w3reference}:
+
+\begin{itemize}
+
+\item For every start tag, there must be a closing tag, i.e. for every \ttfamily{<li>} tag there must be a \ttfamily{</li>} tag; an exception to this rule is allowed for tags that have no content, e.g. \ttfamily{<br>}, these tags must be given in the combined notation \ttfamily{<br/>}. As some browsers do not accept the later variant, it is recommended to use explicit start and end tags and, in cases where this is not possible, seperate the closing slash by a space from the tag itself, e.g. \ttfamily{<br />}. This notation should work with any BWS supporting browser.
+
+\item Elements can have subelements, they must use strict nesting, 'overlapping' tags, for example \ttfamily{<h1>Text<center>Centered</h1>also centered</center>}, are not allowed.
+
+\item Tags and attributes are case-sensitve, for example \ttfamily{<h1>} and \ttfamily{</H1>} are not matching.
+
+\item Attributes must have exactly one value, empty attributes that are allowed in standard HTML, e.g. the \ttfamily{mayscript} attribute of objects must be given as \ttfamily{<object mayscript="true" />}, not only \ttfamily{<object mayscript>}, all attributes must be enclosed in quotes.
+
+\end{itemize}
+
+%references http://www.intelligenteai.com/XMLRepository/well_formed_xml_document.htm
+%			http://www.w3.org/TR/2000/REC-xml-20001006#sec-well-formed
