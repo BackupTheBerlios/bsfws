@@ -1,0 +1,30 @@
+LiveConnect was the first technology that allowed interaction betwwen Java, JavaScript and scriptable browser plugins. It enables calls of Java methods from JavaScript as well as access from Java to the functionality of JavaScript.
+
+The development for Java/JavaScript interaction was started by Netscape Inc. in 1996; it was first availablel with the release of the Netscape Navigator 3.0. Nowadays \footnote{February 2004.} this functionality is provided by the Sun Java Plugin.
+
+For this Java/JavaScript interaction, Netscape provides the \texttt{netscape.javascript.JSObject} Java class that capsules all non-primitive data types passed between JavaScript and Java. This class also provides the only way for Java to access the current documents DOM\footnote{From Java 1.5 on, Sun \emph{will provide} another, better adjusted possibility for accessing the DOM called the \emph{Common DOM API}}. Due to this very generic DOM interface, modifiying the DOM from Java is comparativly elaborate. See figure \ref{fig:JavaJSDomAccess} for a comparison of modifiying a DOM element from Java compared to modifying it from JavaScript.
+
+\begin{figure}[htbp]
+Setting the background color of the first heading to red in JavaScript and Java.	
+\begin{verbatim}
+firstHeading=window.getElementsByTagName("h1")[0];
+firstHeading.style.backgroundColor="red;"
+\end{verbatim}
+JavaScript
+
+\begin{verbatim}
+Object[] objectArray=new Object[1];
+JSObject appletWindow=this.getWindow();
+objectArray[0]="h1";
+JSObject headingArray=
+  (JSObject)appletWindow.call(getElementsByTagName,objectArray);
+JSObject firstHeading=(JSObject)headingArray.getSlot(0);
+JSObject styleAttribute=(JSObject)firstHeading.getAttribute("style");
+objectArray[0]="red";
+styleAttribute.setMember("backgroundColor",objectArray)
+\end{verbatim}
+Java
+
+	\caption{Comparision of DOM access in Java and JavaScript}
+	\label{fig:ComparisionOfDOMAccessInJavaAndJavaScript}
+\end{figure}

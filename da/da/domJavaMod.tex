@@ -47,3 +47,53 @@ Once the desired element is found, its attributes
 	\caption{A minimal dom4j example}
 	\label{fig:AMinimalDom4jExample}
 \end{figure}
+
+As stated above, this iterative approach is not practicable for larger documents or documents with a previously unknown structure. In these cases, the XPath support of dom4j is helpful. It allows to select elements based on XPath querys and returns the results of this queries as a \texttt{java.util.Collection}. A (shortened) example of printing the number of \texttt{h1} elements in a document is given in figure \ref{fig:UsingXPathWithDom4j}.
+
+\begin{figure}[htbp]
+	
+\begin{verbatim}
+import org.dom4j.XPath;
+import org.dom4j.DocumentHelper;
+
+...
+
+  // create XPath query
+  XPath xpathSelector = DocumentHelper.createXPath("//h1");
+  
+  // select elements from document
+  List results = xpathSelector.selectNodes(document);
+  
+  // print number of elements
+  System.out.println(results.size());
+  
+... 
+\end{verbatim}
+	\caption{Using XPath with dom4j}
+	\label{fig:UsingXPathWithDom4j}
+\end{figure}
+
+% anleitung s. dom4j cookbook
+
+
+Once the desired element has been found, several methods are available for modifying the elements itself, its attributes and its content. See table \ref{tab:dom4jElementMethods} for an overview of the most important ones.
+
+\begin{table}[htbp]
+	\centering
+		\begin{tabular}{lll}
+			Return Value & Method Head & Description \\
+			\texttt{void} & \texttt{addAttribute(String, String)} & sets the specified attribute to the specified value.\\
+			\texttt{Attribute} & \texttt{attribute(int)} & returns the specified attribute.\\
+			\ttfamily Attribute & \texttt{attribute(String)} & returns the specified attribute.\\
+			\texttt{List} & \texttt{attributes()} & returns as a backed\footnote{I.e. any change in the attribute is 
+			  done directly to the referenced Attribute, not to a clone.} \texttt{List}.\\
+			\texttt{String} & \texttt{attributeValue(String)} & Same as \texttt{attribute(String)}, but returns the value instead of the attribute itself.\\
+			\texttt{String} & \texttt{getText()} & returns the text value of the element.\\
+			\texttt{void} & \texttt{setAttributes(List)} & Sets the attributes of the element.\\
+			\texttt{void} & \texttt{setText(String)}\footnote{Inherited unchanged from \texttt{org.dom4j.Node}} & Sets the Text of the Attribute\\
+			
+			  
+		\end{tabular}
+	\caption{dom4j Element Methods}
+	\label{tab:dom4jElementMethods}
+\end{table}

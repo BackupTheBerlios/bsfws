@@ -1,0 +1,5 @@
+The technologies described above are used in BWS in the following relations:
+
+For document rewriting, dom4j is used to transform the user created BWS document to a Java object tree. Using other methods provided by dom4j, these objects are then modified to represent a browser interpretable document. This resulting object tree is then \emph{written out as a HTML document}.
+
+During execution of the document, LiveConnect is used to provide DOM access to the runtime environment applet, BSF is used to run the scripts and forward their DOM. For a graphical representation see figure \ref{fig:TechnicalOverviewOfBWS}.

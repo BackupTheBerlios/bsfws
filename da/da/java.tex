@@ -1,3 +1,35 @@
-Java is an object oriented programming language developed by Sun and available since 1995. Java, from the beginning of its development, was designed to be a platform independent programming language: The concept of Java consists of a 'two-step' approach in compiling and running Java programs, the source code is compiled into a platform independent 'bytecode' that is then interpreted by a bytecode interpreter, the Java virtual machine (JVM).
+Java is an object oriented programming language developed by Sun and available since 1995. Java, from the beginning of its development, was designed to be a platform independent programming language: The concept of Java consists of a 'two-step' approach in compiling and running Java programs: The Java source code is compiled into a architecture neutral bytecode; upon running, that bytecode is interpretet by the Java virtual machine that must be available on the computer running Java application.
 
-One of the reasons why Java was created platform independent was to make Java the dominant programming language of the 'internet age', by being totally platform independent, Java can be downloaded on any computer and executed directly on the JVM without further steps by the user.
+One of the most important reasons why Java was created platform independant was the intention to use Java as a programming language in heterogenous environments, especially the internet, where platform independence make it possible to write applications once and run them on any desired platform.
+
+%JAVA PLUGIN
+
+Another feature of Java is that it allows the creation of applications that can be embedded in HTML documents: Java applets. These applets reside in and control a designated area of the HTML document. As Java, in contrast to JavaScript, is a full featured language, these applets could potentially be dangerous. To allow the use of Java applets without compelling users to check the security of the applets, Java created a secure environment, the sandbox, for Java applets that allows only safe operations; in order to allow potentially harmful tasks like filesystem access, this sandbox can be left when the user explicitly allows this. The security model of the Java sandbox is fine-grained, the user can specify exactly which applet should have which permission (which files may be accessed, which hosts contacted over the internet, ...). 
+
+The Java Standard Edition comes with hugh class library that provides classes for most standard tasks like reading files from local and remote locations, database access or TCP/IP connections. All of this functionality is available in Java applets.
+
+
+Current versions of the Java plugin also allow applets access to elements of browser documents. 
+
+However, compared with JavaScript, interaction with document elements is much more complicated. 
+
+
+
+
+In a nutshell, the disadvantages of Java are:
+
+\begin{itemize}
+	\item It is much harder to learn than most scripting languages.
+	\item Interaction between Java and web browsers is more complicated than it is with 'browser native' languages.
+	\item Java code must be compiled, it can not be changed at runtime.
+	
+\end{itemize}
+
+Advantages of Java are:
+
+\begin{itemize}
+	\item Java is a truely platform independent programming language available on all major operating system and hardware platforms.
+	\item Java comes with a huge class library.
+	\item Program execution is much faster than it is with scripting languages.
+	\item Java code distributed over the internet runs in a safe environment.
+\end{itemize}
