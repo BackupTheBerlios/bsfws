@@ -120,12 +120,14 @@ public class BWSApplet extends Applet {
       mgr.registerBean("DocumentWindow",jsWindow);
    }
 
-   /** reads a script from the docuemnt and passes it to the bsf engine
-    * specified in the scripts type attribute.
+   /** reads a script from the document and passes it to the bsf engine
+    * specified in the scripts type attribute. Returns the object it gets
+    * from apply()
+    *
     * @param scriptString String containing scriptId, returnValue key and parameters keys
     * @param domObject object that is used in script evaluation (usually <em>this</em>)
     */
-   public void executeScript(String scriptString, JSObject domObject) {
+   public Object executeScript(String scriptString, JSObject domObject) {
 	 if (debugLevel>0) {
 	 	System.out.println("[BWSApplet.executeScript] got this domObject: " + domObject);
 	 }
@@ -159,7 +161,7 @@ public class BWSApplet extends Applet {
 	// these names are predefined as argument+number, eg. argument1, argument2, ...
 	// starting with argument0
 	Vector namesVector=new Vector();
-	
+
 	int nrOfArguments=argumentVector.size();
     for (int argumentCounter=0;argumentCounter<nrOfArguments;argumentCounter++) {
       String nextArgumentName="argument" + String.valueOf(argumentCounter);
@@ -173,7 +175,9 @@ public class BWSApplet extends Applet {
     // under the key specified in the ScriptString
     // get this return value key from ScriptString:
 	String returnKey=currentScriptString.getRetKey();
-      
+
+	Object applyReturnedObject;
+
 	// execute script
 	try {
 	  // for parameter use and returning values, use apply()
@@ -186,28 +190,30 @@ public class BWSApplet extends Applet {
        *                     Vector namesVec,
        *                     Vector argsVec)
        *    throws org.apache.bsf.BSFException
-       * 
+       *
        * script code must be in 'funcBody'
        * namesVec contains the names of the arguments passed
        * argsVec contains the values
        */
-	   
+
 	   // the script is executed, return value referenced by applyReturnedObject
-	   Object applyReturnedObject=evalEngine.apply("",0,0,script,namesVector,argumentVector);
-	   
+	   applyReturnedObject=evalEngine.apply("",0,0,script,namesVector,argumentVector);
+
 	   if (debugLevel>0) {
 	   	 System.out.println("[BWSApplet.executeScript] apply returned the following object: " + applyReturnedObject);
 	   }
-	   
+
 	   // the returned object now gets referenced in the bsf registry be the specified
 	   // key (returnKey) (from where it is accessible by any bsf script)
 	   if (applyReturnedObject!=null) {
 	     mgr.registerBean(returnKey,applyReturnedObject);
 	   }
 	 } catch (Exception e) {
+	 	applyReturnedObject=null;
 	    System.out.println("[BWSApplet-executeScript] exception while trying to execute");
 	 }
-
+	 
+     return applyReturnedObject;
    }
 
    /** reads a script from the docuemnt and passes it to the bsf engine
