@@ -15,11 +15,17 @@ import java.lang.String;
 
 class ScriptString {
     // class internal representation of the string
-    private String scriptString;
+    //private String scriptString;
 
     // the id of the script referenced by this script string
     private String scriptId;
-	
+
+	// the key that references the value returned by the script
+    private String returnValue;
+
+	// string array of parameters used in the function call
+	private String[] parameters;
+
 	// set a debug level for this class
 	private static int debugLevel=1;
 
@@ -28,6 +34,8 @@ class ScriptString {
 		// it would be nice if the constructor checked for duplicate
 		// =,( and ) and throw an exception if these occur
 		// start indices probably should be +1
+
+		//scriptString=passedString;
 
 		if (debugLevel>0) {
 			System.out.println("[ScriptString.constructor] entered constructur, passedString: " + passedString);
@@ -47,44 +55,66 @@ class ScriptString {
 				scriptId=passedString.substring(0,passedString.indexOf("("));
 				scriptId=scriptId.trim();
 
-				// if debug				
+				// if debug
 				System.out.println("[ScriptString.constructor] no retval, args, scriptId: " + scriptId);
 
-				this.parseParameters();
+				parameters=this.parseParameters(passedString);
 		    }
 		} else {
 		    // any parameters?
 	    	if (passedString.indexOf("(")<0) {
 				// no parameters
-				scriptId=passedString.substring(passedString.indexOf("="),passedString.length());
+				scriptId=passedString.substring(passedString.indexOf("=")+1,passedString.length());
 				scriptId=scriptId.trim();
 
-				// if debug				
+				// if debug
 				System.out.println("[ScriptString.constructor] retval, no args, scriptId: " + scriptId);
 	    	} else {
 				// parameters
-				scriptId=passedString.substring(passedString.indexOf("="),passedString.indexOf("("));
+				scriptId=passedString.substring(passedString.indexOf("=")+1,passedString.indexOf("("));
 				scriptId=scriptId.trim();
 
-				// if debug				
+				// if debug
 				System.out.println("[ScriptString.constructor] retval, args, scriptId: " + scriptId);
 
-				this.parseParameters();
+				parameters=this.parseParameters(passedString);
 		    }
+
+		    returnValue=passedString.substring(0,passedString.indexOf("="));
+		    System.out.println("[ScriptString.constructor] retval: " + returnValue);
 		}
-		scriptString=passedString;
+		//scriptString=passedString;
     }
 
-    private void parseParameters() {
-    	// line doesn't work yet
-//		String parametersString=scriptString.substring(scriptString.indexOf("("),scriptString.indexOf(")"));
-		// now split with parametersString.splite(",");
+    private String[] parseParameters(String passedString) {
+		if (debugLevel>0) {
+			System.out.println("[ScriptString.parseParameters] scriptString: " + passedString);
+		}
+
+		String parametersString=passedString.substring(passedString.indexOf("(")+1,passedString.indexOf(")"));
+
+		if (debugLevel>0) {
+			System.out.println("[ScriptString.parseParameters] parametersString: " + parametersString);
+		}
+
+		// now split with parametersString.splite(",");		
+		String[] parametersArray=parametersString.split(",");
+		
+		for (int parametersCounter=0;parametersCounter<parametersArray.length;parametersCounter++) {
+
+			parametersArray[parametersCounter]=parametersArray[parametersCounter].trim();
+
+			if (debugLevel>0) {
+				System.out.println("[ScriptString.parseParameters] parameter " + parametersCounter + ": " + parametersArray[parametersCounter]);
+			}
+		}			
+		
 		// return a String array
-
-    }
+		return parametersArray;
+	}
 
     /** returns the script id of the referenced script */
     public String getScriptId() {
-	return scriptId;
+		return scriptId;
     }
 }
