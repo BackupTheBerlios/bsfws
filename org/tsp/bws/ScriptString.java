@@ -117,8 +117,14 @@ class ScriptString {
     public String getScriptId() {
 		return scriptId;
     }
-    
+	
+	/** returns a String array of all parameters specified in the script string */
     public String[] getParameters() {
     	return parameters;
+    }
+    
+    /** returns the return value key specified in the script string (the part in front of =) */
+    public String getRetKey() {
+    	return returnValue;
     }
 }
