@@ -15,8 +15,11 @@
 **        - scripting engine is determined by mime-type of the script which is
 **          passed from javascript
 ** V0.3   @ 2003-05-20
-**        - scripting engines are loaded just-in-time
+**        - scripting engines are loaded just-in-time (only java based)
 **        - arbitrary (bsf) scripting engines can be used
+** V0.9	  @ 2003-06-13
+**	  - all scripting engines (incl. jni based) are loaded jit
+**	  - V1.0RC1
 **
 *******************************************************************************
 **
@@ -71,6 +74,7 @@ import com.ibm.bsf.*;
 // using the sun.plugin.javascript.JSObject does not work but results in a 
 // method not found error! use netscape.javascript.JSObject
 import netscape.javascript.*;
+import java.security.*;
 
 public class bsfWSInterfaceApplet extends Applet {
     // the bsf manager
@@ -174,30 +178,46 @@ public class bsfWSInterfaceApplet extends Applet {
 	System.out.println("--[executeScript]--> trying to load [" + actLangString + "] engine");
 	
 	// declaring and loading the scripting engine
-	BSFEngine currentEngine;
+	//BSFEngine currentEngine;
+
+	final String actLangStringPriv=actLangString;
+//	final String scriptPriv=script;
 	
 	try {
-	    currentEngine=mgr.loadScriptingEngine(actLangString);
-	    System.out.println("--[executeScript]--> scripting engine loaded successfully");
+		BSFEngine evalEngine = (BSFEngine) AccessController.doPrivileged(new PrivilegedAction() {
+			public Object run() {	
+				// declaring and loading the scripting engine				
+				BSFEngine currentEngine;
+			
+				try {
+					currentEngine=mgr.loadScriptingEngine(actLangStringPriv);
+					System.out.println("--[executeScript]--> scripting engine loaded successfully");
+					return currentEngine;
+				} catch (Exception e) {
+		    			System.out.println("--[executeScript]--> error loading scripting engine");
+	    				System.out.println("--[executeScript]--> probably non-existing language: " + actLangStringPriv);
+	    				e.printStackTrace();
+				}
+			return null;							}
+		});  	
 
-	    // print the recieved scripts code for debugging purpose
-	    System.out.println("--[executeScript]--> Script code start");
-	    System.out.println("--[eS-scriptCode]--> " + script);
-	    System.out.println("--[executeScript]--> Script code end");
-	    
-	    // now just pass the script to the loaded engine
-	    try {
-		currentEngine.eval("",0,0,script);
-	    } catch (Exception e) {
-		System.out.println("--[executeScript]--> unknown error in scriptEval");
-		e.printStackTrace();
-	    }
+
+		// print the recieved scripts code for debugging purpose
+		System.out.println("--[executeScript]--> Script code start");
+    		System.out.println("--[eS-scriptCode]--> " + script);
+    		System.out.println("--[executeScript]--> Script code end");
+    
+		// now just pass the script to the loaded engine
+		try {
+			evalEngine.eval("",0,0,script);
+    		} catch (Exception e) {
+			System.out.println("--[executeScript]--> unknown error in scriptEval");
+			e.printStackTrace();
+    		}
 	} catch (Exception e) {
-	    System.out.println("--[executeScript]--> error loading scripting engine");
-	    System.out.println("--[executeScript]--> probably non-existing language: " + actLangString);
-	    e.printStackTrace();
+		e.printStackTrace();
 	}
-
+	
 	// Method code below is not necessary any more
 /*
  *	// switch statement for eval/exec necessary
