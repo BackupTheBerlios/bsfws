@@ -22,6 +22,8 @@
 **	  - V1.0RC1
 ** V0.91  @ 2003-06-21
 **        - some minor changes
+** V0.92  @ 2003-06-25
+**        - scripts are evaluated within a doPrivileged environment
 **
 *******************************************************************************
 **
@@ -168,13 +170,22 @@ public class bsfWSInterfaceApplet extends Applet {
 	    System.out.println("--[executeScript]--> Script code end");
 	    
 	    // now just pass the script to the loaded engine
-	    try {
-		evalEngine.eval("",0,0,script);
-	    } catch (Exception e) {
-		System.out.println("--[executeScript]--> unknown error in scriptEval");
-		e.printStackTrace();
-	    }
-	} catch (Exception e) {
+	    final String scriptFinal=script;
+	    final BSFEngine bsfEngineFinal=evalEngine;
+	    
+	    AccessController.doPrivileged(new PrivilegedAction() {
+		    public Object run() {
+			try {
+			    bsfEngineFinal.eval("",0,0,scriptFinal);
+			} catch (Exception e) {
+			    System.out.println("--[executeScript]--> unknown error in scriptEval");
+			    e.printStackTrace();
+			}
+			return null;
+		    }
+		});
+	}
+	catch (Exception e) {
 	    e.printStackTrace();
 	}
     }
