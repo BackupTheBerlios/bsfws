@@ -81,9 +81,6 @@
 ** Planned improvements
 ** --------------------
 **  - support Opera (as soon as document.getElementById works there)
-**  - replace scripting_language:script_id with #script_id or bsf:script_id
-**	in links and events (language is determined by script type and not by
-**	link anymore)
 **
 *******************************************************************************
 **
@@ -177,7 +174,7 @@ function initBSFWS() {
 
 	// all script tages are stored in an array
 	theScriptTags=document.getElementsByTagName("script");
-	
+
 	// for each element of the script tag array
 	for (theScriptsCounter=0;theScriptsCounter<theScriptTags.length;theScriptsCounter++) {
 		// the script type (MIME type) is determined and compared to x-bsf
@@ -185,8 +182,8 @@ function initBSFWS() {
 		if (theScriptTags[theScriptsCounter].type.indexOf("x-bsf")>-1) {
 			// the script id is obtained (a shortcut is defined)
 			curScrId=theScriptTags[theScriptsCounter].id;
-			
-                	replacementstring="javascript:callBSF('" + curScrId + "')";
+	               	replacementstring="javascript:callBSF('" + curScrId + "')";
+
 			// all code of the document matching 'bsf:scriptid' is replaced with
 			// 'callBSF('scriptid') via Regular Expression
 			currentReference="bsf:" + curScrId;
@@ -282,6 +279,10 @@ function initBSFWS() {
 
 // ---rgf        document.getElementById('the_body').innerHTML=code;
         // showTags();
+
+	alert("About to call initBSF()");
+        initBSF();
+
         document.getElementsByTagName('body')[0].innerHTML=code;    // ---rgf, 2003-05-03
         // alert("now body got changed...");
         // showTags();
@@ -299,7 +300,6 @@ function initBSFWS() {
 // alert ("before calling initBSF() ..."+new Date());
 //        window.setTimeout("eval(initBSF())", 3000);
 
-        initBSF();
 }
 
 function initBSF() {
@@ -307,6 +307,7 @@ function initBSF() {
 //                bsfWSInterfaceApplet=document.getElementById('bsfWSInterfaceApplet');
 //        }
 
+	alert("In initBSF()");
         theBWSApplet.registerWindow(self);
         theBWSApplet.registerDocument(document);
 }
