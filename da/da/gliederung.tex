@@ -3,117 +3,135 @@
 \tableofcontents
 \newpage
 
+\listoffigures
 
-\section{Introduction}
+\chapter{Introduction}
  
  
- \subsection{Client Side Web Applications}
- \subsection{General remarks}
- \subsection{Structure of this Paper}
-\section{Term Definitions}
-\section{Analysis of Current Solutions For Developing Client Side Web Applications}
- \subsection{Economical and Technical Advantages of Client Side Web Applications}
- \subsection{Current solutions for Developing Client Side Web Applications}
+ \section{Client Side Web Applications}
+ \section{General remarks}
+ \section{Structure of this Paper}
+\chapter{Term Definitions}
+
+\chapter{Analysis of Current Solutions For Developing Client Side Web Applications}
+ \section{Economical and Technical Advantages of Client Side Web Applications}
+ \section{Current solutions for Developing Client Side Web Applications}
 
   \input{currentSolutions.tex}
 
-  \subsubsection{Platform Independent Solutions}
+  \subsection{Platform Independent Solutions}
   
    \input{platformIndependent.tex}
    
-   \paragraph{JavaScript}
+   \subsubsection{JavaScript}
    
     \input{javaScript.tex}
     
-   \paragraph{Pure Java}
+   \subsubsection{Pure Java}
    
     \input{java.tex}
     
-  \subsubsection{A Proprietary Solution: Microsoft ActiveScripting}
+  \subsection{A Proprietary Solution: Microsoft ActiveScripting}
   \label{sec:activescripting}
     
-   %\input{activescripting.tex}
+   \input{activescripting.tex}
      
-\section{BWS}
+\chapter{BWS}
 
  \input{bwsbasics.tex}
 
- \subsection{Technical Overview}
+ \section{Technical Overview}
   
   \input{technicalOverview.tex}
   
- \subsection{Base Technologies}
+ \section{Base Technologies}
  \label{sec:BaseTechnologies}
   
   \input{basetechnologies.tex}
   
-  \subsubsection{DOM}
+  \subsection{DOM}
   
    \input{dom.tex}
    
-   \paragraph{DOM Basics}
+   \subsubsection{DOM Basics}
    
     \input{dombasics.tex}
     
-   \paragraph{DOM in Java: dom4j}
+   \subsubsection{DOM in Java: dom4j}
     
     \input{domInJava.tex}
     
-   \paragraph{Selecting DOM Elements: XPath}
-   
+   \subsubsection{Selecting DOM Elements: XPath}
+   \label{sec:SelectingDOMElementsXPath}
     \input{xpath.tex}
    
-   \paragraph{Modifiying the DOM in Java with dom4j}
+   \subsubsection{Modifiying the DOM in Java with dom4j}
    
     \input{domJavaMod.tex}
     
-  \subsubsection{LiveConnect and the Sun Java Plugin}
+  \subsection{LiveConnect and the Sun Java Plugin}
   
    \input{liveconnect.tex}
    
-  \subsubsection{BSF}
+  \subsection{BSF}
   
    \input{BSF.tex}
   
-  \subsubsection{Relations Between the Base Technolgies}
+  \subsection{Relations Between the Base Technolgies}
    
    \input{technologyRelations.tex}
    
- \subsection{Classes and Their Relations}
- \subsection{BWS in Action}
-  \subsubsection{The Details of Document Rewriting}
-   \paragraph{The BWSDocument class}
-   \paragraph{Using BWSDocument}
-    \subparagraph{Server-side}
-    \subparagraph{Client-side}
-  \subsection{The Details of Application Execution}
-   \subsubsection{The BWSApplet}
-   \subsubsection{The ScriptString Class}
-   \subsubsection{The JSNode Class}
-\section{Discussion}
-
-\section{Using BWS}
-
- \subsection{An Example of BWS in Action}
- \subsection{Installing BWS}
- \subsection{Creating BWS Applications}
+ \section{Classes and Their Relations}
  
-  \subsubsection{XHTML Documents as Starting Point for BWS Applications}
+  \input{classesAndRelations.tex}
+   
+ \section{BWS in Action}
+  
+  \input{bwsInAction.tex}
+  
+  \subsection{Details of Document Rewriting}
+
+   \input{detailsDocRewriting.tex}
+
+   \subsubsection{BWSDocument class}
+    
+    \input{bwsDocumentClass.tex}
+     
+   \subsubsection{Using BWSDocument}
+    \paragraph{Server-side}
+    \paragraph{Client-side}
+   \subsection{Details of Application Execution}
+    \subsubsection{BWSApplet}
+    \subsubsection{ScriptString Class}
+    \subsubsection{JSNode Class}
+    
+     \input{JSNode.tex}
+    
+\chapter{Discussion}
+
+\chapter{Using BWS}
+
+ \section{An Example of BWS in Action}
+ \section{Installing BWS}
+ \section{Creating BWS Applications}
+ \label{sec:CreatingBWSApplications}
+ 
+  \subsection{XHTML Documents as Starting Point for BWS Applications}
   \label{sec:XHTMLDocumentsAsStartingPoint}
 
    \input{xhtmldocuments.tex}
 
-  \subsubsection{Embedding And Referencing Scripts}
+  \subsection{Embedding And Referencing Scripts}
 
  \input{embeddingScripts.tex}
 
-  \subsubsection{Accessing And Modifiying DOM Elements}
+  \subsection{Accessing And Modifiying DOM Elements}
 
   %\include{accessingDOM.tex}
 
- \subsection{Advanced Possibilities of BWS}
-  \subsubsection{An Extension to the Given Example}
-  \subsubsection{Calling Scripts from Other Scripts}
-  \subsubsection{Passing Parameters and Returning Values from BWS Scripts}
- \subsection{Code Comparison: BWS and JavaScript}
-\section{Wrap-Up and Outlook}
+ \section{Advanced Possibilities of BWS}
+  \subsection{An Extension to the Given Example}
+  \subsection{Calling Scripts from Other Scripts}
+  \subsection{Passing Parameters and Returning Values from BWS Scripts}
+ \section{Code Comparison: BWS and JavaScript}
+\chapter{Wrap-Up and Outlook}

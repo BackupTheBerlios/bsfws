@@ -1,0 +1,21 @@
+BWS consists of two separted sets of classes: 
+
+\begin{itemize}
+
+\item The first set is based on the \texttt{BWSDocument} class that represents an BWS document and provides methods to transform it to a browser   interpretable HTML document and is used by the \texttt{BWSRewriter} and the \texttt{BWS2XHTML} class.
+ \texttt{BWSRewriter} reades the BWS document from an URL specified on the command line, rewrites the document and
+ prints messages useful for debugging a failing document; \texttt{BWS2XHTML} also reades the document from a specified
+ URL and prints only the transformed document to the standard output.
+
+\item The second set is based on the \texttt{BWSApplet} class that provides the runtime environment for BWS scripts. This class utilizes the \texttt{JSNode} class, a capsule class for the HTML/XML nodes\footnote{Independent of the node type, i.e. element, text and attribute nodes, just as the DOM's \texttt{node} 'class' does.}, and the \texttt{ScriptString} class that is used for the interpretation and evaluation of script calls from events.
+
+\end{itemize}
+
+Figure \ref{fig:bwsDocumentRepresentation} shows which elements of a document are represented by which classes, figure \ref{CREATETHISFIGURE} shows the relations between the classes and their relations to the classes of external packages.
+
+\begin{figure}
+	\centering
+		\includegraphics[width=0.90\textwidth]{bwsDocumentRepresentation}
+	\caption{BWS Documents - Representation in Java}
+	\label{fig:bwsDocumentRepresentation}
+\end{figure}

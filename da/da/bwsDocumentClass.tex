@@ -1,0 +1,46 @@
+The \texttt{BWSDocument} class is, as shown in figure \ref{fig:bwsDocumentRepresentation}, a Java representation of a BWS document. It provides methods for transforming a BWS document to a browser interpretable HTML document by rewriting the script calls from BWS script calls to JavaScript calls of an applet method that in consequence runs the desired script. Additionally, it embedds the runtime environment applet in the HTML document.
+
+For these purposes, the class provides six methods, for an overview see the class diagram in figure \ref{fig:classDiagrammBWSDocument}. The \texttt{printDocumentSource()} method an the \texttt{printVector()} method are useful for debugging the BWS document, the other methods are used for rewriting the document.
+
+\begin{figure}
+	\centering
+		\includegraphics{classDiagrammBWSDocument}
+	\caption{Class diagram: \texttt{BWSDocument}}
+	\label{fig:classDiagrammBWSDocument}
+\end{figure}
+
+The usual workflow for transforming documents is as follows:
+
+\begin{enumerate}
+	\item Read and parse the document.
+	\item Gather all script ids occuring in the document.
+	\item Search all attributes of all elements if they reference a BWS script and replace the script call if this it the case.
+\end{enumerate}
+
+This workflow correspondes to the following method calls of \texttt{BWSDocument}:
+
+\begin{enumerate}
+	\item \texttt{readDocumentFromURL(String URL)}
+	\item \texttt{getScriptNames()}
+	\item \texttt{rewriteScriptCalls()}
+\end{enumerate}
+
+The \texttt{readDocumentFromURL()} method is quite simple, it creates an \texttt{URL} and a \texttt{SAXReader}. The \texttt{SAXReader}'s \texttt{read()} method is the used on the \texttt{URL} and its result is assigned to the \texttt{xmlDocument} property of \texttt{BWSDocument}.
+
+\texttt{getScriptNames()} is the method used for reading all occuring script names from the document. It creates a \texttt{XPath} object selecting all script elements.\footnote{The XPath expression for this is \texttt{//script}, see section \ref{sec:SelectingDOMElementsXPath}, p. \pageref{sec:SelectingDOMElementsXPath}.} This \texttt{XPath} is then used to select the matching nodes which are referenced in the \texttt{results List}. Using an \texttt{Iterator}, all scripts are parsed for their \texttt{id} attribute. The value of the \texttt{id} attribute is then added to the \texttt{scriptNames Vector}-.\footnote{A private property of \texttt{BWSDocument}.} If an \texttt{id} is not available, the \texttt{name} attribute is used instead, if this also is missing, the script is ignored.
+
+\texttt{rewriteScriptCalls()} is a very short method that iterates over the \texttt{scriptNames Vector} and calls the \texttt{getAttributeElement()} method for each of the \texttt{Vector}'s elements.
+
+\texttt{getAttributeElement()}
+ takes a 
+ \texttt{String}
+  as an argument; it creates a 
+  \texttt{XPath} object that selects all elements having an arbitrary attribute of the value 'bws:PassedString' or '\#:PassedString'.\footnote{
+  The XPath expression for this is \texttt{//*[@*='\#:ScriptId'] | //*[@*='bws:ScriptId']} where ScriptId is the string that was passed to the \texttt{getAttributeElement()} method from the caller. The expression consists of two parts connected with the 'or' operator  (\texttt{|}),one for attribute values starting with '\#', the other one for those starting with 'bws:'; the \texttt{//*} denominates that all elements shall be searched, \texttt{@*} indicates all attributes shall be searched.
+  }
+
+After the results of this XPath expression are stored to the \texttt{List results}, an \texttt{Iterator} is created that iterates over all found elements. For each element, its attributes are stored to another \texttt{List}, \texttt{elementAttributes}. Another \texttt{Iterator} is created for this \texttt{List} and each attribute is tested if it was the one matching the XPath expression. If this is the case, the attribute value is changed to \textbf{INSERT THE REAL VALUE HERE!}.
+
+\textbf{INSERTING THE APPLET}
+
+The resulting final document that is stored in the \texttt{BWSDocument}'s \texttt{xmlDocument} can then be printed out to the standard output using the \texttt{printDocumentSource()} method.

@@ -14,7 +14,7 @@ BSF was initally developed at an IBM research center with the motivation to prov
 
 The interest of the Apache project in BSF finally led IBM to hand over the project to the Apache foundation where it is developed since 2002 as an subproject of Jakarta\footnote{\textbf{What is Jakarta?}}. As of February 2004, the current release of BSF is 2.3.
 
-\paragraph{BSF Architecture}
+\subsubsection{BSF Architecture}
 
 For consists of two primary components, the \texttt{BSFManager} and the \texttt{BSFEngine}. The \texttt{BSFManager} maintains the BSF object registry and handles the scripting engines. To use the BSF, a Java application must instanciate a \texttt{BSFManager} and then either load a scripting engine directly using the \texttt{BSFEngine} interface or indirectly using the \texttt{BSFManager} as a proxy. The \texttt{BSFManager} also caches scripting engines so these only have to be instanciated once.
 
