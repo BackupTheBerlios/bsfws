@@ -91,13 +91,12 @@ public class JSNode {// extends JSObject {
 		//JSObject
 		jsDocument=(JSObject)jsWindow.getMember("document");
 		if (debug==1) {
-			System.out.println("[JSNode constructor] document: " + jsDocument);
+			System.out.println("[JSNode.constructor] document: " + jsDocument);
 		}
 		node=(JSObject) jsDocument.call("getElementById",callArgs);
-	//	callArgs1=new Object[1];
-	//	callArgs2=new Object[2];
+
 		if (debug==1) {
-			System.out.println("[JSNode constructor] New JSNode created: "+ this.toString());
+			System.out.println("[JSNode.constructor] New JSNode created: "+ this.toString());
 		}
     }
 
@@ -124,6 +123,10 @@ public class JSNode {// extends JSObject {
 		jsDocument=(JSObject)jsWindow.getMember("document");
 		existingNode.setMember("id",id);
 		node=existingNode;
+	}
+
+	protected void finalize() {
+		System.out.println("[JSNode.finalize] deleting reference to this node: " + node.toString());
 	}
 
 	/** creates a JSNode from an existing JavaScript/JSObject node
