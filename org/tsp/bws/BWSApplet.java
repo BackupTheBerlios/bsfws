@@ -119,18 +119,15 @@ public class BWSApplet extends Applet {
       mgr.registerBean("DocumentWindow",jsWindow);
    }
 
-   /** reads a script form the document and executes it
-    * at the moment, only rexx is used as scripting language
-    * Must be modified to read the script from dom (instead of getting
-    * it passed or from an url)
-    * @param scriptId id of the script tags wherein the script code is stored
-    * @param script the string specifing script id, return values and arguments
+   /** reads a script from the docuemnt and passes it to the bsf engine
+    * specified in the scripts type attribute.
+    * @param scriptString String containing scriptId, returnValue key and parameters keys
+    * @param domObject object that is used in script evaluation (usually <em>this</em>)
     */
-   // code execution could probably also be done by the BSFManager, i.e.
-   // without explicitly loading a scripting engine
-   public void executeScript(String scriptString) {
-     // going to an inner class, all variables that shall be accessible
-     // must be declared final
+   public void executeScript(String scriptString, JSObject domObject) {
+	 if (debugLevel>0) {
+	 	System.out.println("[BWSApplet.executeScript] got this domObject: " + domObject);
+	 }
 
      // create a ScriptString
      ScriptString currentScriptString=new ScriptString(scriptString);
@@ -138,7 +135,49 @@ public class BWSApplet extends Applet {
      // obtain script id from the script string
      String scriptId=currentScriptString.getScriptId();
 
-     // store script language (=scripting engine) to a final var to
+	 // load the scripting engine
+	 BSFEngine evalEngine=this.loadScriptingEngine(scriptId);
+
+	 // lookup script from the given id
+	 JSNode scriptContainer=getNode(scriptId);
+	 String script=scriptContainer.getInnerHTML();
+
+	 if (debugLevel>0) {
+	   System.out.println("[BWSApplet.executeScript] script code");
+	   System.out.println(script);
+	   System.out.println("[BWSApplet.executeScript] script code end");
+     }
+
+	 // execute script
+	 try {
+	    evalEngine.eval("",0,0,script);
+	 } catch (Exception e) {
+	    System.out.println("[BWSApplet-executeScript] exception while trying to execute");
+	 }
+     
+   }
+   
+   /** reads a script from the docuemnt and passes it to the bsf engine
+    * specified in the scripts type attribute.
+    * @param scriptString String containing scriptId, returnValue key and parameters keys
+    */
+   // code execution could probably also be done by the BSFManager, i.e.
+   // without explicitly loading a scripting engine
+   public void executeScript(String scriptString) {
+     // create a ScriptString
+     ScriptString currentScriptString=new ScriptString(scriptString);
+
+     // obtain script id from the script string
+     String scriptId=currentScriptString.getScriptId();
+
+     // load scripting engine
+	 BSFEngine evalEngine=this.loadScriptingEngine(scriptId);
+
+	 if (debugLevel>0) {
+	   System.out.println("[BWSApplet.executeScript] got this engine: " + evalEngine);
+	 }
+
+/*     // store script language (=scripting engine) to a final var to
      // be able to use it in doPrivileged
      final String scriptingEngine=this.getScriptingEngine(scriptId);
 
@@ -160,25 +199,24 @@ public class BWSApplet extends Applet {
        return null;
      }
 	 });
-
+*/
 	 // lookup script from the given id
 	 JSNode scriptContainer=getNode(scriptId);
 	 String script=scriptContainer.getInnerHTML();
-	 //String script=scriptId;
 
 	 System.out.println("[BWSApplet-executeScript] script code");
 	 System.out.println(script);
 	 System.out.println("[BWSApplet-executeScript] script code end");
 
-	 // execute script
+     // execute script
 	 try {
-	    evalEngine.eval("",0,0,script);
+	   evalEngine.eval("",0,0,script);
 	 } catch (Exception e) {
-	    System.out.println("[BWSApplet-executeScript] exception while trying to execute");
+	   System.out.println("[BWSApplet-executeScript] exception while trying to execute");
 	 }
-      } catch (Exception e) {
-	 System.out.println("[BWSApplet-executeScript] exception at ?");
-      }
+ /*     } catch (Exception e) {
+	 	System.out.println("[BWSApplet-executeScript] exception at ?");
+      }*/
    }
 
    /** returns the html/xml node with the specified id
@@ -206,7 +244,42 @@ public class BWSApplet extends Applet {
 		// get the relevant substring from the typestring
 		// typstring is bsf/engine
 		String engineString=typeString.substring(typeString.indexOf("/")+1,typeString.length());
-		
+
 		return engineString;
     }
+
+  private BSFEngine loadScriptingEngine(String scriptId) {
+     // going to an inner class, all variables that shall be accessible
+     // must be declared final
+
+    // store script language (=scripting engine) to a final var to
+    // be able to use it in doPrivileged
+    final String scriptingEngine=this.getScriptingEngine(scriptId);
+
+    try {
+      BSFEngine evalEngine = (BSFEngine) AccessController.doPrivileged(new PrivilegedAction() {
+      
+        public Object run() {
+          BSFEngine currentEngine;
+
+          try {
+            currentEngine=mgr.loadScriptingEngine(scriptingEngine);
+		    if (debugLevel>0) {
+              System.out.println("[BWSApplet.loadScriptingEngine] scripting engine loaded successfully");
+              System.out.println("[BWSApplet.loadScriptingEngine]   engine: " + currentEngine);
+            }
+            return currentEngine;
+          } catch (Exception e) {
+            System.out.println("[BWSApplet.loadScriptingEngine] loading engine failed!");
+            e.printStackTrace();
+          }
+          return null;
+        }
+      });
+      return evalEngine;
+    }  catch (Exception e) {
+      System.out.println("[BWSApplet.loadScriptingEngine] exception at ?");
+    }	
+    return null;
+  }
 }
